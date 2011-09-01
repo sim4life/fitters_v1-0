@@ -152,13 +152,35 @@ Ext.setup({
             
             
             //__HOME panels layout end==================================================================================
-            /*
-            installPanel = new Ext.Panel();
-            deinstallPanel = new Ext.Panel();
-            searchPanel = new Ext.Panel();
             
-            helpPanel = new Ext.Panel();
-            */
+            Ext.regModel('Vehicle', { 
+                fields: [
+                    {name: 'id', type: 'int'},
+                    {name: 'registration', type: 'string'},
+                    {name: 'make', type: 'string'},
+                    {name: 'model', type: 'string'},
+                    {name: 'colour', type: 'string'},
+                    {name: 'imei', type: 'string'},
+                    {name: 'mileage', type: 'string'},
+                    {name: 'second_ref', type: 'string'},
+                    {name: 'extension', type: 'boolean'},
+                    {name: 'telematics', type: 'boolean'},
+                    {name: 'diagnostic', type: 'boolean'},
+                    {name: 'install_completion', type: 'date'},
+                    {name: 'installer_name', type: 'string'},
+                    {name: 'rep_name', type: 'string'},
+                    {name: 'notes', type: 'string'},
+                    {name: 'vehicle_id', type: 'int'},
+                    {name: 'cl_state', type: 'string'},
+                    // {name: 'client_uid', type: 'string'},
+                    {name: 'action', type: 'string'}
+                ],
+                validations: [
+                    {type: 'presence', name: 'registration', message: "Registration is required"}
+                    // ,{type: 'presenceDueDate', name: 'remind_before'}
+                ]
+            });
+            
 
             installNavBar = new Ext.Toolbar({
                 ui: 'dark',
@@ -357,13 +379,14 @@ Ext.setup({
         
         registerLoginHandler();
         
-        if(Ext.isEmpty(Api.getLocalStorageProp('account_key')) || Api.getLocalStorageProp('auto_login') == 0) {
+        // if(Ext.isEmpty(Api.getLocalStorageProp('account_key'))) {
             
             form = new Ext.form.FormPanel(loginFormBase);
             form.show();
+/*
         } else {
             renderAllWithDataCB();
         }
-
+*/
 	}
 });

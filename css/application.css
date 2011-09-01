@@ -1,0 +1,1068 @@
+@charset "UTF-8";
+/* line 15, ../sass/application.scss */
+body {
+  background: white url("../rsc/loading.png") no-repeat;
+}
+
+/* line 19, ../sass/application.scss */
+.x-list .x-list-item {
+  border-bottom: 1px solid #e2e2e2;
+}
+
+/* line 23, ../sass/application.scss */
+.todo_check_container {
+  float: left;
+  width: 2.6em;
+  height: 2.6em;
+  background-color: red;
+}
+
+/* line 30, ../sass/application.scss */
+.todo_check_container.uncompleted {
+  background: url("../rsc/task-tickbox-sprite.png") 10px 12px no-repeat;
+}
+
+/* line 34, ../sass/application.scss */
+.todo_check_container.completed {
+  background: url("../rsc/task-tickbox-sprite.png") 10px -40px no-repeat;
+}
+
+/* line 38, ../sass/application.scss */
+.x-list-item .x-list-disclosure {
+  margin-right: 0;
+}
+
+/* line 42, ../sass/application.scss */
+.main_task_list .x-list-item {
+  padding: 0;
+}
+
+/* line 46, ../sass/application.scss */
+.x-field-toggle .x-slider {
+  border-radius: .5em;
+}
+
+/* line 50, ../sass/application.scss */
+.x-thumb::before {
+  -webkit-box-shadow: rgba(255, 255, 255, 0.496) 0px 0px 0.1em inset, rgba(255, 255, 255, 0.297) 0px -0.1em 0px inset;
+  background-clip: padding-box;
+  background-color: #DDD;
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(white), color-stop(0.02, #f7f7f7), to(#cbcbcb));
+  border: 0.1em solid #919191;
+  border-bottom-left-radius: 0.425em 0.425em;
+  border-bottom-right-radius: 0.425em 0.425em;
+  border-top-left-radius: 0.425em 0.425em;
+  border-top-right-radius: 0.425em 0.425em;
+  content: '';
+  height: 1.7em;
+  left: 0.1em;
+  position: absolute;
+  top: 0em;
+  width: 2.2em;
+}
+
+/* line 68, ../sass/application.scss */
+.x-slider {
+  height: 2em;
+  margin: 0.2em;
+  min-height: 0px;
+  position: relative;
+}
+
+/* line 75, ../sass/application.scss */
+.x-toolbar-dark {
+  background: -webkit-gradient(linear, left top, left bottom, from(#7db72f), to(#4e7d0e));
+}
+
+/* line 79, ../sass/application.scss */
+.x-tabbar-light {
+  background: -webkit-gradient(linear, left top, left bottom, from(#888888), to(#575757));
+  color: #ccc;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.297) 0px 0.1em 0.3em;
+}
+
+/* line 85, ../sass/application.scss */
+.x-tabbar-light.x-docked-bottom .x-tab img {
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f2f2f2), color-stop(0.02, white), to(white));
+}
+
+/* line 89, ../sass/application.scss */
+.x-tabbar-light.x-docked-bottom .x-tab-active {
+  background-color: #333;
+  background-image: none;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.199) 0px 0.1em 0.1em, rgba(0, 0, 0, 0.297) 0px 0.1em 0.2em inset;
+}
+
+/* line 95, ../sass/application.scss */
+.x-button-label, .x-hasbadge .x-badge {
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizelegibility;
+}
+
+/* line 101, ../sass/application.scss */
+.x-form-label span {
+  font-size: 0.6em;
+  font-weight: bold;
+}
+
+/* line 106, ../sass/application.scss */
+x-form-field-container {
+  text-align: center;
+}
+
+/* line 110, ../sass/application.scss */
+.todo_list_item {
+  color: #333333;
+  padding-top: 12px;
+  padding-bottom: 13px;
+  width: 250px;
+  overflow: hidden;
+}
+
+/* line 118, ../sass/application.scss */
+.x-tabbar.x-docked-bottom .x-tab .x-button-label, .x-tabbar.x-docked-bottom .x-tab .x-hasbadge .x-badge, .x-hasbadge .x-tabbar.x-docked-bottom .x-tab .x-badge {
+  color: white;
+  font-size: 10px;
+}
+
+/* line 123, ../sass/application.scss */
+.x-toolbar-title {
+  font-weight: bold;
+}
+
+/* line 127, ../sass/application.scss */
+.x-tabbar-light.x-docked-top .x-tab-active {
+  background-color: transparent;
+  background-image: none;
+  color: white;
+}
+
+/* line 133, ../sass/application.scss */
+.x-toolbar-dark .x-button, .x-toolbar .x-toolbar-dark .x-button, .x-toolbar-dark .x-field-select .x-input-text, .x-toolbar .x-toolbar-dark .x-field-select .x-input-text {
+  border: 3px solid #6C9804;
+  color: white;
+  background-image: -webkit-gradient(linear, 0% 0, 0% 100%, color-stop(0%, #c2fa3b), color-stop(2%, #90ca05), color-stop(100%, #547503));
+}
+
+/* line 139, ../sass/application.scss */
+.x-toolbar-dark .x-button.x-button-pressed {
+  background: transparent;
+  background-image: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 24, color-stop(0%, rgba(255, 255, 255, 0.7)), color-stop(100%, rgba(255, 255, 255, 0)));
+  /*     background-image:radial-gradient(center center,circle,rgba(255,255,255,0.7) 0,rgba(255,255,255,0) 24px); */
+}
+
+/* line 146, ../sass/application.scss */
+.x-toolbar-dark .x-button.x-button-pressed.event_add, .x-toolbar-dark .x-button.x-button-pressed.note_add, .x-toolbar-dark .x-button.x-button-pressed.todo_add {
+  background: url(../rsc/btn-new-entry.png) no-repeat 5px 3px, -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 24, color-stop(0%, rgba(255, 255, 255, 0.7)), color-stop(100%, rgba(255, 255, 255, 0)));
+}
+
+/* line 151, ../sass/application.scss */
+.event_add span, .note_add span, .todo_add span {
+  text-indent: -9999em;
+  border: none;
+}
+
+/* line 156, ../sass/application.scss */
+.x-toolbar .event_add, .x-toolbar .note_add, .x-toolbar .todo_add {
+  height: 35px;
+  width: 38px;
+  border: 3px solid #6C9804;
+  color: white;
+  background: url(../rsc/btn-new-entry.png) no-repeat 5px 3px, -webkit-gradient(linear, 0% 0, 0% 100%, color-stop(0%, #c2fa3b), color-stop(2%, #90ca05), color-stop(100%, #547503));
+}
+
+/* line 164, ../sass/application.scss */
+.x-tabbar-light .x-tab {
+  color: #ccc;
+}
+
+/* line 168, ../sass/application.scss */
+.x-form-fieldset {
+  margin: 0em 0px 1em;
+}
+
+/* line 172, ../sass/application.scss */
+.event_date_container, .journal_date_container {
+  float: left;
+  width: 65px;
+  margin-right: 6px;
+}
+
+/* line 178, ../sass/application.scss */
+.event_item_day, .journal_item_day {
+  height: 27px;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f2f2f2), to(#c2c2c2));
+  text-align: center;
+  border-bottom: 1px solid #e2e2e2;
+  border-right: 1px solid #e2e2e2;
+  font-size: 16px;
+  padding-top: 5px;
+  text-shadow: 0px 1px 0px #fff;
+  color: #333333;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* line 193, ../sass/application.scss */
+.today_container .journal_item_day {
+  background: -webkit-gradient(linear, 0% 0, 0% 100%, color-stop(0%, #c2fa3b), color-stop(2%, #90ca05), color-stop(100%, #547503));
+  color: white;
+  text-shadow: rgba(0, 0, 0, 0.496) 0px -0.08em 0px;
+}
+
+/* line 199, ../sass/application.scss */
+.today_container .event_item_day {
+  background: -webkit-gradient(linear, 0% 0, 0% 100%, color-stop(0%, #c2fa3b), color-stop(2%, #90ca05), color-stop(100%, #547503));
+  color: white;
+  text-shadow: rgba(0, 0, 0, 0.496) 0px -0.08em 0px;
+}
+
+/* line 205, ../sass/application.scss */
+.event_item_date, .journal_item_date {
+  font-size: 1.8em;
+  font-weight: bold;
+  height: 55px;
+  display: block;
+  text-align: center;
+  text-shadow: 0px 1px 0px #fff;
+  border-right: 1px solid #e2e2e2;
+  color: #333333;
+  padding-top: 7px;
+}
+
+/* line 217, ../sass/application.scss */
+.notFirstDateChild .event_item_date span, .notFirstDateChild .journal_item_date span {
+  display: none;
+}
+
+/* line 221, ../sass/application.scss */
+.notFirstDateChild .event_item_day span, .notFirstDateChild .journal_item_day span {
+  display: none;
+}
+
+/* line 225, ../sass/application.scss */
+.notFirstDateChild .event_item_date, .notFirstDateChild .journal_item_date {
+  background: none;
+}
+
+/* line 229, ../sass/application.scss */
+.notFirstDateChild .event_item_day, .notFirstDateChild .journal_item_day {
+  background: none;
+  border-bottom: none;
+}
+
+/* line 234, ../sass/application.scss */
+.event_list_item, .journal_list_item {
+  color: #333333;
+  padding-right: 5px;
+  font-size: 15px;
+  /*     padding-top: 4px; */
+}
+
+/* line 241, ../sass/application.scss */
+div.journal_list_item.title {
+  width: 225px;
+  overflow: hidden;
+  display: block;
+  /*     padding-top: 4px; */
+  /*   line-height: 11px; */
+  font-weight: bold;
+  font-size: 15px;
+}
+
+/* line 252, ../sass/application.scss */
+.event_list_item.title {
+  font-size: 15px;
+}
+
+/* line 256, ../sass/application.scss */
+.events_panel .x-list-item, .journals_panel .x-list-item {
+  padding: 0;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(white), to(#f2f2f2));
+}
+
+/* line 261, ../sass/application.scss */
+.events_panel .x-list-item-body {
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(white), to(#f2f2f2));
+}
+
+/* line 265, ../sass/application.scss */
+.events_panel .x-list-header, .journals_panel .x-list-header {
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(white), to(#f2f2f2));
+  color: #333333;
+  border-top: none;
+  border-bottom: 1px solid #e2e2e2;
+  font-weight: normal;
+  text-shadow: 0px 1px 0px #fff;
+  -webkit-box-shadow: none;
+}
+
+/* line 275, ../sass/application.scss */
+.x-list-group h3.x-list-header {
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#cccccc), to(#ebebeb));
+  border-bottom: 1px solid #ccc;
+  border-top: 1px solid #bbb;
+}
+
+/* line 281, ../sass/application.scss */
+.x-mask-loading {
+  color: red;
+}
+
+/* =========================== Dashboard ============================== */
+/* line 287, ../sass/application.scss */
+.tasks_count_field input, .journal_posts_count_field input, .events_count_field input {
+  color: #000;
+  font-weight: bold;
+}
+
+/* line 292, ../sass/application.scss */
+.tasks_count_field input span {
+  padding-left: 20px;
+}
+
+/* line 296, ../sass/application.scss */
+.tasks_count_field .x-form-label, .journal_posts_count_field .x-form-label, .events_count_field .x-form-label {
+  width: 75%;
+  font-size: 1.4em;
+  padding-top: .55em;
+  padding-left: 50px;
+}
+
+/* line 303, ../sass/application.scss */
+.tasks_count_field .x-form-label {
+  background: url("../rsc/icn-dashboard-task.png") 13px 11px no-repeat;
+}
+
+/* line 307, ../sass/application.scss */
+.journal_posts_count_field .x-form-label {
+  background: url("../rsc/icn-dashboard-journal.png") 13px 15px no-repeat;
+}
+
+/* line 311, ../sass/application.scss */
+.events_count_field .x-form-label {
+  background: url("../rsc/icn-dashboard-event.png") 15px 14px no-repeat;
+}
+
+/* line 315, ../sass/application.scss */
+.last_sync_field-body {
+  margin-left: 25px;
+  margin-top: -19px;
+}
+
+/* line 320, ../sass/application.scss */
+.last_sync_field .x-item-disabled input {
+  color: #000;
+}
+
+/* line 324, ../sass/application.scss */
+.last_sync_field .x-form-label {
+  color: #ccc;
+}
+
+/* line 328, ../sass/application.scss */
+.tasks_count_field input, .journal_posts_count_field input, .events_count_field input {
+  text-align: center;
+}
+
+/* line 332, ../sass/application.scss */
+.dashboard_panel .x-form-label {
+  width: 60%;
+}
+
+/* line 336, ../sass/application.scss */
+.dashboard_panel .x-panel-body {
+  background-color: #fff;
+}
+
+/* line 340, ../sass/application.scss */
+.dashboard_panel .x-form-label span {
+  color: #333333;
+}
+
+/* line 344, ../sass/application.scss */
+.last_sync_field .x-form-label, .last_sync_field .x-form-field-container input {
+  background: none;
+  border: none;
+}
+
+/* line 348, ../sass/application.scss */
+.last_sync_field .x-form-label {
+  width: 31%;
+  padding: .4em 0 0 .3em;
+}
+
+/* line 353, ../sass/application.scss */
+.last_sync_field .x-form-field-container input {
+  font-size: .6em;
+}
+
+/* line 356, ../sass/application.scss */
+.x-button-Normal {
+  color: #333333;
+  text-shadow: #f2f2f2 0px 1px 0px;
+}
+
+/* line 361, ../sass/application.scss */
+.last_sync_field-body input.x-input-text {
+  padding-top: 0;
+  margin-top: 0;
+  text-align: left;
+}
+
+/* =========================== Dashboard END ============================== */
+/* line 369, ../sass/application.scss */
+.x-toolbar.x-docked-top {
+  border-bottom: 0.1em solid #666;
+}
+
+/* line 373, ../sass/application.scss */
+.todo_container.last {
+  -webkit-box-shadow: rgba(0, 0, 0, 0.293) 0px 0.1em 0.3em;
+}
+
+/* line 377, ../sass/application.scss */
+.x-button.x-button-action, .x-button.x-button-action.x-button-back::after, .x-button.x-button-action.x-button-forward::after, .x-toolbar .x-button.x-button-action, .x-toolbar .x-button.x-button-action.x-button-back::after, .x-toolbar .x-button.x-button-action.x-button-forward::after, .x-button.x-button-action-round, .x-button.x-button-action-round.x-button-back::after, .x-button.x-button-action-round.x-button-forward::after, .x-toolbar .x-button.x-button-action-round, .x-toolbar .x-button.x-button-action-round.x-button-back::after, .x-toolbar .x-button.x-button-action-round.x-button-forward::after, .x-button.x-button-action-small, .x-button.x-button-action-small.x-button-back::after, .x-button.x-button-action-small.x-button-forward::after, .x-toolbar .x-button.x-button-action-small, .x-toolbar .x-button.x-button-action-small.x-button-back::after, .x-toolbar .x-button.x-button-action-small.x-button-forward::after, #signupButton {
+  background-image: -webkit-gradient(linear, 0% 0, 0% 100%, color-stop(0%, #c2fa3b), color-stop(2%, #90ca05), color-stop(100%, #547503));
+  color: white;
+}
+
+/* line 382, ../sass/application.scss */
+.x-button.x-button-action.x-button-pressed, .x-button.x-button-action.x-button-pressed::after, .x-button.x-button-action.x-button-active, .x-button.x-button-action.x-button-active::after, .x-toolbar .x-button.x-button-action.x-button-pressed, .x-toolbar .x-button.x-button-action.x-button-pressed::after, .x-toolbar .x-button.x-button-action.x-button-active, .x-toolbar .x-button.x-button-action.x-button-active::after, .x-button.x-button-action-round.x-button-pressed, .x-button.x-button-action-round.x-button-pressed::after, .x-button.x-button-action-round.x-button-active, .x-button.x-button-action-round.x-button-active::after, .x-toolbar .x-button.x-button-action-round.x-button-pressed, .x-toolbar .x-button.x-button-action-round.x-button-pressed::after, .x-toolbar .x-button.x-button-action-round.x-button-active, .x-toolbar .x-button.x-button-action-round.x-button-active::after, .x-button.x-button-action-small.x-button-pressed, .x-button.x-button-action-small.x-button-pressed::after, .x-button.x-button-action-small.x-button-active, .x-button.x-button-action-small.x-button-active::after, .x-toolbar .x-button.x-button-action-small.x-button-pressed, .x-toolbar .x-button.x-button-action-small.x-button-pressed::after, .x-toolbar .x-button.x-button-action-small.x-button-active, .x-toolbar .x-button.x-button-action-small.x-button-active::after, #signupButton.x-button-pressed {
+  background-color: #547503;
+  background-image: -webkit-gradient(linear, 0% 0, 0% 100%, color-stop(0%, #304402), color-stop(10%, #425c02), color-stop(65%, #547503), color-stop(100%, #557803));
+  background-image: linear-gradient(top, #304402 0, #425c02 10%, #547503 65%, #557803 100%);
+}
+
+/* line 388, ../sass/application.scss */
+div.x-sheet.x-msgbox {
+  border: 0.15em solid #a0c203;
+}
+
+/* line 392, ../sass/application.scss */
+.x-tabbar.x-docked-top {
+  padding: 0px 0.4em;
+}
+
+/* Settings Page */
+/* line 398, ../sass/application.scss */
+.settings_page_text {
+  padding: .3em .2em .2em .5em;
+  color: #555;
+}
+
+/* line 403, ../sass/application.scss */
+.settings_page_text p {
+  padding: 5px 0px;
+  line-height: 100%;
+}
+
+/* line 408, ../sass/application.scss */
+.settings_page_text li {
+  list-style: disc;
+  font-size: .8em;
+  padding: 3px 0px 3px 10px;
+}
+
+/* line 414, ../sass/application.scss */
+.settings_page_text strong {
+  line-height: 120%;
+}
+
+/* line 418, ../sass/application.scss */
+.settingsNote {
+  font-size: .8em;
+  font-style: italic;
+}
+
+/* eo Settings Page */
+/* line 425, ../sass/application.scss */
+#loginButton, #signupButton {
+  margin-bottom: 20px;
+}
+
+/* line 429, ../sass/application.scss */
+#signupButton {
+  text-shadow: rgba(0, 0, 0, 0.496) 0px -0.08em 0px;
+}
+
+/* line 433, ../sass/application.scss */
+.auth_panel .x-panel-body {
+  border: none;
+}
+
+/* line 437, ../sass/application.scss */
+strong {
+  font-weight: bold;
+  line-height: 12px;
+}
+
+/* line 442, ../sass/application.scss */
+.prev .event_list_item, .next .event_list_item, .journal_list_item.load_more {
+  text-align: center;
+  padding-top: 16px;
+  height: 50px;
+  font-weight: bold;
+  color: #009EE0;
+  background: #fff;
+}
+
+/* line 451, ../sass/application.scss */
+.x-list-item.x-item-pressed .next .event_list_item, .x-list-item.x-item-pressed .prev .event_list_item {
+  color: #fff;
+  background: #009EE0;
+}
+
+/* line 456, ../sass/application.scss */
+.event_empty_item {
+  margin-left: 0px;
+  height: 82px;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.496) 0px 0px 0.1em inset, rgba(255, 255, 255, 0.297) 0px -0.1em 0px inset;
+  font-weight: bold;
+  color: #ccc;
+  padding: 33px 15px 0px 10px;
+  font-size: .7em;
+  text-align: center;
+}
+
+/* line 467, ../sass/application.scss */
+.events_panel h3.x-list-header, .journals_panel h3.x-list-header {
+  font-weight: bold;
+  text-shadow: 0px 1px 0px #fff;
+}
+
+/* line 472, ../sass/application.scss */
+.x-list {
+  background-color: #fff;
+}
+
+/* line 476, ../sass/application.scss */
+.x-tab img.team {
+  -webkit-mask-image: url("../rsc/icn-events2.png");
+}
+
+/* line 478, ../sass/application.scss */
+.x-tab img.info {
+  -webkit-mask-image: url("../rsc/icn-dashb.png");
+}
+
+/* line 480, ../sass/application.scss */
+.x-tab img.favorites {
+  -webkit-mask-image: url("../rsc/icn-tasks.png");
+}
+
+/* line 482, ../sass/application.scss */
+.x-tab img.settings {
+  -webkit-mask-image: url("../rsc/icn-settings.png");
+}
+
+/* line 484, ../sass/application.scss */
+.x-tab img.bookmarks {
+  -webkit-mask-image: url("../rsc/icn-journal2.png");
+}
+
+/* line 486, ../sass/application.scss */
+.pin_code_field .x-form-label, .auto_sync_field .x-form-label, .auto_login_field .x-form-label, .due_at_field .x-form-label {
+  padding-top: 14px;
+  width: 165px;
+}
+
+/* line 491, ../sass/application.scss */
+.daily_notif_time_field input {
+  text-align: left;
+  padding-top: 28px;
+  padding-left: 0;
+}
+
+/* line 497, ../sass/application.scss */
+.move_marked_tasks_after_field .x-form-label {
+  padding-top: 16px;
+}
+
+/* line 501, ../sass/application.scss */
+.move_marked_tasks_after_field input {
+  padding-left: 0px;
+}
+
+/* line 505, ../sass/application.scss */
+.move_marked_tasks_after_field .x-form-field-container input {
+  font-size: 0.7em;
+  font-weight: bold;
+  color: #333333;
+  height: 50px;
+  text-align: left;
+}
+
+/* line 512, ../sass/application.scss */
+.auto_sync_field .x-form-label, .auto_login_field .x-form-label, .daily_notif_time_field .x-form-label {
+  width: 140x;
+}
+
+/* line 516, ../sass/application.scss */
+.move_marked_tasks_after_field .x-form-label, .daily_notif_time_field .x-form-label {
+  width: 175px;
+}
+
+/* line 521, ../sass/application.scss */
+.pin_code_field .x-input-toggle, .auto_sync_field .x-input-toggle, .auto_login_field .x-input-toggle {
+  margin-left: 10px;
+  margin-top: 5px;
+}
+
+/* line 527, ../sass/application.scss */
+.x-field-toggle .x-slider .x-thumb::before {
+  top: 0.15em;
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f7f7f7), color-stop(0.02, #cbcbcb), to(white));
+}
+
+/* line 532, ../sass/application.scss */
+.createdAt {
+  font-size: 11px;
+  color: #555;
+  float: left;
+  padding-top: 0px;
+}
+
+/* line 539, ../sass/application.scss */
+.reminder.hasReminder {
+  height: 18px;
+  width: 15px;
+  background: url("../rsc/icn-reminder.png") 0px 0px no-repeat;
+  float: right;
+  margin-right: 16px;
+  margin-top: -3px;
+}
+
+/* line 548, ../sass/application.scss */
+.eventLocation {
+  height: 20px;
+}
+
+/* line 552, ../sass/application.scss */
+.eventTypeEvent {
+  background: url("../rsc/icn-events.png") 0px 0px no-repeat;
+}
+
+/* line 556, ../sass/application.scss */
+.eventTypeAnniversary {
+  background: url("../rsc/icn-anniversary.png") 0px 0px no-repeat;
+}
+
+/* line 560, ../sass/application.scss */
+.eventTypeBirthday {
+  background: url("../rsc/icn-birthdays.png") 0px 0px no-repeat;
+}
+
+/* asdfasd */
+/* line 567, ../sass/application.scss */
+.eventTypeEvent, .eventTypeAnniversary, .eventTypeBirthday {
+  height: 30px;
+  width: 27px;
+  float: right;
+  margin-top: -38px;
+  margin-right: 11px;
+}
+
+/* line 575, ../sass/application.scss */
+.eventDescMain {
+  height: 64px;
+  overflow: hidden;
+  padding-top: 4px;
+}
+
+/* line 581, ../sass/application.scss */
+.eventDescMain p.note {
+  margin-top: -2px;
+  width: 200px;
+  overflow: hidden;
+}
+
+/* line 587, ../sass/application.scss */
+.x-tab .x-tab-normal .x-iconalign-left .x-tab-active .x-tab-pressed span.x-button-label {
+  color: #a0c203;
+}
+
+/* line 591, ../sass/application.scss */
+.eventTitle {
+  font-weight: bold;
+  padding-top: 0px;
+  width: 200px;
+  overflow: hidden;
+}
+
+/* line 598, ../sass/application.scss */
+.settings_page_text h1 {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+/* line 603, ../sass/application.scss */
+.settings_page_text p, .settings_page_text li {
+  text-align: justify;
+  padding-right: 10px;
+  font-size: 12px;
+}
+
+/* line 609, ../sass/application.scss */
+.emptyJournalMessage, .emptyTaskMessage {
+  padding: 20px 0;
+  color: #CCCCCC;
+  text-align: center;
+  height: 350px;
+  width: 300px;
+}
+
+/* line 617, ../sass/application.scss */
+.emptyTaskMessage {
+  background: url("../rsc/icn-task-placeholder.png") no-repeat 70px 50px;
+}
+
+/* line 621, ../sass/application.scss */
+.emptyJournalMessage {
+  background: url("../rsc/icn-journal-placeholder.png") no-repeat 50px 90px;
+}
+
+/* line 625, ../sass/application.scss */
+a {
+  color: #009EE0;
+}
+
+/* line 629, ../sass/application.scss */
+.journalViewPage {
+  height: 480px;
+  border-bottom: none;
+}
+
+/* line 634, ../sass/application.scss */
+.journalViewPageContent {
+  line-height: 22px;
+  width: 305px;
+  overflow: hidden;
+}
+
+/* line 640, ../sass/application.scss */
+.journal_list_item_detail.title strong {
+  line-height: 28px;
+}
+
+/* line 645, ../sass/application.scss */
+.journal_list_item_detail.title {
+  width: 300px;
+}
+
+/* line 649, ../sass/application.scss */
+.journalViewPageDate {
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(white), to(#f2f2f2));
+  padding: 5px 5px 10px 0px;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 0px;
+}
+
+/* line 656, ../sass/application.scss */
+.journalViewPageContent {
+  padding: 5px 10px 10px 10px;
+}
+
+/* line 660, ../sass/application.scss */
+.journalDetail {
+  color: #333333;
+}
+
+/* line 664, ../sass/application.scss */
+.journalDetail.day {
+  font-size: 16px;
+  -webkit-transform: rotate(270deg);
+  font-weight: bold;
+  margin-top: 20px;
+  float: left;
+  text-transform: uppercase;
+}
+
+/* line 673, ../sass/application.scss */
+.journalDetail.date {
+  font-size: 48px;
+  float: left;
+  margin-right: 5px;
+  margin-left: -8px;
+}
+
+/* line 680, ../sass/application.scss */
+.journalDetail.month {
+  margin-top: 7px;
+  font-weight: bold;
+}
+
+/* line 685, ../sass/application.scss */
+.journalDetail.year {
+  font-weight: bold;
+}
+
+/* line 689, ../sass/application.scss */
+.clear {
+  clear: both;
+}
+
+/* line 693, ../sass/application.scss */
+.x-fullscreen {
+  background: #fff;
+}
+
+/* creation forms */
+/* line 699, ../sass/application.scss */
+.starts_at_field .x-form-label, .bday_day_field .x-form-label, .bday_month_field .x-form-label, .anniv_day_field .x-form-label, .anniv_month_field .x-form-label, .posted_at_field .x-form-label {
+  padding-top: 7px;
+}
+
+/* line 703, ../sass/application.scss */
+.starts_at_time_field .x-form-label, .ends_at_field .x-form-label, .allday_field .x-form-label, .event_remind_before_field .x-form-label, .ends_at_time_field .x-form-label, .ends_at_time_field .x-form-label, .bday_remind_before_field .x-form-label, .anniv_remind_before_field .x-form-label {
+  padding-top: 15px;
+}
+
+/* line 707, ../sass/application.scss */
+.x_group_type_next h3, .x_group_type_prev h3 {
+  display: none;
+}
+
+/* line 711, ../sass/application.scss */
+p.note {
+  font-size: 15px;
+  height: 20px;
+  overflow: hidden;
+  padding-top: 3px;
+}
+
+/* line 718, ../sass/application.scss */
+.journalDescMain {
+  height: 65px;
+  overflow: hidden;
+  padding-top: 4px;
+  width: 230px;
+}
+
+/* line 725, ../sass/application.scss */
+.eventLocation {
+  padding-left: 12px;
+  background: url("../rsc/icn-location.png") no-repeat 0px 4px;
+  overflow: hidden;
+  width: 200px;
+}
+
+/* line 732, ../sass/application.scss */
+.review_itunes, .twitter {
+  letter-spacing: -1px;
+}
+
+/* line 736, ../sass/application.scss */
+.todo_list_item p.taskDueAt {
+  color: #555;
+  font-size: 11px;
+  padding-top: 3px;
+}
+
+/* line 742, ../sass/application.scss */
+.completed .todo_list_item span {
+  text-decoration: line-through;
+  color: #ccc;
+}
+
+/* line 747, ../sass/application.scss */
+.completed .todo_list_item p.taskDueAt {
+  color: #ccc;
+  text-decoration: none;
+}
+
+/* line 752, ../sass/application.scss */
+.journals_panel .x-toolbar-light {
+  -webkit-box-shadow: rgba(0, 0, 0, 0.297) 0px 0.1em 0.3em;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#888888), to(#575757));
+  color: #CCC;
+}
+
+/* line 758, ../sass/application.scss */
+.btn-next-post {
+  display: block;
+  background: url("../rsc/btn-next-post.png") no-repeat 4px 0px;
+  height: 17px;
+  width: 20px;
+}
+
+/* line 765, ../sass/application.scss */
+.btn-prev-post {
+  display: block;
+  background: url("../rsc/btn-prev-post.png") no-repeat 0px 0px;
+  height: 17px;
+  width: 20px;
+}
+
+/* line 772, ../sass/application.scss */
+.journals_panel .x-docked-bottom .x-button.x-button-pressed {
+  background-color: #333;
+  background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 24, color-stop(0%, rgba(255, 255, 255, 0.7)), color-stop(100%, rgba(255, 255, 255, 0)));
+}
+
+/* line 777, ../sass/application.scss */
+.journals_panel .x-toolbar-light .x-button {
+  background: none;
+  border: none;
+  border: 3px solid #666;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.09) 0px 0.1em 0px;
+}
+
+/* line 785, ../sass/application.scss */
+.x-mask .x-mask-loading.syncFeedback {
+  padding-top: 10px;
+  background: rgba(0, 0, 0, 0.25) url("../rsc/icn-sync.png") no-repeat 40px 55px;
+  text-align: center;
+  color: white;
+}
+
+/* pincode */
+/* line 794, ../sass/application.scss */
+.pinCodePage {
+  /*     background:  -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ccc), to(#666)); */
+  height: 100%;
+}
+
+/* line 800, ../sass/application.scss */
+.pinCodeMsg {
+  text-align: center;
+  color: #494949;
+  padding: 30px 0;
+}
+
+/* line 806, ../sass/application.scss */
+.keypad {
+  margin: 0px 10%;
+}
+
+/* line 810, ../sass/application.scss */
+.keypadCont {
+  position: absolute;
+  bottom: 10%;
+  width: 100%;
+}
+
+/* line 816, ../sass/application.scss */
+li.numClass {
+  text-align: center;
+  display: block;
+  width: 31%;
+  float: left;
+  height: 50px;
+  color: #444;
+  background: -webkit-gradient(linear, left top, left bottom, from(#ebebeb), to(#a1a1a1));
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+  font-weight: bold;
+  margin: 0 5px 5px 0px;
+  padding-top: 12px;
+  border: 1px solid #ccc;
+  -webkit-border-radius: 4px;
+}
+
+/* line 834, ../sass/application.scss */
+.last {
+  margin-right: 0;
+}
+
+/* line 838, ../sass/application.scss */
+.keys {
+  height: 80%;
+}
+
+/* line 842, ../sass/application.scss */
+.clear {
+  clear: both;
+  margin: 0;
+  padding: 0;
+}
+
+/* line 848, ../sass/application.scss */
+.circle {
+  background: url("../rsc/icn-pin-off.png") no-repeat;
+  width: 14px;
+  height: 14px;
+  float: left;
+  text-indent: -9999em;
+}
+
+/* line 856, ../sass/application.scss */
+.circle.on {
+  background: url("../rsc/icn-pin-on.png") no-repeat;
+}
+
+/* line 860, ../sass/application.scss */
+.pinDots ul {
+  width: 195px;
+  margin: 0 auto;
+}
+
+/* line 865, ../sass/application.scss */
+.pinDots ul li {
+  margin-right: 46px;
+}
+
+/* line 869, ../sass/application.scss */
+.pinDots ul li.last {
+  margin-right: 0px;
+}
+
+/* line 873, ../sass/application.scss */
+.pinDots {
+  text-align: center;
+  width: 100%;
+}
+
+/* line 878, ../sass/application.scss */
+#changePinCodeField {
+  background: url("../rsc/icn-chevron.png") no-repeat right middle;
+  background-color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 14px 10px 10px 10px;
+  color: #333;
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #DDD;
+}
+
+/* line 890, ../sass/application.scss */
+.x-form-label {
+  background-color: #fff;
+}
+
+/* line 894, ../sass/application.scss */
+.daily_notif_time_field .x-form-field-container {
+  background: #fff;
+  color: #333;
+  font-size: 0.7em;
+  font-weight: bold;
+  height: 50px;
+  text-align: right;
+}
+
+/* line 904, ../sass/application.scss */
+.pinCodeWarnMsg {
+  font-size: 10px;
+  color: #666;
+  font-style: italic;
+  width: 100%;
+  text-align: center;
+  padding-top: 10px;
+}
+
+/* line 913, ../sass/application.scss */
+.red {
+  color: red;
+}
+
+/* line 917, ../sass/application.scss */
+.green {
+  color: #a0c203;
+}
+
+/* line 921, ../sass/application.scss */
+#dailyNotifTimeField input, #tasksMoverDelayField input {
+  padding-left: 8px;
+}

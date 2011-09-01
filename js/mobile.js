@@ -168,10 +168,6 @@ var User = {
                         Ext.getCmp('loginPasswordField2').show();
                         Ext.getCmp('signupButton').show();
                         Ext.getCmp('cancelButton').show();
-                        
-                        FlurryPlugin.endTimedEvent('login_form_show');
-                        FlurryPlugin.logTimedEvent('signup_form_show');
-                        FlurryPlugin.countPageView();
                     }
                 }, {
                     xtype: 'button',
@@ -192,10 +188,6 @@ var User = {
                         Ext.getCmp('cancelButton').hide();
                         Ext.getCmp('loginButton').show();
                         Ext.getCmp('newuserButton').show();
-                        
-                        FlurryPlugin.endTimedEvent('signup_form_show');
-                        FlurryPlugin.logTimedEvent('login_form_show');
-                        FlurryPlugin.countPageView();
                     }
                 }]
             }],
@@ -214,6 +206,12 @@ var User = {
     login: function(email, password, failForm, succCallback, failCallBack) {
         var errMsg = "Device Offline or Server not responding!";
 
+        Api.setLocalStorageProp('login', email);
+        Api.setLocalStorageProp('user_id', '1');
+        
+        succCallback();
+        
+        /*
         Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
         Ext.Ajax.request({
             url: Api.urlFor('/apiv2/auth/key'),
@@ -225,8 +223,6 @@ var User = {
                 Api.setLocalStorageProp('user_id', Ext.decode(response.responseText).id);
                 
                 Util.logger('in login account_key is:', Api.getLocalStorageProp('account_key'));
-                FlurryPlugin.setUserID(Api.getLocalStorageProp('user_id'));
-                FlurryPlugin.endTimedEvent('login_form_show');
                 
                 Ext.getBody().unmask();
                 
@@ -245,12 +241,13 @@ var User = {
                 failCallBack(failForm, "Login Failed!", errMsg);
             }
         });
+        */
     },
     
     signup: function(email, password, failForm, succCallback, failCallBack) {
         var errMsg = "Device Offline or Server not responding!";
         var signup_key = '';
-        
+        /*
         Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
         Ext.Ajax.request({
             url: Api.urlFor('/apiv2/auth/signup_key'),
@@ -271,7 +268,6 @@ var User = {
                             Api.setLocalStorageProp('account_key', Ext.decode(response.responseText).account_key);
                             Api.setLocalStorageProp('user_id', Ext.decode(response.responseText).id);
                             Util.logger('in login account_key is:', Api.getLocalStorageProp('account_key'));
-                            FlurryPlugin.endTimedEvent('signup_form_show');
                             
                             Ext.getBody().unmask();
 
@@ -309,6 +305,7 @@ var User = {
                 failCallBack(failForm, "Login Failed!", errMsg);
             }
         });
+        */
     }
 };
 
@@ -318,7 +315,7 @@ var Home = {
             // hidden: true,
             scroll: 'vertical',
             fullscreen: true,
-            id: 'home_screen_html'
+            id: 'home_screen_html',
             html: [
                 '<div class="settings_page_text" style="padding-bottom: 60px">',
                     '<h1>onboard</h1>',
@@ -393,6 +390,7 @@ var Install = {
                         ui: 'Normal',
                         text: 'Next',
                         name: 'next',
+                        id: 'install1NextButton',
                         flex: 1,
                         handler: nextCB
                     }]
@@ -451,6 +449,7 @@ var Install = {
                         ui: 'Normal',
                         text: 'Next',
                         name: 'next',
+                        id: 'install2NextButton',
                         flex: 1,
                         handler: nextCB
                     }]
@@ -476,19 +475,19 @@ var Install = {
             }, {
                 xtype: 'fieldset',
                 items: [{
-                    xtype: 'togglefield',
+                    xtype: 'checkboxfield',
                     name: 'extension_lead',
                     width: 620,
                     label: 'Extension Lead Fitted to Unit & Vehicle OBD Port:',
                     id: 'extension_lead_field'
                 }, {
-                    xtype: 'togglefield',
+                    xtype: 'checkboxfield',
                     name: 'telematics_unit',
                     width: 620,
                     label: 'Telematics Unit Located & Secured in Vehicle:',
                     id: 'telematics_unit_field'
                 }, {
-                    xtype: 'togglefield',
+                    xtype: 'checkboxfield',
                     name: 'diagnostic_flash',
                     width: 620,
                     label: 'Diagnostic Flashing Light Sequence Confirmed:',
@@ -538,6 +537,7 @@ var Install = {
                         ui: 'Normal',
                         text: 'Submit',
                         name: 'submit',
+                        id: 'install3SubmitButton',
                         flex: 1,
                         handler: Ext.emptyFn
                     }]
@@ -559,7 +559,9 @@ var Deinstall = {
                     xtype: 'textfield',
                     name: 'de_install',
                     label: 'De Install',
-                    disabled: true
+                    width: 650,
+                    disabled: true,
+                    id: 'deinstall_field'
                 }]
             }, {
                 xtype: 'fieldset',
@@ -588,6 +590,7 @@ var Deinstall = {
                         ui: 'Normal',
                         text: 'Submit',
                         name: 'submit',
+                        id: 'deinstallSubmitButton',
                         flex: 1,
                         handler: Ext.emtpyFn
                     }]
@@ -623,7 +626,9 @@ var Search = {
                     xtype: 'textfield',
                     name: 'new_install',
                     label: 'New Install',
-                    disabled: true
+                    width: 650,
+                    disabled: true,
+                    id: 'new_install_field'
                 }]
             }, {
                 xtype: 'fieldset',
@@ -643,6 +648,7 @@ var Search = {
                         ui: 'Normal',
                         text: 'Submit',
                         name: 'submit',
+                        id: 'searchSubmitButton',
                         flex: 1,
                         handler: Ext.emtpyFn
                     }]
@@ -658,6 +664,7 @@ var Help = {
             // hidden: true,
             scroll: 'vertical',
             fullscreen: true,
+            id: 'help_html',
             html: [
                 '<div class="settings_page_text" style="padding-bottom: 60px">',
                     '<p><strong>Q: Lorem ipsum dolor sit amet, consectetur adipiscing elit adipiscing elit</strong></p>',
