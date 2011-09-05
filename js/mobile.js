@@ -115,6 +115,16 @@ var Api = {
             }
             
         }
+    },
+    
+    getButtonBase: function(btnText, isHidden, cssCls, handlerCB) {
+        return {
+            text: btnText,
+            hidden: isHidden,
+            handler: handlerCB,
+            cls: cssCls,
+            scope: this
+        };
     }
 };
 
@@ -318,9 +328,6 @@ var Home = {
             id: 'home_screen_html',
             html: [
                 '<div class="settings_page_text" style="padding-bottom: 60px">',
-                    '<h1>onboard</h1>',
-                    '<p>in-car cleverness</p>',
-                    '<p><strong>Welcome to the OnBoard Fitters App</strong></p>',
                 '</div>'
             ]
         });
@@ -329,7 +336,7 @@ var Home = {
 
 var Install = {
     createInstallStep1Panel: function(nextCB) {
-        return new Ext.form.FormPanel({
+        return {
             // fullscreen: true,
             hidden: false,
             items: [{
@@ -346,7 +353,7 @@ var Install = {
                 xtype: 'fieldset',
                 items: [{
                     xtype: 'textfield',
-                    name: 'enter_vehicle_reg',
+                    name: 'registration',
                     placeHolder: 'Enter Vehicle registration',
                     required: true,
                     useClearIcon: true,
@@ -358,7 +365,7 @@ var Install = {
                 xtype: 'fieldset',
                 items: [{
                     xtype: 'textfield',
-                    name: 'vehicle_make',
+                    name: 'make',
                     placeHolder: 'Vehicle Make',
                     required: true,
                     useClearIcon: true,
@@ -367,7 +374,7 @@ var Install = {
                     id: 'vehicle_make_field'
                 }, {
                     xtype: 'textfield',
-                    name: 'vehicle_model',
+                    name: 'model',
                     placeHolder: 'Vehicle Model',
                     required: true,
                     useClearIcon: true,
@@ -376,7 +383,7 @@ var Install = {
                     id: 'vehicle_model_field'
                 }, {
                     xtype: 'textfield',
-                    name: 'vehicle_colour',
+                    name: 'colour',
                     placeHolder: 'Vehicle Colour',
                     required: true,
                     useClearIcon: true,
@@ -396,11 +403,11 @@ var Install = {
                     }]
                 }]
             }]
-        });
+        };
     },
     
     createInstallStep2Panel: function(nextCB) {
-        return new Ext.form.FormPanel({
+        return {
             fullscreen: true,
             hidden: true,
             items: [{
@@ -417,7 +424,7 @@ var Install = {
                 xtype: 'fieldset',
                 items: [{
                     xtype: 'textfield',
-                    name: 'enter_imei',
+                    name: 'imei',
                     placeHolder: 'Enter IMEI',
                     required: true,
                     useClearIcon: true,
@@ -426,7 +433,7 @@ var Install = {
                     id: 'enter_imei_field'
                 }, {
                     xtype: 'textfield',
-                    name: 'enter_vehicle_mil',
+                    name: 'mileage',
                     placeHolder: 'Enter Vehicle Mileage',
                     required: true,
                     useClearIcon: true,
@@ -435,7 +442,7 @@ var Install = {
                     id: 'enter_vehicle_mil_field'
                 }, {
                     xtype: 'textfield',
-                    name: 'enter_2nd_ref',
+                    name: 'second_ref',
                     placeHolder: 'Enter 2nd Reference',
                     required: true,
                     useClearIcon: true,
@@ -455,11 +462,11 @@ var Install = {
                     }]
                 }]
             }]
-        });
+        };
     },
     
-    createInstallStep3Panel: function() {
-        return new Ext.form.FormPanel({
+    createInstallStep3Panel: function(submitCB) {
+        return {
             fullscreen: true,
             hidden: true,
             items: [{
@@ -476,19 +483,19 @@ var Install = {
                 xtype: 'fieldset',
                 items: [{
                     xtype: 'checkboxfield',
-                    name: 'extension_lead',
+                    name: 'extension',
                     width: 620,
                     label: 'Extension Lead Fitted to Unit & Vehicle OBD Port:',
                     id: 'extension_lead_field'
                 }, {
                     xtype: 'checkboxfield',
-                    name: 'telematics_unit',
+                    name: 'telematics',
                     width: 620,
                     label: 'Telematics Unit Located & Secured in Vehicle:',
                     id: 'telematics_unit_field'
                 }, {
                     xtype: 'checkboxfield',
-                    name: 'diagnostic_flash',
+                    name: 'diagnostic',
                     width: 620,
                     label: 'Diagnostic Flashing Light Sequence Confirmed:',
                     id: 'diagnostic_flash_field'
@@ -497,7 +504,7 @@ var Install = {
                 xtype: 'fieldset',
                 items: [{
                     xtype: 'textfield',
-                    name: 'install_comp',
+                    name: 'install_completion',
                     placeHolder: 'Installation Completion Date/Time',
                     required: true,
                     useClearIcon: true,
@@ -515,7 +522,7 @@ var Install = {
                     id: 'installer_name_field'
                 }, {
                     xtype: 'textfield',
-                    name: 'cust_rep_name',
+                    name: 'rep_name',
                     placeHolder: 'Customer/Representative Name',
                     required: true,
                     useClearIcon: true,
@@ -539,11 +546,11 @@ var Install = {
                         name: 'submit',
                         id: 'install3SubmitButton',
                         flex: 1,
-                        handler: Ext.emptyFn
+                        handler: submitCB
                     }]
                 }]
             }]
-        });
+        };
     }
     
 };
