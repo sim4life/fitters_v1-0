@@ -556,7 +556,7 @@ var Install = {
 };
 
 var Deinstall = {
-    createDeinstallMainPanel: function() {
+    createDeinstallMainPanel: function(submitCB) {
         return new Ext.form.FormPanel({
             // fullscreen: true,
             hidden: false,
@@ -599,7 +599,7 @@ var Deinstall = {
                         name: 'submit',
                         id: 'deinstallSubmitButton',
                         flex: 1,
-                        handler: Ext.emtpyFn
+                        handler: submitCB
                     }]
                 }]
             }]
@@ -608,7 +608,7 @@ var Deinstall = {
 };
 
 var Search = {
-    createSearchMainPanel: function() {
+    createSearchMainPanel: function(submitCB) {
         return new Ext.form.FormPanel({
             // fullscreen: true,
             hidden: false,
@@ -657,7 +657,7 @@ var Search = {
                         name: 'submit',
                         id: 'searchSubmitButton',
                         flex: 1,
-                        handler: Ext.emtpyFn
+                        handler: submitCB
                     }]
                 }]
             }]
@@ -689,7 +689,11 @@ var Util = function() {
     */
     /* Public pointers to private functions */
     return {
-        logger: logger
+        logger: logger,
+        getItemState: getItemState,
+        getItemsSize: getItemsSize,
+        cacheItemLocally: cacheItemLocally,
+        searchVehicle: searchVehicle
     };
     
     function logger(txt, obj) {
@@ -709,4 +713,87 @@ var Util = function() {
         // }
     };
     
+    /*
+    This method reads the current persistence state and the action performed on the item
+        and returns the resulting persistence state
+    current_state refers to the current persistence state of the item, which can be
+        'select', 'insert', 'update' or 'delete'
+    action refers to the 'new', 'edit', 'delete' or 'toggle' action performed on the item
+    */
+    function getItemState(current_state, action) {
+        var resultant_state = action;
+        if(current_state == 'insert') {
+            resultant_state = 'insert';
+            //if(action == 'delete') is managed outside this function
+        } else if(current_state == 'update') {
+            if(action != 'delete')
+                resultant_state = 'update';
+        } else if(current_state == 'delete') {
+            resultant_state = current_state;
+        }
+        
+        return resultant_state;
+    };
+    
+    function getItemsSize() {
+        Util.logger('Util.getItemsSize called');
+        var size = 0;
+        // var user_id = Api.getLocalStorageProp('user_id');
+        var key = 'vehicle',
+            size = 0;
+        for(var i = 0, len = localStorage.length; i < len; i++) {
+            if(localStorage.key(i).indexOf(key) != -1)
+                size++;
+        }
+
+        Util.logger('size is: ', size);
+        return size;
+    };
+    
+    function cacheItemLocally(entity, item, index) {
+        /*
+        var user_id = Api.getLocalStorageProp('user_id');
+        if(Ext.isEmpty(user_id)) {
+            Util.logger('[WARN]:: Util.cacheItemLocally() => user_id is invalid: ', user_id);
+            return;
+        }
+        */
+        if(Ext.isEmpty(item)) {
+            Util.logger('[INFO]:: In cacheItemLocally() => item is empty!');
+            return;
+        }
+        
+        //To remove a residual account_key param attached to the item in JSON
+        Util.logger('newItem before saving:::', JSON.stringify(item));
+
+        localStorage[entity+'['+index+']'] = Ext.encode(item);
+        Util.logger('Item saved locally!');
+        
+    };
+    
+    function searchVehicle(vehicleRegVal, imeiVal) {
+        if(!Ext.isEmpty(vehicleRegVal)) {
+            for (var i = 0, losLength = localStorage.length; i < losLength; i++) {
+                itemKey = localStorage.key(i);
+                if(itemKey.indexOf('vehicle') != -1) {
+                    value = Ext.decode(localStorage[itemKey]);
+                    if(value.registration == vehicleRegVal)
+                        return value;
+                    else if(imeiVal && value.imeiVal == vehicleRegVal)
+                        return value;
+                }
+            }
+        } else {
+            for (var i = 0, losLength = localStorage.length; i < losLength; i++) {
+                itemKey = localStorage.key(i);
+                if(itemKey.indexOf('vehicle') != -1) {
+                    value = Ext.decode(localStorage[itemKey]);
+                    if(value.imei == imeiVal)
+                        return value;
+                }
+            }            
+        }
+        
+        return null;
+    };
 }();
