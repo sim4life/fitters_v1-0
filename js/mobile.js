@@ -1,4 +1,5 @@
 // var apiDomain = Environment.baseApiUrl();
+var apiDomain = "http://obsoap.risk-technology.co.uk/";
 
 var Init = {
     initState: function() {
@@ -219,8 +220,23 @@ var User = {
         Api.setLocalStorageProp('login', email);
         Api.setLocalStorageProp('user_id', '1');
         
-        succCallback();
+        // succCallback();
         
+        Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
+		var params = new SOAPClientParameters();
+		params.add("username", "onboardwebservice");
+		params.add("password", "password");
+		SOAPClient.invoke(apiDomain, "Login", params, true, function(response, r2, r3) {
+            Util.logger('SOAP response is:', response);
+            Util.logger('SOAP response2 is:', r2);
+            Util.logger('SOAP response3 is:', r3);
+            
+            Ext.getBody().unmask();
+            
+            succCallback();
+			
+		});
+
         /*
         Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
         Ext.Ajax.request({

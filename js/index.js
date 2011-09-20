@@ -591,7 +591,6 @@ Ext.setup({
                         }
                     });
                 }
-        
             }
         };
         
@@ -623,9 +622,7 @@ Ext.setup({
                     showVehiclePanel.show();
                     
                 }
-
             }
-            
         };
         
         //__VEHICLES action handlers start============================================================
@@ -702,16 +699,16 @@ Ext.setup({
         
         registerLoginHandler();
         
-        // if(Ext.isEmpty(Api.getLocalStorageProp('account_key'))) {
-/*            
+        if(Ext.isEmpty(Api.getLocalStorageProp('account_key'))) {
+            
             form = new Ext.form.FormPanel(loginFormBase);
             form.show();
-*/
-            renderAllWithDataCB();
-/*
+
+            // renderAllWithDataCB();
+
         } else {
             renderAllWithDataCB();
         }
-*/
+
 	}
 });
