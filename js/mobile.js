@@ -1,5 +1,5 @@
 // var apiDomain = Environment.baseApiUrl();
-var apiDomain = "http://obsoap.risk-technology.co.uk/";
+var apiDomain = "http://obsoap.risk-technology.co.uk";
 
 var Init = {
     initState: function() {
@@ -135,10 +135,11 @@ var User = {
             fullscreen: true,
             standardSubmit: false,
             cls: 'auth_panel',
+			id: 'login_form_panel',
             items: [{
                 xtype: 'fieldset',
                 defaults: {
-                    required: true, // KL - has no visual effect as we use a placeHolder for the label
+                    required: true, // has no visual effect as we use a placeHolder for the label
                     useClearIcon: true
                 },
                 items: [{
@@ -203,7 +204,7 @@ var User = {
                 }]
             }],
             listeners: {
-                // KL - this is to handle the "Go" button on the iPhone keyboard, bit hacky can't find another way to do it
+                // this is to handle the "Go" button on the iPhone keyboard, bit hacky can't find another way to do it
                 beforesubmit: function(formPanel, values, options) {
                     if(Ext.getCmp('loginButton').isHidden())
                         signupCB(formPanel, values);
@@ -216,26 +217,46 @@ var User = {
     
     login: function(email, password, failForm, succCallback, failCallBack) {
         var errMsg = "Device Offline or Server not responding!";
-
+		
+		var uname = "onboardwebservice",
+			pswd = "password";
+		
         Api.setLocalStorageProp('login', email);
         Api.setLocalStorageProp('user_id', '1');
         
         // succCallback();
         
         Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
+		SOAPClient.username = uname;
+		SOAPClient.password = pswd;
 		var params = new SOAPClientParameters();
-		params.add("username", "onboardwebservice");
-		params.add("password", "password");
-		SOAPClient.invoke(apiDomain, "Login", params, true, function(response, r2, r3) {
+		params.add("username", uname);
+		params.add("password", pswd);
+		var resp = SOAPClient.invoke(apiDomain, "Login", params, false, function(response, r2) {
             Util.logger('SOAP response is:', response);
             Util.logger('SOAP response2 is:', r2);
-            Util.logger('SOAP response3 is:', r3);
-            
-            Ext.getBody().unmask();
-            
-            succCallback();
 			
+			// SOAPClient.username = uname;
+			// SOAPClient.password = pswd;
+			if(SOAPClient.session_cookie)
+				Api.setLocalStorageProp('account_key', SOAPClient.session_cookie);
+			/*
+			params = new SOAPClientParameters();
+			params.add("VehicleRegistration", "sdfds3243");
+			SOAPClient.invoke(apiDomain, "GetVehicleInformation", params, true, function(r1, r22) {
+				Util.logger('SOAP response is:', r1);
+	            Util.logger('SOAP response2 is:', r22);
+	            
+            });
+
+*/
+			Ext.getBody().unmask();
+
+			succCallback();
+    		
 		});
+		
+		Util.logger('raw response is::', resp);
 
         /*
         Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
@@ -341,9 +362,9 @@ var Home = {
             // hidden: true,
             scroll: 'vertical',
             fullscreen: true,
-            id: 'home_screen_html',
+            id: 'home_screen_panel',
             html: [
-                '<div class="settings_page_text" style="padding-bottom: 60px">',
+                '<div class="home_page_text" style="padding-bottom: 60px">',
                 '</div>'
             ]
         });
@@ -355,18 +376,11 @@ var Install = {
         return {
             // fullscreen: true,
             hidden: false,
+			id: 'install1_form_panel',
             items: [{
                 xtype: 'fieldset',
-                items:[{
-                    xtype: 'textfield',
-                    name: 'install',
-                    width: 650,
-                    label: 'New Install - Step 1 of 3',
-                    disabled: true,
-                    id: 'install1_field'                    
-                }]
-            }, {
-                xtype: 'fieldset',
+                title: 'New Install - Step 1 of 3',
+                id: 'install1_field',
                 items: [{
                     xtype: 'textfield',
                     name: 'registration',
@@ -377,6 +391,16 @@ var Install = {
                     autoCapitalize : true,
                     id: 'enter_vehicle_reg_field'
                 }]
+/*
+                items:[{
+                    xtype: 'textfield',
+                    name: 'install',
+                    width: 650,
+                    label: 'New Install - Step 1 of 3',
+                    disabled: true,
+                    id: 'install1_field'                    
+                }]
+*/
             }, {
                 xtype: 'fieldset',
                 items: [{
@@ -406,19 +430,19 @@ var Install = {
                     hideOnMaskTap: true,
                     autoCapitalize : true,
                     id: 'vehicle_colour_field'
-                },{
-                    // xtype: 'fieldset',
-                    items: [{
-                        xtype: 'button',
-                        ui: 'Normal',
-                        text: 'Next',
-                        name: 'next',
-                        id: 'install1NextButton',
-                        flex: 1,
-                        handler: nextCB
-                    }]
                 }]
-            }]
+            }, {
+	            xtype: 'fieldset',
+	            items: [{
+	                xtype: 'button',
+	                ui: 'Normal',
+	                text: 'Next',
+	                name: 'next',
+	                id: 'install1NextButton',
+	                flex: 1,
+	                handler: nextCB
+	            }]
+			}]
         };
     },
     
@@ -426,9 +450,12 @@ var Install = {
         return {
             fullscreen: true,
             hidden: true,
+			id: 'install2_form_panel',
             items: [{
                 xtype: 'fieldset',
-                items:[{
+                title: 'New Install - Step 2 of 3',
+                id: 'install2_field',
+                /*items:[{
                     xtype: 'textfield',
                     name: 'install',
                     width: 650,
@@ -437,7 +464,7 @@ var Install = {
                     id: 'install2_field'
                 }]
             }, {
-                xtype: 'fieldset',
+                xtype: 'fieldset',*/
                 items: [{
                     xtype: 'textfield',
                     name: 'imei',
@@ -465,19 +492,19 @@ var Install = {
                     hideOnMaskTap: true,
                     autoCapitalize : true,
                     id: 'enter_2nd_ref_field'
-                }, {
-                    // xtype: 'fieldset',
-                    items: [{
-                        xtype: 'button',
-                        ui: 'Normal',
-                        text: 'Next',
-                        name: 'next',
-                        id: 'install2NextButton',
-                        flex: 1,
-                        handler: nextCB
-                    }]
                 }]
-            }]
+            }, 	{
+	            xtype: 'fieldset',
+	            items: [{
+	                xtype: 'button',
+	                ui: 'Normal',
+	                text: 'Next',
+	                name: 'next',
+	                id: 'install2NextButton',
+	                flex: 1,
+	                handler: nextCB
+	            }]
+			}]
         };
     },
     
@@ -485,9 +512,12 @@ var Install = {
         return {
             fullscreen: true,
             hidden: true,
+			id: 'install3_form_panel',
             items: [{
                 xtype: 'fieldset',
-                items:[{
+                title: 'New Install - Step 3 of 3',
+                id: 'install3_field',
+                /*items:[{
                     xtype: 'textfield',
                     name: 'install',
                     width: 650,
@@ -496,7 +526,7 @@ var Install = {
                     id: 'install3_field'
                 }]
             }, {
-                xtype: 'fieldset',
+                xtype: 'fieldset',*/
                 items: [{
                     xtype: 'checkboxfield',
                     name: 'extension',
@@ -553,19 +583,19 @@ var Install = {
                     hideOnMaskTap: true,
                     autoCapitalize : true,
                     id: 'notes_field'
-                }, {
-                    // xtype: 'fieldset',
-                    items: [{
-                        xtype: 'button',
-                        ui: 'Normal',
-                        text: 'Submit',
-                        name: 'submit',
-                        id: 'install3SubmitButton',
-                        flex: 1,
-                        handler: submitCB
-                    }]
                 }]
-            }]
+            }, {
+	            xtype: 'fieldset',
+	            items: [{
+	                xtype: 'button',
+	                ui: 'Normal',
+	                text: 'Submit',
+	                name: 'submit',
+	                id: 'install3SubmitButton',
+	                flex: 1,
+	                handler: submitCB
+	            }]
+			}]
         };
     }
     
@@ -576,9 +606,12 @@ var Deinstall = {
         return new Ext.form.FormPanel({
             // fullscreen: true,
             hidden: false,
+			id: 'deinstall_form_panel',
             items: [{
                 xtype: 'fieldset',
-                items:[{
+                title: 'De Install',
+                id: 'deinstall_field',
+                /*items:[{
                     xtype: 'textfield',
                     name: 'de_install',
                     label: 'De Install',
@@ -587,7 +620,7 @@ var Deinstall = {
                     id: 'deinstall_field'
                 }]
             }, {
-                xtype: 'fieldset',
+                xtype: 'fieldset',*/
                 items: [{
                     xtype: 'textfield',
                     name: 'vehicle_reg',
@@ -606,19 +639,19 @@ var Deinstall = {
                     hideOnMaskTap: true,
                     autoCapitalize : true,
                     id: 'imei_field'
-                },{
-                    // xtype: 'fieldset',
-                    items: [{
-                        xtype: 'button',
-                        ui: 'Normal',
-                        text: 'Submit',
-                        name: 'submit',
-                        id: 'deinstallSubmitButton',
-                        flex: 1,
-                        handler: submitCB
-                    }]
                 }]
-            }]
+            }, {
+	            xtype: 'fieldset',
+	            items: [{
+	                xtype: 'button',
+	                ui: 'Normal',
+	                text: 'Submit',
+	                name: 'submit',
+	                id: 'deinstallSubmitButton',
+	                flex: 1,
+	                handler: submitCB
+	            }]
+	        }]
         });
     }
 };
@@ -628,24 +661,12 @@ var Search = {
         return new Ext.form.FormPanel({
             // fullscreen: true,
             hidden: false,
-            items: [/*{
+			id: 'search_form_panel',
+            items: [{
                 xtype: 'fieldset',
-                defaults: {
-                    labelWidth: ''
-                }, */
-                /*{   
-                    cls: 'external_links',
-                    html: [
-                        '<div class="settings_page_text"">',
-                        '<h1>onboard</h1>',
-                        '<p>in-car cleverness</p>',
-                        '<p><strong>New Install</strong></p>',
-                        '</div>'
-                    ]
-                }*/
-            {
-                xtype: 'fieldset',
-                items:[{
+                title: 'New Install',
+                id: 'new_install_field',
+                /*items:[{
                     xtype: 'textfield',
                     name: 'new_install',
                     label: 'New Install',
@@ -654,7 +675,7 @@ var Search = {
                     id: 'new_install_field'
                 }]
             }, {
-                xtype: 'fieldset',
+                xtype: 'fieldset',*/
                 items: [{
                     xtype: 'textfield',
                     name: 'title',
@@ -664,19 +685,19 @@ var Search = {
                     hideOnMaskTap: true,
                     autoCapitalize : true,
                     id: 'search_field'
-                }, {
-                    // xtype: 'fieldset',
-                    items: [{
-                        xtype: 'button',
-                        ui: 'Normal',
-                        text: 'Submit',
-                        name: 'submit',
-                        id: 'searchSubmitButton',
-                        flex: 1,
-                        handler: submitCB
-                    }]
                 }]
-            }]
+            }, {
+	            xtype: 'fieldset',
+	            items: [{
+	                xtype: 'button',
+	                ui: 'Normal',
+	                text: 'Submit',
+	                name: 'submit',
+	                id: 'searchSubmitButton',
+	                flex: 1,
+	                handler: submitCB
+	            }]
+	        }]
         });
     }
 };
@@ -687,9 +708,9 @@ var Help = {
             // hidden: true,
             scroll: 'vertical',
             fullscreen: true,
-            id: 'help_html',
+            id: 'help_panel',
             html: [
-                '<div class="settings_page_text" style="padding-bottom: 60px">',
+                '<div class="help_page_text" style="padding-bottom: 60px">',
                     '<p><strong>Q: Lorem ipsum dolor sit amet, consectetur adipiscing elit adipiscing elit</strong></p>',
                     '<p>A: Nam rhoncus euismod blandit. Fusce imperdie</p>',
                 '</div>'

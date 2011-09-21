@@ -50,7 +50,7 @@ background-image: linear-gradient(top, #fff 0%, #fff 50%, #fff 51%, #fff 100%);
 background: #666 url(../rsc/bg-body.png) repeat;
 }
 
-.settings_page_text {
+.home_page_text {
     color: white;
     text-align: center;
 }
@@ -61,7 +61,7 @@ background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #5A5A5
 
 .x-toolbar-title { font-size: 1em;}
 
-.settings_page_text {
+.home_page_text {
     background: url(../rsc/welcome-dummy.png) no-repeat 7px 20px;
     height: 320px;
 }

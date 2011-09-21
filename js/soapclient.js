@@ -141,6 +141,7 @@ function SOAPClient() {}
 
 SOAPClient.username = null;
 SOAPClient.password = null;
+SOAPClient.session_cookie = null;
 
 SOAPClient.invoke = function(url, method, parameters, async, callback)
 {
@@ -188,14 +189,21 @@ SOAPClient._sendSoapRequest = function(url, method, parameters, async, callback,
     // build SOAP request
     var sr =
     "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-    "<soap:Envelope " +
+/*    "<soap:Envelope " +
     "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
     "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +
     "xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
     "<soap:Body>" +
+*/
+	"<soap12:Envelope " +
+    "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
+    "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +
+    "xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">" +
+    "<soap12:Body>" +
     "<" + method + " xmlns=\"" + ns + "\">" +
     parameters.toXml() +
-    "</" + method + "></soap:Body></soap:Envelope>";
+    // "</" + method + "></soap:Body></soap:Envelope>";
+    "</" + method + "></soap12:Body></soap12:Envelope>";
     // send request
     var xmlHttp = SOAPClient._getXmlHttp();
     if (SOAPClient.userName && SOAPClient.password){
@@ -205,9 +213,21 @@ SOAPClient._sendSoapRequest = function(url, method, parameters, async, callback,
     }
     else
         xmlHttp.open("POST", url, async);
+
+	var host = url.substring(7);
     var soapaction = ((ns.lastIndexOf("/") != ns.length - 1) ? ns + "/" : ns) + method;
-    xmlHttp.setRequestHeader("SOAPAction", soapaction);
-    xmlHttp.setRequestHeader("Content-Type", "text/xml; charset=utf-8");
+    // xmlHttp.setRequestHeader("SOAPAction", soapaction);
+    xmlHttp.setRequestHeader("Host", host);
+    // xmlHttp.setRequestHeader("Content-Type", "text/xml; charset=utf-8");
+    xmlHttp.setRequestHeader("Content-Type", "application/soap+xml; charset=utf-8");
+	if(SOAPClient.session_cookie) {
+		console.log("cookie is::", SOAPClient.session_cookie);
+	    xmlHttp.setRequestHeader("Cookie", SOAPClient.session_cookie);
+	} else
+		console.log("No Cookie::");
+		
+
+console.log("\n\nsoapaction is::", soapaction);
 console.log("\n\nxmlHttp is::", xmlHttp);
 
     if(async)
@@ -220,6 +240,11 @@ console.log("\n\nxmlHttp is::", xmlHttp);
     }
 console.log('\n\nsr is::', sr);
     xmlHttp.send(sr);
+	console.log("\n\nAGAIN xmlHttp is::", xmlHttp.getResponseHeader("Set-Cookie"));
+// console.log("\n\nxmlHttp response headers are::", xmlHttp.getAllResponseHeaders());
+	if(xmlHttp && xmlHttp.getResponseHeader("Set-Cookie"))
+		SOAPClient.session_cookie = xmlHttp.getResponseHeader("Set-Cookie");
+
     if (!async)
         return SOAPClient._onSendSoapRequest(method, async, callback, wsdl, xmlHttp);
 }
@@ -244,6 +269,16 @@ SOAPClient._onSendSoapRequest = function(method, async, callback, wsdl, req)
     }
     else
         o = SOAPClient._soapresult2object(nd[0], wsdl);
+console.log('raw request is::', req);
+console.log('cookie object is::', document.cookie);
+/*
+for(var propertyName in document) {
+  if(document.hasOwnProperty(propertyName)) {
+    console.log('click document prop is: '+propertyName);
+    console.log('click document prop value is: '+document[propertyName]);
+  }
+}
+*/
     if(callback)
         callback(o, req.responseXML);
     if(!async)
