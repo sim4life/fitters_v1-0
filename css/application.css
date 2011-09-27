@@ -74,3 +74,30 @@ background: #666 url(../rsc/bg-body.png) repeat;
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #fff), color-stop(50%, #fff), color-stop(51%, #fff), color-stop(100%, #fff));
     background-image: linear-gradient(top, #fff 0%, #fff 50%, #fff 51%, #fff 100%);
 }
+
+.x-tab img.home {-webkit-mask-image:url('../rsc/home.png');}
+
+.x-tab img.install {-webkit-mask-image:url('../rsc/icn-install.png');}
+
+.x-tab img.deinstall {-webkit-mask-image:url('../rsc/icn-deinstall.png');}
+
+.x-tab img.search {-webkit-mask-image:url('../rsc/icn-search.png');}
+
+/*
+#install1_field .x-form-label, #install1_field  .x-form-field-container input{
+    background: none;
+    border:none;
+}
+*/
+
+#deinstallSubmitButton {
+    display: inline-block;
+    color: #fff;
+
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#C1FA3B), color-stop(0.02, #8FCA05), to(#5A7F03));
+    -webkit-border-radius: .2em;
+    -webkit-box-shadow: #7EB105 0 0 .03em 0.03em inset, rgba(0, 0, 0, 0.4) 0px 0.1em .2em;
+    text-shadow: rgba(0,0,0,.2) 0 .05em .02em;
+    border: .08em solid #374D02;
+    padding: .2em .6em;
+}

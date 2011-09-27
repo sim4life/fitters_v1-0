@@ -144,7 +144,7 @@ Ext.setup({
                 title: 'Home',
                 id: 'tab'+panelIndex.home+1,
                 cls: 'card' + (panelIndex.home+1) + ' home_panel',
-                iconCls: 'info',
+                iconCls: 'home',
                 // layout: 'card',
                 items: [ homeMainPanel ],
                 dockedItems: [ homeNavBar ]
@@ -252,7 +252,7 @@ Ext.setup({
                 title: 'Install',
                 id: 'tab'+panelIndex.install+1,
                 cls: 'card' + (panelIndex.install+1) + ' install_panel',
-                iconCls: 'info',
+                iconCls: 'install',
                 // layout: 'card',
                 items: [ installStep1Panel, installStep2Panel, installStep3Panel, showVehiclePanel ],
                 dockedItems: [ installNavBar ]
@@ -270,7 +270,7 @@ Ext.setup({
                 title: 'Deinstall',
                 id: 'tab'+panelIndex.deinstall+1,
                 cls: 'card' + (panelIndex.deinstall+1) + ' deinstall_panel',
-                iconCls: 'info',
+                iconCls: 'deinstall',
                 // layout: 'card',
                 items: [ deinstallMainPanel, showVehiclePanel ],
                 dockedItems: [ deinstallNavBar ]
@@ -288,7 +288,7 @@ Ext.setup({
                 title: 'Search',
                 id: 'tab'+panelIndex.search+1,
                 cls: 'card' + (panelIndex.search+1) + ' search_panel',
-                iconCls: 'info',
+                iconCls: 'search',
                 // layout: 'card',
                 items: [ searchMainPanel, showVehiclePanel ],
                 dockedItems: [ searchNavBar ]

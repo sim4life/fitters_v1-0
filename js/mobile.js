@@ -337,17 +337,20 @@ var Home = {
 var Install = {
     createInstallStep1Panel: function(nextCB) {
         return {
+        
+        
             // fullscreen: true,
             hidden: false,
             items: [{
-                xtype: 'fieldset',
+            
+            
                 items:[{
-                    xtype: 'textfield',
-                    name: 'install',
-                    width: 650,
-                    label: 'New Install - Step 1 of 3',
-                    disabled: true,
-                    id: 'install1_field'                    
+                    xtype: 'fieldset',
+              /*       name: 'install', */
+                  /*   width: 650, */
+                    title: 'New Install - Step 1 of 3',
+                   /*  disabled: true, */
+                   /*  id: 'install1_field'    */                 
                 }]
             }, {
                 xtype: 'fieldset',
