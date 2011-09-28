@@ -218,7 +218,7 @@ Ext.setup({
             installStep3Panel = new Ext.form.FormPanel(installStep3FormBase);
 
             var vehicleTpl = new Ext.XTemplate(
-                '<div class="settings_page_text" style="padding-bottom: 60px">',
+                '<div class="vehicle_page_text" style="padding-bottom: 60px">',
                     '<p>registration: {registration}</p>',
                     '<p>make: {make}</p>',
                     '<p>model: {model}</p>',
@@ -234,7 +234,7 @@ Ext.setup({
                 // scroll: 'vertical',
                 fullscreen: true,
                 hidden: true,
-                id: 'show_screen_html',
+                id: 'show_vehicle_panel',
                 tpl: vehicleTpl/*
                 html: [
                     '<div class="settings_page_text" style="padding-bottom: 60px">',
@@ -341,13 +341,11 @@ Ext.setup({
                             this.up("tabpanel").componentLayout.childrenChanged = true;
                             this.up("tabpanel").doComponentLayout();
                         },
-                        
                     }
                 },
                 fullscreen: true,
                 ui: 'light',
                 cardSwitchAnimation: null,
-
                 defaults: {
                     scroll: 'vertical'
                 },
@@ -357,7 +355,7 @@ Ext.setup({
                         //change: function(tabBar, tab, card) may also be used
                         Util.logger("newCard is::", newCard);
                         
-                        var newCardTitle = (newCard.title == 'Journal') ? 'journals' : newCard.title.toLowerCase();
+                        // var newCardTitle = (newCard.title == 'Journal') ? 'journals' : newCard.title.toLowerCase();
                         Util.logger('cardswitch! index is: ', index);
                         /*
                         if(index == panelIndex.home)
@@ -591,7 +589,6 @@ Ext.setup({
                         }
                     });
                 }
-        
             }
         };
         
@@ -623,9 +620,7 @@ Ext.setup({
                     showVehiclePanel.show();
                     
                 }
-
             }
-            
         };
         
         //__VEHICLES action handlers start============================================================
@@ -702,16 +697,16 @@ Ext.setup({
         
         registerLoginHandler();
         
-        // if(Ext.isEmpty(Api.getLocalStorageProp('account_key'))) {
-/*            
+        if(Ext.isEmpty(Api.getLocalStorageProp('account_key'))) {
+            
             form = new Ext.form.FormPanel(loginFormBase);
             form.show();
-*/
-            renderAllWithDataCB();
-/*
+
+            // renderAllWithDataCB();
+
         } else {
             renderAllWithDataCB();
         }
-*/
+
 	}
 });

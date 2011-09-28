@@ -48,7 +48,7 @@
 background: #666 url(../rsc/bg-body.png) repeat;
 }
 
-.settings_page_text {
+.home_page_text {
     color: white;
     text-align: center;
 }
@@ -60,7 +60,7 @@ background: #666 url(../rsc/bg-body.png) repeat;
 
 .x-toolbar-title { font-size: 1em;}
 
-.settings_page_text {
+.home_page_text {
     background: url(../rsc/welcome-dummy.png) no-repeat 7px 20px;
     height: 320px;
 }
