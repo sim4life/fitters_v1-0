@@ -453,6 +453,13 @@ Ext.setup({
                     Util.logger('After updateRecord vehicle1::', installStep1FormBase.vehicle1);
                     
                 }
+
+	            // BottomTabsInline.setActiveItem(installPanel);
+	            installStep1Panel.hide();
+	            installStep3Panel.hide();
+	            installStep2Panel.show();
+	            installBackBtn.show();
+
             } else {
                 Ext.each(errors.items, function(rec, i) {
                     message += '<p class="loginErrorMsg">'+rec.message+'</p>';
@@ -460,21 +467,15 @@ Ext.setup({
                 Util.logger('ERROR is: ', message);
                 Ext.Msg.alert("Oops!", message, Ext.emptyFn);
             }
-            
-            // BottomTabsInline.setActiveItem(installPanel);
-            installStep1Panel.hide();
-            installStep3Panel.hide();
-            installStep2Panel.show();
-            installBackBtn.show();
-            
+                        
         };
         
         onNextStep2InstallBtnTapCB = function() {
             Util.logger('In onNextStep2InstallBtnTapCB()');
 
-            var current_state = 'select';
-            var model = Ext.ModelMgr.create(installStep2Panel.getValues(), 'Vehicle2');
-            var message = "", errors = model.validate();
+            var current_state = 'select',
+             	model = Ext.ModelMgr.create(installStep2Panel.getValues(), 'Vehicle2'),
+            	message = "", errors = model.validate(), newVehicle;
             
             var vehicleRegField = Ext.get('enter_imei_field');
             vehicleRegField.down('input').dom.focus();
@@ -491,8 +492,18 @@ Ext.setup({
                     installStep2Panel.updateRecord(installStep2FormBase.vehicle2, true);
         
                     Util.logger('After updateRecord vehicle2::', installStep2FormBase.vehicle2);
+
+                    newVehicle = copyToVehicleObject(installStep1FormBase.vehicle1, installStep2FormBase.vehicle2);
+                    assignVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add');
                     
                 }
+
+	            // BottomTabsInline.setActiveItem(installPanel);
+	            installStep1Panel.hide();
+	            installStep2Panel.hide();
+	            installStep3Panel.show();
+	            installBackBtn.show();
+
             } else {
                 Ext.each(errors.items, function(rec, i) {
                     message += '<p class="loginErrorMsg">'+rec.message+'</p>';
@@ -501,21 +512,14 @@ Ext.setup({
                 Ext.Msg.alert("Oops!", message, Ext.emptyFn);
             }
             
-            // BottomTabsInline.setActiveItem(installPanel);
-            installStep1Panel.hide();
-            installStep2Panel.hide();
-            installStep3Panel.show();
-            installBackBtn.show();
-            
         };
         
         onSubmitStep3InstallBtnTapCB = function() {
             Util.logger('In onSubmitStep3InstallBtnTapCB()');
 
-            var current_state = 'select';
-            var model = Ext.ModelMgr.create(installStep3Panel.getValues(), 'Vehicle3');
-            var message = "", errors = model.validate();
-            var newVehicle;
+            var current_state = 'select',
+            	model = Ext.ModelMgr.create(installStep3Panel.getValues(), 'Vehicle3'),
+            	message = "", errors = model.validate(), newVehicle;
             
             var vehicleRegField = Ext.get('install_comp_field');
             vehicleRegField.down('input').dom.focus();
@@ -650,14 +654,16 @@ Ext.setup({
             vehicleObj.imei = vehicleModel2.get('imei');
             vehicleObj.mileage = vehicleModel2.get('mileage');
             vehicleObj.second_ref = vehicleModel2.get('second_ref');
-            vehicleObj.extension = vehicleModel3.get('extension');
-            vehicleObj.telematics = vehicleModel3.get('telematics');
-            vehicleObj.diagnostic = vehicleModel3.get('diagnostic');
-            vehicleObj.install_completion = vehicleModel3.get('install_completion');
-            vehicleObj.installer_name = vehicleModel3.get('installer_name');
-            vehicleObj.rep_name = vehicleModel3.get('rep_name');
-            vehicleObj.notes = vehicleModel3.get('notes');
-
+			if(!Ext.isEmpty(vehicleModel3)) {
+				vehicleObj.extension = vehicleModel3.get('extension');
+	            vehicleObj.telematics = vehicleModel3.get('telematics');
+	            vehicleObj.diagnostic = vehicleModel3.get('diagnostic');
+	            vehicleObj.install_completion = vehicleModel3.get('install_completion');
+	            vehicleObj.installer_name = vehicleModel3.get('installer_name');
+	            vehicleObj.rep_name = vehicleModel3.get('rep_name');
+	            vehicleObj.notes = vehicleModel3.get('notes');	
+			}
+            
             vehicleObj.vehicle_id = vehicleModel1.get('vehicle_id');
             vehicleObj.cl_state = vehicleModel1.get('cl_state');
             // vehicleObj.client_uid = todoModel.get('client_uid');
@@ -675,6 +681,23 @@ Ext.setup({
             Util.logger('vehicleParam before saving:::', JSON.stringify(vehicleParam));
 
             // Util.remoteSyncItem(vehicleParam, action/*, callBack, syncCallBack, failCallBack*/);
+
+            cacheItemLocally(vehicleParam, index);
+            // callBack();
+    //        }
+        };
+
+        assignVehicle = function(vehicleParam, index, curr_state, action/*, callBack, syncCallBack, failCallBack*/) {
+            Util.logger('In assignVehicle()');
+
+            vehicleParam.status = 'installed';
+            vehicleParam.updated_at = Api.formatToUTCDate(new Date());
+            vehicleParam.vehicle_id = index+1;
+            vehicleParam.cl_state = Util.getItemState(curr_state, action);
+
+            Util.logger('vehicleParam before saving:::', JSON.stringify(vehicleParam));
+
+            Util.assignVehicleRemotely(vehicleParam, action/*, callBack, syncCallBack, failCallBack*/);
 
             cacheItemLocally(vehicleParam, index);
             // callBack();

@@ -154,15 +154,14 @@ var User = {
                     name: 'password',
                     placeHolder: 'Password',
                     id: 'loginPasswordField'
-                }, {
+                }/*, {
                     xtype: 'passwordfield',
                     name: 'password2',
                     placeHolder: 'Re-type Password',
                     hidden: true,
                     id: 'loginPasswordField2'
-                }]
-            }, 
-            {
+                }*/]
+            }, {
                 xtype: 'fieldset',
                 items: [{
                     xtype: 'button',
@@ -170,7 +169,7 @@ var User = {
                     ui: 'action',
                     text: 'Login',
                     handler: loginCB
-                }, {
+                }/*, {
                     xtype: 'button',
                     id: 'newuserButton',
                     text: 'New user? Sign up here',
@@ -201,7 +200,7 @@ var User = {
                         Ext.getCmp('loginButton').show();
                         Ext.getCmp('newuserButton').show();
                     }
-                }]
+                }*/]
             }],
             listeners: {
                 // this is to handle the "Go" button on the iPhone keyboard, bit hacky can't find another way to do it
@@ -226,18 +225,20 @@ var User = {
         
         // succCallback();
         
-        Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
 		SOAPClient.username = uname;
 		SOAPClient.password = pswd;
 		var params = new SOAPClientParameters();
 		params.add("username", uname);
 		params.add("password", pswd);
-		var resp = SOAPClient.invoke(apiDomain, "Login", params, false, function(response, r2) {
-            Util.logger('SOAP response is:', response);
-            Util.logger('SOAP response2 is:', r2);
+        Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
+		var resp = SOAPClient.invoke(apiDomain, "Login", params, false, function(res1, res2) {
+            Util.logger('SOAP response is:', res1);
+            Util.logger('SOAP response2 is:', res2);
 			
 			// SOAPClient.username = uname;
 			// SOAPClient.password = pswd;
+			Util.logger('SOAP session_cookie is:', SOAPClient.session_cookie);
+			
 			if(SOAPClient.session_cookie)
 				Api.setLocalStorageProp('account_key', SOAPClient.session_cookie);
 			/*
@@ -290,11 +291,11 @@ var User = {
         });
         */
     },
-    
+    /*
     signup: function(email, password, failForm, succCallback, failCallBack) {
         var errMsg = "Device Offline or Server not responding!";
         var signup_key = '';
-        /*
+        
         Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
         Ext.Ajax.request({
             url: Api.urlFor('/apiv2/auth/signup_key'),
@@ -352,8 +353,8 @@ var User = {
                 failCallBack(failForm, "Login Failed!", errMsg);
             }
         });
-        */
-    }
+        
+    }*/
 };
 
 var Home = {
@@ -732,7 +733,8 @@ var Util = function() {
         getItemState: getItemState,
         getItemsSize: getItemsSize,
         cacheItemLocally: cacheItemLocally,
-        searchVehicle: searchVehicle
+        searchVehicle: searchVehicle,
+		assignVehicleRemotely: assignVehicleRemotely
     };
     
     function logger(txt, obj) {
@@ -809,6 +811,50 @@ var Util = function() {
         Util.logger('Item saved locally!');
         
     };
+
+	function assignVehicleRemotely(vehicle, action) {
+	    Util.logger('In assignVehicleRemotely()');
+        
+		// SOAPClient.username = uname;
+		// SOAPClient.password = pswd;
+		var account_key = Api.getLocalStorageProp('account_key');
+		Util.logger('account_key is:', account_key);
+        
+		if(!Ext.isEmpty(account_key)) {
+			
+			SOAPClient.session_cookie = account_key;
+           	Util.logger('registration is:', vehicle.registration);
+           	Util.logger('imei is:', vehicle.imei);
+			
+			var params = new SOAPClientParameters();
+			params.add("vehicleregistration", vehicle.registration);
+			params.add("imei", vehicle.imei);
+			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
+			var resp = SOAPClient.invoke(apiDomain, "AssignIMEIToRegistration", params, true, function(res1, res2) {
+	           Util.logger('SOAP response is:', res1);
+	           Util.logger('SOAP response2 is:', res2);
+
+				// SOAPClient.username = uname;
+				// SOAPClient.password = pswd;
+				// if(SOAPClient.session_cookie)
+					// Api.setLocalStorageProp('account_key', SOAPClient.session_cookie);
+				/*
+				params = new SOAPClientParameters();
+				params.add("VehicleRegistration", "sdfds3243");
+				SOAPClient.invoke(apiDomain, "GetVehicleInformation", params, true, function(r1, r22) {
+					Util.logger('SOAP response is:', r1);
+		            Util.logger('SOAP response2 is:', r22);
+
+		           });
+
+				*/
+				Ext.getBody().unmask();
+
+				// succCallback();
+
+			});
+		}
+	};
     
     function searchVehicle(vehicleRegVal, imeiVal) {
         if(!Ext.isEmpty(vehicleRegVal)) {
