@@ -102,4 +102,28 @@ background: #666 url(../rsc/bg-body.png) repeat;
     padding: .2em .6em;
 }
 
-/* hello */
+.x-form-fieldset-title {
+    text-shadow: #000 0 -1px -1px;
+    color: #fff;
+    text-align: center;
+}
+
+#help_panel {
+    background: #EEE;
+    padding: 1em;
+}
+
+#help_panel p {
+    padding: 0.5em 0;
+}
+
+
+
+#install_comp_field {
+    font-size: .6em;
+    
+}
+
+#install_comp_field input {
+    padding-top: 2em;
+}
