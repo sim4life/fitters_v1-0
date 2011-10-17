@@ -90,6 +90,7 @@ background: #666 url(../rsc/bg-body.png) repeat;
 }
 */
 
+/*
 #deinstallSubmitButton {
     display: inline-block;
     color: #fff;
@@ -101,6 +102,7 @@ background: #666 url(../rsc/bg-body.png) repeat;
     border: .08em solid #374D02;
     padding: .2em .6em;
 }
+*/
 
 .x-form-fieldset-title {
     text-shadow: #000 0 -1px -1px;
@@ -108,7 +110,7 @@ background: #666 url(../rsc/bg-body.png) repeat;
     text-align: center;
 }
 
-#help_panel {
+#help_panel, #show_vehicle_panel {
     background: #EEE;
     padding: 1em;
 }
@@ -127,3 +129,43 @@ background: #666 url(../rsc/bg-body.png) repeat;
 #install_comp_field input {
     padding-top: 2em;
 }
+#install1NextButton, #install3SubmitButton, #install2NextButton, #deinstallSubmitButton, .x-toolbar .x-button.x-button-action , #searchSubmitButton {
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ff0084), color-stop(0%,#ff4ca5), color-stop(52%,#ff49a4), color-stop(54%,#ff0084), color-stop(100%,#ff0084)); /* Chrome,Safari4+ */
+border:none;
+
+
+}
+
+
+
+
+
+.x-form-fieldset .x-panel-body {
+    border: none;
+}
+
+.x-form-fieldset .x-panel-body {
+    -webkit-box-shadow: none;
+}
+#install1NextButton.x-button-pressed, #install2NextButton.x-button-pressed, #install3SubmitButton.x-button-pressed, #deinstallSubmitButton.x-button-pressed, .x-toolbar .x-button.x-button-action.x-button-pressed, #searchSubmitButton.x-button-pressed {
+background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004a), color-stop(49%,#e80078), color-stop(98%,#90004a)); /* Chrome,Safari4+ */
+
+}
+
+.x-field .x-input-radio:checked::after, .x-field .x-input-checkbox:checked::after {
+    background-color: #E10D7B;
+}
+
+.x-form-fieldset, .x-form-fieldset-title {
+    margin-top: 0;
+    margin-bottom: 1em;
+}
+
+#install3SubmitButton {
+    margin-bottom: 1em;
+}
+
+.x-button.install_back.x-button-normal{
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#aebcbf), color-stop(50%,#6e7774), color-stop(51%,#0a0e0a), color-stop(100%,#0a0809)); /* Chrome,Safari4+ */
+}
+

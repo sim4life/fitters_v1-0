@@ -533,19 +533,19 @@ var Install = {
                 items: [{
                     xtype: 'checkboxfield',
                     name: 'extension',
-                    width: 620,
+                   
                     label: 'Extension Lead Fitted to Unit & Vehicle OBD Port:',
                     id: 'extension_lead_field'
                 }, {
                     xtype: 'checkboxfield',
                     name: 'telematics',
-                    width: 620,
+                   
                     label: 'Telematics Unit Located & Secured in Vehicle:',
                     id: 'telematics_unit_field'
                 }, {
                     xtype: 'checkboxfield',
                     name: 'diagnostic',
-                    width: 620,
+                 
                     label: 'Diagnostic Flashing Light Sequence Confirmed:',
                     id: 'diagnostic_flash_field'
                 }]
