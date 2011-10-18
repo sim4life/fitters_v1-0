@@ -218,7 +218,7 @@ Ext.setup({
             installStep3Panel = new Ext.form.FormPanel(installStep3FormBase);
 
             var vehicleTpl = new Ext.XTemplate(
-                '<div class="vehicle_page_text" style="padding-bottom: 60px">',
+                '<div class="vehicle_page_text">',
                     '<p>registration: {registration}</p>',
                     '<p>make: {make}</p>',
                     '<p>model: {model}</p>',

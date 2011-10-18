@@ -110,10 +110,16 @@ background: #666 url(../rsc/bg-body.png) repeat;
     text-align: center;
 }
 
-#help_panel, #show_vehicle_panel {
-    background: #EEE;
+#help_panel {
+/*     background: #EEE; */
     padding: 1em;
 }
+
+#show_vehicle_panel {
+/*     background: #EEE; */
+    padding: 1em;
+}
+
 
 #help_panel p {
     padding: 0.5em 0;
@@ -167,5 +173,14 @@ background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004
 
 .x-button.install_back.x-button-normal{
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#aebcbf), color-stop(50%,#6e7774), color-stop(51%,#0a0e0a), color-stop(100%,#0a0809)); /* Chrome,Safari4+ */
+}
+
+.vehicle_page_text, .help_page_text {
+    padding: .5em;
+    background-color: #ccc;
+    border-radius:10px; 
+    border: 1px solid #fff;
+    margin-bottom: 1em;
+    color: #494949;
 }
 

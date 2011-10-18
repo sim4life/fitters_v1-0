@@ -713,7 +713,7 @@ var Help = {
             fullscreen: true,
             id: 'help_panel',
             html: [
-                '<div class="help_page_text" style="padding-bottom: 60px">',
+                '<div class="help_page_text">',
                     '<p><strong>Q: Lorem ipsum dolor sit amet, consectetur adipiscing elit adipiscing elit</strong></p>',
                     '<p>A: Nam rhoncus euismod blandit. Fusce imperdie</p>',
                 '</div>'
