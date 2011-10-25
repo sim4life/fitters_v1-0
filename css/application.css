@@ -184,3 +184,17 @@ background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004
     color: #494949;
 }
 
+
+
+#install1_form_panel .x-panel-body {
+    background: url('../rsc/bg-forms.png') repeat;
+    border-radius: 15px;
+    margin: 15px 0px 15px 15px;
+    padding-left: 0px;
+    padding-bottom: 1px;
+
+}
+
+.install_panel {
+     background: url('../rsc/logo-form.png') no-repeat top left;
+}
