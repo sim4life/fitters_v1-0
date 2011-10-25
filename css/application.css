@@ -186,7 +186,7 @@ background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004
 
 
 
-#install1_form_panel .x-panel-body {
+#install1_form_panel .x-panel-body, #install2_form_panel .x-panel-body, #deinstall_form_panel .x-panel-body, #search_form_panel .x-panel-body, #install3_form_panel .x-panel-body {
     background: url('../rsc/bg-forms.png') repeat;
     border-radius: 15px;
     margin: 15px 0px 15px 15px;
@@ -195,6 +195,7 @@ background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004
 
 }
 
-.install_panel {
-     background: url('../rsc/logo-form.png') no-repeat top left;
+
+.x-msgbox-body {
+    padding-top: 0;
 }
