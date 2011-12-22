@@ -734,6 +734,7 @@ var Util = function() {
         getItemsSize: getItemsSize,
         cacheItemLocally: cacheItemLocally,
         searchVehicle: searchVehicle,
+		findVehicleRemotely: findVehicleRemotely,
 		assignVehicleRemotely: assignVehicleRemotely
     };
     
@@ -812,6 +813,42 @@ var Util = function() {
         
     };
 
+	function findVehicleRemotely(vehicle, action) {
+	    Util.logger('In findVehicleRemotely()');
+        
+		// SOAPClient.username = uname;
+		// SOAPClient.password = pswd;
+		var account_key = Api.getLocalStorageProp('account_key');
+		Util.logger('account_key is:', account_key);
+        
+		if(!Ext.isEmpty(account_key)) {
+			
+			SOAPClient.session_cookie = account_key;
+           	Util.logger('registration is:', vehicle.registration);
+           	// Util.logger('imei is:', vehicle.imei);
+			
+			var params = new SOAPClientParameters();
+			params.add("VehicleRegistration", vehicle.registration);
+			// params.add("imei", vehicle.imei);
+			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
+			// GetInstallationLogByVehicleRegistration
+			var resp = SOAPClient.invoke(apiDomain, "GetVehicleInformation", params, true, function(res1, res2) {
+	           Util.logger('SOAP response is:', res1);
+	           Util.logger('SOAP response2 is:', res2);
+
+				// SOAPClient.username = uname;
+				// SOAPClient.password = pswd;
+				// if(SOAPClient.session_cookie)
+					// Api.setLocalStorageProp('account_key', SOAPClient.session_cookie);
+
+				Ext.getBody().unmask();
+
+				// succCallback();
+
+			});
+		}
+	};
+	
 	function assignVehicleRemotely(vehicle, action) {
 	    Util.logger('In assignVehicleRemotely()');
         

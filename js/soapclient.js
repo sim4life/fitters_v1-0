@@ -185,7 +185,9 @@ SOAPClient._onLoadWsdl = function(url, method, parameters, async, callback, req)
 SOAPClient._sendSoapRequest = function(url, method, parameters, async, callback, wsdl)
 {
     // get namespace
-    var ns = (typeof wsdl.documentElement.attributes["targetNamespace"] == "undefined") ? wsdl.documentElement.attributes.getNamedItem("targetNamespace").nodeValue : wsdl.documentElement.attributes["targetNamespace"].value;
+    var ns = (typeof wsdl.documentElement.attributes["targetNamespace"] == "undefined") ? 
+									wsdl.documentElement.attributes.getNamedItem("targetNamespace").nodeValue : 
+									wsdl.documentElement.attributes["targetNamespace"].value;
     // build SOAP request
     var sr =
     "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
@@ -240,9 +242,11 @@ console.log("\n\nxmlHttp is::", xmlHttp);
     }
 console.log('\n\nsr is::', sr);
     xmlHttp.send(sr);
-	console.log("\n\nAGAIN xmlHttp is::", xmlHttp.getResponseHeader("Set-Cookie"));
+	// console.log("\n\nAGAIN xmlHttp is::", xmlHttp.getResponseHeader("Set-Cookie"));
 // console.log("\n\nxmlHttp response headers are::", xmlHttp.getAllResponseHeaders());
-	if(xmlHttp && xmlHttp.getResponseHeader("Set-Cookie"))
+	console.log('it is::'+(xmlHttp !== 'undefined'));
+	console.log('it is::'+xmlHttp);
+	if(xmlHttp !== 'undefined' && xmlHttp.getResponseHeader("Set-Cookie"))
 		SOAPClient.session_cookie = xmlHttp.getResponseHeader("Set-Cookie");
 
     if (!async)

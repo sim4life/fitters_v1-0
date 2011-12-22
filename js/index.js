@@ -450,8 +450,12 @@ Ext.setup({
                     Util.logger('vehicle1::', installStep1FormBase.vehicle1);
                     installStep1Panel.updateRecord(installStep1FormBase.vehicle1, true);
         
+                    newVehicle = copyToVehicleObject(installStep1FormBase.vehicle1);
+                    findVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add');
+
+
                     Util.logger('After updateRecord vehicle1::', installStep1FormBase.vehicle1);
-                    
+
                 }
 
 	            // BottomTabsInline.setActiveItem(installPanel);
@@ -651,9 +655,11 @@ Ext.setup({
             vehicleObj.make = vehicleModel1.get('make');
             vehicleObj.model = vehicleModel1.get('model');
             vehicleObj.colour = vehicleModel1.get('colour');
-            vehicleObj.imei = vehicleModel2.get('imei');
-            vehicleObj.mileage = vehicleModel2.get('mileage');
-            vehicleObj.second_ref = vehicleModel2.get('second_ref');
+			if(!Ext.isEmpty(vehicleModel2)) {
+	            vehicleObj.imei = vehicleModel2.get('imei');
+	            vehicleObj.mileage = vehicleModel2.get('mileage');
+	            vehicleObj.second_ref = vehicleModel2.get('second_ref');
+			}
 			if(!Ext.isEmpty(vehicleModel3)) {
 				vehicleObj.extension = vehicleModel3.get('extension');
 	            vehicleObj.telematics = vehicleModel3.get('telematics');
@@ -681,6 +687,23 @@ Ext.setup({
             Util.logger('vehicleParam before saving:::', JSON.stringify(vehicleParam));
 
             // Util.remoteSyncItem(vehicleParam, action/*, callBack, syncCallBack, failCallBack*/);
+
+            cacheItemLocally(vehicleParam, index);
+            // callBack();
+    //        }
+        };
+
+        findVehicle = function(vehicleParam, index, curr_state, action/*, callBack, syncCallBack, failCallBack*/) {
+            Util.logger('In findVehicle()');
+
+            vehicleParam.status = 'installed';
+            vehicleParam.updated_at = Api.formatToUTCDate(new Date());
+            vehicleParam.vehicle_id = index+1;
+            vehicleParam.cl_state = Util.getItemState(curr_state, action);
+
+            Util.logger('vehicleParam before saving:::', JSON.stringify(vehicleParam));
+
+            Util.findVehicleRemotely(vehicleParam, action/*, callBack, syncCallBack, failCallBack*/);
 
             cacheItemLocally(vehicleParam, index);
             // callBack();
