@@ -373,7 +373,7 @@ var Home = {
 };
 
 var Install = {
-    createInstallStep1Panel: function(nextCB) {
+    createInstallStep1Panel: function(searchCB, nextCB) {
         return {
         
         
@@ -405,6 +405,17 @@ var Install = {
                 }]
 */
             }, {
+	            xtype: 'fieldset',
+	            items: [{
+	                xtype: 'button',
+	                ui: 'Normal',
+	                text: 'Search',
+	                name: 'search',
+	                id: 'install1SearchButton',
+	                flex: 1,
+	                handler: searchCB
+	            }]
+			}, {
                 xtype: 'fieldset',
                 items: [{
                     xtype: 'textfield',
@@ -433,6 +444,15 @@ var Install = {
                     hideOnMaskTap: true,
                     autoCapitalize : true,
                     id: 'vehicle_colour_field'
+                }, {
+                    xtype: 'textfield',
+                    name: 'vin',
+                    placeHolder: 'VIN',
+                    required: true,
+                    useClearIcon: true,
+                    hideOnMaskTap: true,
+                    autoCapitalize : true,
+                    id: 'vehicle_vin_field'
                 }]
             }, {
 	            xtype: 'fieldset',

@@ -90,13 +90,13 @@ Ext.setup({
         Ext.regModel('User', { 
             fields: [
                 {name: 'username', type: 'string'},
-                {name: 'password', type: 'string'},
-                {name: 'password2', type: 'string'}
+                {name: 'password', type: 'string'}
+                // ,{name: 'password2', type: 'string'}
             ],
             validations: [
                 {type: 'presence', name: 'username', message: "Email is required"},
-                {type: 'presence', name: 'password', message: "Password is required"},
-                {type: 'format',   name: 'username', matcher: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/, message:"Wrong Email Format"}
+                {type: 'presence', name: 'password', message: "Password is required"}
+                // ,{type: 'format',   name: 'username', matcher: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/, message:"Wrong Email Format"}
             ]
         });
 
@@ -160,6 +160,7 @@ Ext.setup({
                     {name: 'make', type: 'string'},
                     {name: 'model', type: 'string'},
                     {name: 'colour', type: 'string'},
+                    {name: 'vin', type: 'string'},
                     {name: 'vehicle_id', type: 'int'},
                     {name: 'cl_state', type: 'string'},
                     // {name: 'client_uid', type: 'string'},
@@ -210,7 +211,7 @@ Ext.setup({
                 items: [installBackBtn]
             });
 
-            installStep1FormBase = Install.createInstallStep1Panel(onNextStep1InstallBtnTapCB);
+            installStep1FormBase = Install.createInstallStep1Panel(onSearchStep1InstallBtnTapCB, onNextStep1InstallBtnTapCB);
             installStep1Panel = new Ext.form.FormPanel(installStep1FormBase);
             installStep2FormBase = Install.createInstallStep2Panel(onNextStep2InstallBtnTapCB);
             installStep2Panel = new Ext.form.FormPanel(installStep2FormBase);
@@ -429,6 +430,55 @@ Ext.setup({
             }
         };
         
+        onSearchStep1InstallBtnTapCB = function() {
+            Util.logger('In onSearchStep1InstallBtnTapCB()');
+            
+            var current_state = 'select';
+            var model = Ext.ModelMgr.create(installStep1Panel.getValues(), 'Vehicle1');
+            var message = "", errors = model.validate();
+            
+            var vehicleRegField = Ext.get('enter_vehicle_reg_field');
+            vehicleRegField.down('input').dom.focus();
+            vehicleRegField.down('input').dom.blur();
+
+            if(Ext.is.Android)
+                window.KeyBoard.hideKeyBoard();
+            
+			Util.logger('\n\n*******reg val is::', installStep1FormBase.vehicle1);
+			
+			
+            if(installStep1FormBase.vehicle1) {
+            // if(errors.isValid()) {
+
+                Util.logger('Before updateRecord');
+                Util.logger('vehicle1::', installStep1FormBase.vehicle1);
+                installStep1Panel.updateRecord(installStep1FormBase.vehicle1, true);
+				Util.logger('*******reg val is::', installStep1FormBase.vehicle1.get('registration'));
+
+				if(installStep1FormBase.vehicle1.get('registration')) {        
+                    newVehicle = copyToVehicleObject(installStep1FormBase.vehicle1);
+                    findVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add');
+
+                    Util.logger('After updateRecord vehicle1::', installStep1FormBase.vehicle1);
+
+                }
+
+	            // BottomTabsInline.setActiveItem(installPanel);
+	            installStep1Panel.hide();
+	            installStep3Panel.hide();
+	            installStep2Panel.show();
+	            installBackBtn.show();
+
+            } else {
+                Ext.each(errors.items, function(rec, i) {
+                    message += '<p class="loginErrorMsg">'+rec.message+'</p>';
+                });
+                Util.logger('ERROR is: ', message);
+                Ext.Msg.alert("Oops!", message, Ext.emptyFn);
+            }
+                        
+        };
+
         onNextStep1InstallBtnTapCB = function() {
             Util.logger('In onNextStep1InstallBtnTapCB()');
             
@@ -634,8 +684,8 @@ Ext.setup({
         //__VEHICLES action handlers start============================================================
 
         resetVehicleFormPanel = function() {
-            installStep1FormBase.vehicle1 = Ext.ModelMgr.create({ id: null, registration: '', make: '', model: '', colour: '', vehicle_id: null,
-                                    cl_state: 'insert', /*client_uid: Api.randomString(), */action: 'new'}, 'Vehicle1');
+            installStep1FormBase.vehicle1 = Ext.ModelMgr.create({ id: null, registration: '', make: '', model: '', colour: '', vin: '', 
+									vehicle_id: null, cl_state: 'insert', /*client_uid: Api.randomString(), */action: 'new'}, 'Vehicle1');
             installStep1Panel.load(installStep1FormBase.vehicle1);
             
             installStep2FormBase.vehicle2 = Ext.ModelMgr.create({ id: null, imei: '', mileage: '', second_ref: '', vehicle_id: null, 
@@ -655,6 +705,7 @@ Ext.setup({
             vehicleObj.make = vehicleModel1.get('make');
             vehicleObj.model = vehicleModel1.get('model');
             vehicleObj.colour = vehicleModel1.get('colour');
+            vehicleObj.vin = vehicleModel1.get('vin');
 			if(!Ext.isEmpty(vehicleModel2)) {
 	            vehicleObj.imei = vehicleModel2.get('imei');
 	            vehicleObj.mileage = vehicleModel2.get('mileage');

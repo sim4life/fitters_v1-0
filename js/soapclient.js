@@ -191,21 +191,25 @@ SOAPClient._sendSoapRequest = function(url, method, parameters, async, callback,
     // build SOAP request
     var sr =
     "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-/*    "<soap:Envelope " +
+//SOAP 1.0
+    "<soap:Envelope " +
     "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
     "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +
     "xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
     "<soap:Body>" +
-*/
+//SOAP 1.0 ends
+/* //SOAP 1.2
 	"<soap12:Envelope " +
     "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
     "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +
     "xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">" +
     "<soap12:Body>" +
+   //SOAP 1.2 ends
+*/
     "<" + method + " xmlns=\"" + ns + "\">" +
     parameters.toXml() +
-    // "</" + method + "></soap:Body></soap:Envelope>";
-    "</" + method + "></soap12:Body></soap12:Envelope>";
+    "</" + method + "></soap:Body></soap:Envelope>";//SOAP 1.0
+    // "</" + method + "></soap12:Body></soap12:Envelope>";//SOAP 1.2
     // send request
     var xmlHttp = SOAPClient._getXmlHttp();
     if (SOAPClient.userName && SOAPClient.password){
@@ -218,10 +222,10 @@ SOAPClient._sendSoapRequest = function(url, method, parameters, async, callback,
 
 	var host = url.substring(7);
     var soapaction = ((ns.lastIndexOf("/") != ns.length - 1) ? ns + "/" : ns) + method;
-    // xmlHttp.setRequestHeader("SOAPAction", soapaction);
+    // xmlHttp.setRequestHeader("SOAPAction", soapaction);//SOAP 1.2
     xmlHttp.setRequestHeader("Host", host);
-    // xmlHttp.setRequestHeader("Content-Type", "text/xml; charset=utf-8");
-    xmlHttp.setRequestHeader("Content-Type", "application/soap+xml; charset=utf-8");
+    xmlHttp.setRequestHeader("Content-Type", "text/xml; charset=utf-8");//SOAP 1.0
+    // xmlHttp.setRequestHeader("Content-Type", "application/soap+xml; charset=utf-8");//SOAP 1.2
 	if(SOAPClient.session_cookie) {
 		console.log("cookie is::", SOAPClient.session_cookie);
 	    xmlHttp.setRequestHeader("Cookie", SOAPClient.session_cookie);
