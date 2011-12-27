@@ -457,17 +457,19 @@ Ext.setup({
 
 				if(installStep1FormBase.vehicle1.get('registration')) {        
                     newVehicle = copyToVehicleObject(installStep1FormBase.vehicle1);
-                    findVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add');
+                    findVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add', refillStep1Form);
 
                     Util.logger('After updateRecord vehicle1::', installStep1FormBase.vehicle1);
 
                 }
 
 	            // BottomTabsInline.setActiveItem(installPanel);
+/*
 	            installStep1Panel.hide();
 	            installStep3Panel.hide();
 	            installStep2Panel.show();
 	            installBackBtn.show();
+*/
 
             } else {
                 Ext.each(errors.items, function(rec, i) {
@@ -501,7 +503,7 @@ Ext.setup({
                     installStep1Panel.updateRecord(installStep1FormBase.vehicle1, true);
         
                     newVehicle = copyToVehicleObject(installStep1FormBase.vehicle1);
-                    findVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add');
+                    // findVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add');
 
 
                     Util.logger('After updateRecord vehicle1::', installStep1FormBase.vehicle1);
@@ -744,7 +746,7 @@ Ext.setup({
     //        }
         };
 
-        findVehicle = function(vehicleParam, index, curr_state, action/*, callBack, syncCallBack, failCallBack*/) {
+        findVehicle = function(vehicleParam, index, curr_state, action, callBack/*, syncCallBack, failCallBack*/) {
             Util.logger('In findVehicle()');
 
             vehicleParam.status = 'installed';
@@ -754,7 +756,7 @@ Ext.setup({
 
             Util.logger('vehicleParam before saving:::', JSON.stringify(vehicleParam));
 
-            Util.findVehicleRemotely(vehicleParam, action/*, callBack, syncCallBack, failCallBack*/);
+            Util.findVehicleRemotely(vehicleParam, action, callBack/*, syncCallBack, failCallBack*/);
 
             cacheItemLocally(vehicleParam, index);
             // callBack();
@@ -778,6 +780,25 @@ Ext.setup({
     //        }
         };
         
+		refillStep1Form = function(vehicle) {
+			Util.logger('In refillStep1Form');
+			
+			if(Ext.isEmpty(installStep1FormBase.vehicle1)) {
+				resetVehicleFormPanel();
+			}
+
+			Util.logger('vehicle param is::', vehicle);
+			
+			installStep1FormBase.vehicle1.set('registration', vehicle.registration);
+			installStep1FormBase.vehicle1.set('make', vehicle.make);
+			installStep1FormBase.vehicle1.set('model', vehicle.model);
+			installStep1FormBase.vehicle1.set('colour', vehicle.colour);
+			installStep1FormBase.vehicle1.set('vin', vehicle.vin);
+
+			installStep1Panel.load(installStep1FormBase.vehicle1);
+			
+		};
+		
         cacheItemLocally = function(item, index) {
             // var user_id = Api.getLocalStorageProp('user_id');
             if(Ext.isEmpty(item)) {
@@ -787,7 +808,7 @@ Ext.setup({
 
             Util.logger('newItem before saving:::', JSON.stringify(item));
 
-            localStorage['vehicle'+'['+index+']'] = Ext.encode(item);
+            localStorage['vehicle['+index+']'] = Ext.encode(item);
             Util.logger('Item saved locally!');
 
         };

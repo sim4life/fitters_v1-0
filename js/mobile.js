@@ -833,11 +833,12 @@ var Util = function() {
         
     };
 
-	function findVehicleRemotely(vehicle, action) {
+	function findVehicleRemotely(vehicle, action, callBack) {
 	    Util.logger('In findVehicleRemotely()');
         
 		// SOAPClient.username = uname;
 		// SOAPClient.password = pswd;
+		var retVehicleObj = new Object();
 		var account_key = Api.getLocalStorageProp('account_key');
 		Util.logger('account_key is:', account_key);
         
@@ -853,14 +854,21 @@ var Util = function() {
 			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
 			// GetInstallationLogByVehicleRegistration
 			var resp = SOAPClient.invoke(apiDomain, "GetVehicleInformation", params, true, function(res1, res2) {
-	           Util.logger('SOAP response is:', res1);
-	           Util.logger('SOAP response2 is:', res2);
+	           	Util.logger('SOAP response is:', res1);
+	           	Util.logger('SOAP response2 is:', res2);
 
+				retVehicleObj.registration = res1.VehicleRegistration;
+				retVehicleObj.make = res1.DvlaMake;
+				retVehicleObj.model = res1.DvlaModel;
+				retVehicleObj.colour = res1.DvlaColour;
+				retVehicleObj.vin = res1.DvlaVin;
 				// SOAPClient.username = uname;
 				// SOAPClient.password = pswd;
 				// if(SOAPClient.session_cookie)
 					// Api.setLocalStorageProp('account_key', SOAPClient.session_cookie);
 
+				callBack(retVehicleObj);
+				
 				Ext.getBody().unmask();
 
 				// succCallback();
