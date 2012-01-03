@@ -531,7 +531,51 @@ var Install = {
         };
     },
     
-    createInstallStep3Panel: function(submitCB) {
+        /*items:[{
+            xtype: 'textfield',
+            name: 'install',
+            width: 650,
+            label: 'New Install - Step 3 of 3',
+            disabled: true,
+            id: 'install3_field'
+        }]
+    }, {
+        xtype: 'fieldset',*/
+
+	/*
+					{
+	                    xtype: 'checkboxfield',
+	                    name: 'extension',
+
+	                    label: 'Extension Lead Fitted to Unit & Vehicle OBD Port:',
+	                    id: 'extension_lead_field'
+	                }, {
+	                    xtype: 'checkboxfield',
+	                    name: 'telematics',
+
+	                    label: 'Telematics Unit Located & Secured in Vehicle:',
+	                    id: 'telematics_unit_field'
+	                }, {
+	                    xtype: 'checkboxfield',
+	                    name: 'diagnostic',
+
+	                    label: 'Diagnostic Flashing Light Sequence Confirmed:',
+	                    id: 'diagnostic_flash_field'
+	                }
+	*/
+	/*
+					, {
+	                    xtype: 'textareafield',
+	                    name: 'notes',
+	                    placeHolder: 'Notes',
+	                    useClearIcon: true,
+	                    hideOnMaskTap: true,
+	                    autoCapitalize : true,
+	                    id: 'notes_field'
+	                }
+	*/
+
+    createInstallStep3Panel: function(refreshCB, submitCB) {
         return {
             fullscreen: true,
             hidden: true,
@@ -540,46 +584,47 @@ var Install = {
                 xtype: 'fieldset',
                 title: 'New Install - Step 3 of 3',
                 id: 'install3_field',
-                /*items:[{
-                    xtype: 'textfield',
-                    name: 'install',
-                    width: 650,
-                    label: 'New Install - Step 3 of 3',
-                    disabled: true,
-                    id: 'install3_field'
-                }]
-            }, {
-                xtype: 'fieldset',*/
                 items: [{
-                    xtype: 'checkboxfield',
-                    name: 'extension',
-                   
-                    label: 'Extension Lead Fitted to Unit & Vehicle OBD Port:',
-                    id: 'extension_lead_field'
-                }, {
-                    xtype: 'checkboxfield',
-                    name: 'telematics',
-                   
-                    label: 'Telematics Unit Located & Secured in Vehicle:',
-                    id: 'telematics_unit_field'
-                }, {
-                    xtype: 'checkboxfield',
-                    name: 'diagnostic',
-                 
-                    label: 'Diagnostic Flashing Light Sequence Confirmed:',
-                    id: 'diagnostic_flash_field'
-                }]
+		            xtype: 'fieldset',
+		            items: [{
+		                xtype: 'button',
+		                ui: 'Normal',
+		                text: 'Refresh',
+		                name: 'Refresh',
+		                id: 'install3SubmitButton',
+		                flex: 1,
+		                handler: refreshCB
+		            }, {
+						xtype: 'textareafield',
+	                    name: 'install_refresh',
+	                    // placeHolder: 'Installation Completion Date/Time',
+	                    required: true,
+	                    useClearIcon: true,
+	                    hideOnMaskTap: true,
+	                    autoCapitalize : true,
+	                    id: 'install_refresh_field'
+					}]
+				}]
             }, {
                 xtype: 'fieldset',
                 items: [{
-                    xtype: 'textfield',
-                    name: 'install_completion',
-                    placeHolder: 'Installation Completion Date/Time',
+                    xtype: 'textareafield',
+                    name: 'install_notes',
+                    placeHolder: 'Installation Notes',
                     required: true,
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'install_comp_field'
+                    id: 'install_notes_field'
+                }, {
+                    xtype: 'datepickerfield',
+                    name: 'instal_comp_date',
+                    placeHolder: 'Installation Completion Date',
+                    required: true,
+                    useClearIcon: true,
+                    hideOnMaskTap: true,
+                    autoCapitalize : true,
+                    id: 'instal_comp_date_field'
                 }, {
                     xtype: 'textfield',
                     name: 'installer_name',
@@ -589,23 +634,6 @@ var Install = {
                     hideOnMaskTap: true,
                     autoCapitalize : true,
                     id: 'installer_name_field'
-                }, {
-                    xtype: 'textfield',
-                    name: 'rep_name',
-                    placeHolder: 'Customer/Representative Name',
-                    required: true,
-                    useClearIcon: true,
-                    hideOnMaskTap: true,
-                    autoCapitalize : true,
-                    id: 'cust_rep_name_field'
-                }, {
-                    xtype: 'textareafield',
-                    name: 'notes',
-                    placeHolder: 'Notes',
-                    useClearIcon: true,
-                    hideOnMaskTap: true,
-                    autoCapitalize : true,
-                    id: 'notes_field'
                 }]
             }, {
 	            xtype: 'fieldset',
@@ -618,7 +646,7 @@ var Install = {
 	                flex: 1,
 	                handler: submitCB
 	            }]
-			}]
+				}]
         };
     }
     
@@ -755,6 +783,7 @@ var Util = function() {
         cacheItemLocally: cacheItemLocally,
         searchVehicle: searchVehicle,
 		findVehicleRemotely: findVehicleRemotely,
+		saveVehicleInfoRemotely: saveVehicleInfoRemotely,
 		assignVehicleRemotely: assignVehicleRemotely
     };
     
@@ -877,9 +906,62 @@ var Util = function() {
 		}
 	};
 	
-	function assignVehicleRemotely(vehicle, action) {
+	function saveVehicleInfoRemotely(vehicle, action, callBack) {
+	    Util.logger('In saveVehicleInfoRemotely()');
+        
+		// SOAPClient.username = uname;
+		// SOAPClient.password = pswd;
+		var retVehicleObj = new Object();
+		var account_key = Api.getLocalStorageProp('account_key');
+		Util.logger('account_key is:', account_key);
+        
+		if(!Ext.isEmpty(account_key)) {
+			
+			SOAPClient.session_cookie = account_key;
+           	Util.logger('make is:', vehicle.make);
+           	Util.logger('model is:', vehicle.model);
+           	Util.logger('colour is:', vehicle.colour);
+           	Util.logger('vin is:', vehicle.vin);
+           	// Util.logger('imei is:', vehicle.imei);
+			
+			var params = new SOAPClientParameters();
+			params.add("registration", vehicle.registration);
+			params.add("make", vehicle.make);
+			params.add("model", vehicle.model);
+			params.add("colour", vehicle.colour);
+			params.add("vin", vehicle.vin);
+			// params.add("imei", vehicle.imei);
+			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
+			// GetInstallationLogByVehicleRegistration
+			var resp = SOAPClient.invoke(apiDomain, "saveVehicleInformation", params, true, function(res1, res2) {
+	           	Util.logger('SOAP response is:', res1);
+	           	Util.logger('SOAP response2 is:', res2);
+
+				retVehicleObj.registration = res1.VehicleRegistration;
+				retVehicleObj.make = res1.DvlaMake;
+				retVehicleObj.model = res1.DvlaModel;
+				retVehicleObj.colour = res1.DvlaColour;
+				retVehicleObj.vin = res1.DvlaVin;
+				// SOAPClient.username = uname;
+				// SOAPClient.password = pswd;
+				// if(SOAPClient.session_cookie)
+					// Api.setLocalStorageProp('account_key', SOAPClient.session_cookie);
+
+				Ext.getBody().unmask();
+
+				callBack(retVehicleObj);
+				
+				// succCallback();
+
+			});
+		}
+	};
+	
+	function assignVehicleRemotely(vehicle, action, callBack) {
 	    Util.logger('In assignVehicleRemotely()');
         
+		var retVehicleObj = new Object();
+		
 		// SOAPClient.username = uname;
 		// SOAPClient.password = pswd;
 		var account_key = Api.getLocalStorageProp('account_key');
@@ -892,13 +974,22 @@ var Util = function() {
            	Util.logger('imei is:', vehicle.imei);
 			
 			var params = new SOAPClientParameters();
-			params.add("vehicleregistration", vehicle.registration);
-			params.add("imei", vehicle.imei);
+			params.add("VehicleRegistration", vehicle.registration);
+			params.add("IMEI", vehicle.imei);
+			params.add("mileage", vehicle.mileage);
+			params.add("secondref", vehicle.second_ref);
+
 			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
 			var resp = SOAPClient.invoke(apiDomain, "AssignIMEIToRegistration", params, true, function(res1, res2) {
 	           Util.logger('SOAP response is:', res1);
 	           Util.logger('SOAP response2 is:', res2);
 
+				retVehicleObj.registration = res1.VehicleRegistration;
+				retVehicleObj.make = res1.DvlaMake;
+				retVehicleObj.model = res1.DvlaModel;
+				retVehicleObj.colour = res1.DvlaColour;
+				retVehicleObj.vin = res1.DvlaVin;
+				
 				// SOAPClient.username = uname;
 				// SOAPClient.password = pswd;
 				// if(SOAPClient.session_cookie)
@@ -915,6 +1006,7 @@ var Util = function() {
 				*/
 				Ext.getBody().unmask();
 
+				callBack(retVehicleObj);
 				// succCallback();
 
 			});

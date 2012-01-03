@@ -215,7 +215,7 @@ Ext.setup({
             installStep1Panel = new Ext.form.FormPanel(installStep1FormBase);
             installStep2FormBase = Install.createInstallStep2Panel(onNextStep2InstallBtnTapCB);
             installStep2Panel = new Ext.form.FormPanel(installStep2FormBase);
-            installStep3FormBase = Install.createInstallStep3Panel(onSubmitStep3InstallBtnTapCB);
+            installStep3FormBase = Install.createInstallStep3Panel(onRefreshStep3InstallBtnTapCB, onSubmitStep3InstallBtnTapCB);
             installStep3Panel = new Ext.form.FormPanel(installStep3FormBase);
 
             var vehicleTpl = new Ext.XTemplate(
@@ -503,7 +503,7 @@ Ext.setup({
                     installStep1Panel.updateRecord(installStep1FormBase.vehicle1, true);
         
                     newVehicle = copyToVehicleObject(installStep1FormBase.vehicle1);
-                    // findVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add');
+                    saveVehicleInfo(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add', moveStep1NextStep2);
 
 
                     Util.logger('After updateRecord vehicle1::', installStep1FormBase.vehicle1);
@@ -511,10 +511,12 @@ Ext.setup({
                 }
 
 	            // BottomTabsInline.setActiveItem(installPanel);
+/*
 	            installStep1Panel.hide();
 	            installStep3Panel.hide();
 	            installStep2Panel.show();
-	            installBackBtn.show();
+	            installBackBtn.show();*/
+
 
             } else {
                 Ext.each(errors.items, function(rec, i) {
@@ -550,15 +552,17 @@ Ext.setup({
                     Util.logger('After updateRecord vehicle2::', installStep2FormBase.vehicle2);
 
                     newVehicle = copyToVehicleObject(installStep1FormBase.vehicle1, installStep2FormBase.vehicle2);
-                    assignVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add');
+                    assignVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add', moveStep2NextStep3);
                     
                 }
 
 	            // BottomTabsInline.setActiveItem(installPanel);
+/*
 	            installStep1Panel.hide();
 	            installStep2Panel.hide();
 	            installStep3Panel.show();
 	            installBackBtn.show();
+*/
 
             } else {
                 Ext.each(errors.items, function(rec, i) {
@@ -570,6 +574,11 @@ Ext.setup({
             
         };
         
+		onRefreshStep3InstallBtnTapCB = function() {
+            Util.logger('In onRefreshStep3InstallBtnTapCB()');
+			
+		};
+		
         onSubmitStep3InstallBtnTapCB = function() {
             Util.logger('In onSubmitStep3InstallBtnTapCB()');
 
@@ -763,7 +772,24 @@ Ext.setup({
     //        }
         };
 
-        assignVehicle = function(vehicleParam, index, curr_state, action/*, callBack, syncCallBack, failCallBack*/) {
+        saveVehicleInfo = function(vehicleParam, index, curr_state, action, callBack/*, syncCallBack, failCallBack*/) {
+            Util.logger('In saveVehicleInfo()');
+
+            vehicleParam.status = 'installed';
+            vehicleParam.updated_at = Api.formatToUTCDate(new Date());
+            vehicleParam.vehicle_id = index+1;
+            vehicleParam.cl_state = Util.getItemState(curr_state, action);
+
+            Util.logger('vehicleParam before saving:::', JSON.stringify(vehicleParam));
+
+            Util.saveVehicleInfoRemotely(vehicleParam, action, callBack/*, syncCallBack, failCallBack*/);
+
+            cacheItemLocally(vehicleParam, index);
+            // callBack();
+    //        }
+        };
+
+        assignVehicle = function(vehicleParam, index, curr_state, action, callBack/*, syncCallBack, failCallBack*/) {
             Util.logger('In assignVehicle()');
 
             vehicleParam.status = 'installed';
@@ -773,7 +799,7 @@ Ext.setup({
 
             Util.logger('vehicleParam before saving:::', JSON.stringify(vehicleParam));
 
-            Util.assignVehicleRemotely(vehicleParam, action/*, callBack, syncCallBack, failCallBack*/);
+            Util.assignVehicleRemotely(vehicleParam, action, callBack/*, syncCallBack, failCallBack*/);
 
             cacheItemLocally(vehicleParam, index);
             // callBack();
@@ -797,6 +823,22 @@ Ext.setup({
 
 			installStep1Panel.load(installStep1FormBase.vehicle1);
 			
+		};
+		
+		moveStep1NextStep2 = function(vehicle) {
+			
+			installStep1Panel.hide();
+            installStep3Panel.hide();
+            installStep2Panel.show();
+            installBackBtn.show();
+		};
+		
+		moveStep2NextStep3 = function(vehicle) {
+			
+			installStep1Panel.hide();
+            installStep2Panel.hide();
+            installStep3Panel.show();
+            installBackBtn.show();
 		};
 		
         cacheItemLocally = function(item, index) {
