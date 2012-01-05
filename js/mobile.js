@@ -584,7 +584,7 @@ var Install = {
                 xtype: 'fieldset',
                 title: 'New Install - Step 3 of 3',
                 id: 'install3_field',
-                items: [{
+                
 		            xtype: 'fieldset',
 		            items: [{
 		                xtype: 'button',
@@ -603,7 +603,7 @@ var Install = {
 	                    hideOnMaskTap: true,
 	                    autoCapitalize : true,
 	                    id: 'install_refresh_field'
-					}]
+					
 				}]
             }, {
                 xtype: 'fieldset',
