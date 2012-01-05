@@ -646,7 +646,7 @@ var Install = {
 	                flex: 1,
 	                handler: submitCB
 	            }]
-				}]
+			}]
         };
     }
     
@@ -708,7 +708,7 @@ var Deinstall = {
 };
 
 var Search = {
-    createSearchMainPanel: function(submitCB) {
+    createSearchMainPanel: function(searchCB) {
         return new Ext.form.FormPanel({
             // fullscreen: true,
             hidden: false,
@@ -729,26 +729,88 @@ var Search = {
                 xtype: 'fieldset',*/
                 items: [{
                     xtype: 'textfield',
-                    name: 'title',
-                    placeHolder: 'Search by IMEI or registration number',
+                    name: 'search_reg',
+                    placeHolder: 'Search by registration',
                     required: true,
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'search_field'
+                    id: 'search_reg_field'
+                }, {
+                    xtype: 'textfield',
+                    name: 'search_imei',
+                    placeHolder: 'Search by IMEI',
+                    required: true,
+                    useClearIcon: true,
+                    hideOnMaskTap: true,
+                    autoCapitalize : true,
+                    id: 'search_imei_field'
+				}, {
+                    xtype: 'textfield',
+                    name: 'search_2ndref',
+                    placeHolder: 'Search by 2nd Ref',
+                    required: true,
+                    useClearIcon: true,
+                    hideOnMaskTap: true,
+                    autoCapitalize : true,
+                    id: 'search_2ndref_field'
                 }]
             }, {
 	            xtype: 'fieldset',
 	            items: [{
 	                xtype: 'button',
 	                ui: 'Normal',
-	                text: 'Submit',
-	                name: 'submit',
+	                text: 'Search',
+	                name: 'search',
 	                id: 'searchSubmitButton',
 	                flex: 1,
-	                handler: submitCB
+	                handler: searchCB
 	            }]
 	        }]
+        });
+    },
+
+    getListBase: function(resultsTpl, resultsData, itemtapCB) {
+        return {
+            itemTpl: resultsTpl,
+            layout: 'fit',
+            hidden: true,
+            selModel: {
+                mode: 'SINGLE',
+                allowDeselect: true
+            },
+            // grouped: true,
+/*            onItemDisclosure: {
+                scope: 'test',
+                handler: itemDisclosureCB
+            },
+            indexBar: true,
+*/          
+            emptyText: '<p class="emptyResultMessage"><strong>You have no search results</strong></p>',
+            grouped: true,
+            store: Search.getResultsListStore(resultsData),
+            fullscreen: true,
+            scroll: 'vertical',
+            listeners: {
+                itemtap: itemtapCB
+            }
+        };
+    },
+
+    getResultsListStore: function(results) {
+        return new Ext.data.Store({
+            model: 'Vehicles',
+            sorters: [{   
+                //match it with the model method: Person.load_more argument: order
+                property : 'registration',
+                direction: 'DESC'
+            }],
+			/*
+            getGroupString : function(record) {
+                return Ext.util.Format.date(record.get('posted_at'), 'F Y');//record.get('occurs_at').format('F Y');
+            },
+			*/
+            data: [results]
         });
     }
 };
@@ -981,15 +1043,15 @@ var Util = function() {
 
 			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
 			var resp = SOAPClient.invoke(apiDomain, "AssignIMEIToRegistration", params, true, function(res1, res2) {
-	           Util.logger('SOAP response is:', res1);
-	           Util.logger('SOAP response2 is:', res2);
-
+	            Util.logger('SOAP response is:', res1);
+	            Util.logger('SOAP response2 is:', res2);
+/*
 				retVehicleObj.registration = res1.VehicleRegistration;
 				retVehicleObj.make = res1.DvlaMake;
 				retVehicleObj.model = res1.DvlaModel;
 				retVehicleObj.colour = res1.DvlaColour;
 				retVehicleObj.vin = res1.DvlaVin;
-				
+*/				
 				// SOAPClient.username = uname;
 				// SOAPClient.password = pswd;
 				// if(SOAPClient.session_cookie)
@@ -1013,29 +1075,53 @@ var Util = function() {
 		}
 	};
     
-    function searchVehicle(vehicleRegVal, imeiVal) {
-        if(!Ext.isEmpty(vehicleRegVal)) {
-            for (var i = 0, losLength = localStorage.length; i < losLength; i++) {
-                itemKey = localStorage.key(i);
-                if(itemKey.indexOf('vehicle') != -1) {
-                    value = Ext.decode(localStorage[itemKey]);
-                    if(value.registration == vehicleRegVal)
-                        return value;
-                    else if(imeiVal && value.imeiVal == vehicleRegVal)
-                        return value;
-                }
-            }
-        } else {
-            for (var i = 0, losLength = localStorage.length; i < losLength; i++) {
-                itemKey = localStorage.key(i);
-                if(itemKey.indexOf('vehicle') != -1) {
-                    value = Ext.decode(localStorage[itemKey]);
-                    if(value.imei == imeiVal)
-                        return value;
-                }
-            }            
-        }
-        
-        return null;
+    function searchVehicle(vehicleRegVal, imeiVal, _2ndRefVal, callBack) {
+		var remoteMethod, retVehicleObj = new Object();
+
+		// SOAPClient.username = uname;
+		// SOAPClient.password = pswd;
+		var account_key = Api.getLocalStorageProp('account_key');
+		Util.logger('account_key is:', account_key);
+
+		if(!Ext.isEmpty(account_key)) {
+
+			SOAPClient.session_cookie = account_key;
+           	Util.logger('registration is:', vehicleRegVal);
+           	Util.logger('imei is:', imeiVal);
+           	Util.logger('2ndRef is:', _2ndRefVal);
+
+			var params = new SOAPClientParameters();
+	        if(!Ext.isEmpty(vehicleRegVal)) {
+				params.add("vehicleRegistration", vehicleRegVal);
+				remoteMethod = "GetInstallationLogByVehicleRegistration";
+			} else if(!Ext.isEmpty(imeiVal)) {
+				params.add("imei", imeiVal);
+				remoteMethod = "GetInstallationLogByIMEI";
+			} else {
+				params.add("secondReference", _2ndRefVal);
+				remoteMethod = "GetInstallationLogBySecondReference";					
+			}
+
+
+			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
+			var resp = SOAPClient.invoke(apiDomain, remoteMethod, params, true, function(res1, res2) {
+	           Util.logger('SOAP response is:', res1);
+	           Util.logger('SOAP response2 is:', res2);
+
+				retVehicleObj.registration = res1.VehicleRegistration;
+				retVehicleObj.make = res1.DvlaMake;
+				retVehicleObj.model = res1.DvlaModel;
+				retVehicleObj.colour = res1.DvlaColour;
+				retVehicleObj.vin = res1.DvlaVin;
+
+				Ext.getBody().unmask();
+
+				callBack(retVehicleObj);
+
+			});
+		}
+        // return null;
     };
+
+	
 }();

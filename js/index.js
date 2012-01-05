@@ -120,7 +120,7 @@ Ext.setup({
         renderAllComp = function() {
             Util.logger('renderAllComp() called');
             
-            var homePanel;
+            var homePanel, vehicles = [];
             
             panelIndex = {home: 0, install: 1, deinstall: 2, search: 3, help: 4};
             
@@ -153,6 +153,27 @@ Ext.setup({
             
             //__HOME panels layout end==================================================================================
             
+            Ext.regModel('Vehicle', { 
+                fields: [
+                    {name: 'id', type: 'int'},
+                    {name: 'registration', type: 'string'},
+                    {name: 'make', type: 'string'},
+                    {name: 'model', type: 'string'},
+                    {name: 'colour', type: 'string'},
+                    {name: 'vin', type: 'string'},
+                    {name: 'imei', type: 'string'},
+                    {name: 'mileage', type: 'string'},
+                    {name: 'second_ref', type: 'string'},
+                    {name: 'install_completion', type: 'date'},
+                    {name: 'installer_name', type: 'string'},
+                    {name: 'notes', type: 'string'},
+                    {name: 'vehicle_id', type: 'int'},
+                    {name: 'cl_state', type: 'string'},
+                    {name: 'action', type: 'string'}
+                ]
+            });
+
+
             Ext.regModel('Vehicle1', { 
                 fields: [
                     {name: 'id', type: 'int'},
@@ -188,12 +209,14 @@ Ext.setup({
             Ext.regModel('Vehicle3', { 
                 fields: [
                     {name: 'id', type: 'int'},
+/*
                     {name: 'extension', type: 'boolean'},
                     {name: 'telematics', type: 'boolean'},
                     {name: 'diagnostic', type: 'boolean'},
+*/
                     {name: 'install_completion', type: 'date'},
                     {name: 'installer_name', type: 'string'},
-                    {name: 'rep_name', type: 'string'},
+                    // {name: 'rep_name', type: 'string'},
                     {name: 'notes', type: 'string'},
                     {name: 'vehicle_id', type: 'int'},
                     {name: 'cl_state', type: 'string'},
@@ -230,6 +253,20 @@ Ext.setup({
                         return Ext.isEmpty(c);
                     },
                 });
+
+	        var resultsTpl = new Ext.XTemplate(
+                '<div class="resultsMain">',
+                    '<div class="results_list_item registration">registration</div>', 
+					'<div class="results_list_item imei">imei</div>', 
+					'<div class="results_list_item make">make</div>', 
+					'<div class="results_list_item model">model</div>', 
+                '</div>', 
+                '<p class="installed_time">{installed_time:date("j/n/y G:i:s")}</p>', 
+	            {
+	                hasTitle: function(c) {
+	                    return !Ext.isEmpty(c);
+	                }
+	            });
 
             showVehiclePanel = new Ext.Panel({
                 // scroll: 'vertical',
@@ -284,6 +321,13 @@ Ext.setup({
             });
 
             searchMainPanel = Search.createSearchMainPanel(onSubmitSearchBtnTapCB);
+
+	        Ext.regModel('Vehicles', {
+	            fields: ['id', 'registration', 'imei', 'make', 'model', '2nd_ref', 'installed_time', 'client_uid']
+	        });
+
+	        searchResultsListComp = new Ext.List(Ext.apply(Search.getListBase(resultsTpl, vehicles, Ext.emptyFn)));
+
             
             searchPanel = new Ext.Panel({
                 title: 'Search',
@@ -291,7 +335,7 @@ Ext.setup({
                 cls: 'card' + (panelIndex.search+1) + ' search_panel',
                 iconCls: 'search',
                 // layout: 'card',
-                items: [ searchMainPanel, showVehiclePanel ],
+                items: [ searchMainPanel, searchResultsListComp /*,showVehiclePanel*/ ],
                 dockedItems: [ searchNavBar ]
             });
             
@@ -664,31 +708,27 @@ Ext.setup({
         onSubmitSearchBtnTapCB = function() {
             Util.logger('In onSubmitSearchBtnTapCB()');
             
-            var vehicleRegField = Ext.get('search_field');
+			var vehicles = [], searchResults;
+            
+            var vehicleRegField = Ext.get('search_reg_field');
             vehicleRegField.down('input').dom.focus();
             vehicleRegField.down('input').dom.blur();
 
             if(Ext.is.Android)
                 window.KeyBoard.hideKeyBoard();
           
-            var searchVal;
-            var searchFieldVal = Ext.getCmp('search_field').getValue();
-            if(Ext.isEmpty(searchFieldVal)) {
-                Ext.Msg.alert("Error", "Please enter either Registration or IMEI", Ext.emptyFn);
+            var searchRegFieldVal = Ext.getCmp('search_reg_field').getValue();
+            var searchImeiFieldVal = Ext.getCmp('search_imei_field').getValue();
+            var search2ndrefFieldVal = Ext.getCmp('search_2ndref_field').getValue();
+            if(Ext.isEmpty(searchRegFieldVal) && Ext.isEmpty(searchImeiFieldVal) && Ext.isEmpty(search2ndrefFieldVal)) {
+                Ext.Msg.alert("Error", "Please enter either Registration or IMEI or second reference", Ext.emptyFn);
             } else {
-                Util.logger('val is::', searchFieldVal);
+                Util.logger('regval is::', searchRegFieldVal);
+                Util.logger('imeival is::', searchImeiFieldVal);
+                Util.logger('_2ndRefVal is::', search2ndrefFieldVal);
 
-                searchVal = Util.searchVehicle(searchFieldVal, true);
-                if(Ext.isEmpty(searchVal)) {
-                    Ext.Msg.alert("Error", "No record found", Ext.emptyFn);                    
-                } else {
-                    Util.logger('serachVal is::',searchVal);
-                    
-                    searchMainPanel.hide();
-                    showVehiclePanel.update(searchVal);
-                    showVehiclePanel.show();
-                    
-                }
+                Util.searchVehicle(searchRegFieldVal, searchImeiFieldVal, search2ndrefFieldVal, updateSearchResults);
+                
             }
         };
         
@@ -839,6 +879,42 @@ Ext.setup({
             installStep2Panel.hide();
             installStep3Panel.show();
             installBackBtn.show();
+		};
+		
+		updateSearchResults = function(vehicles) {
+			Util.logger('In updateSearchResults');
+			/*
+			if(Ext.isEmpty(searchResults)) {
+                Ext.Msg.alert("Error", "No record found", Ext.emptyFn);                    
+            } else {
+                Util.logger('searchResults is::',searchResults);
+                
+
+				//in case data is synced with server and requires update
+				Ext.each(searchResults, function(item, index, allItems) {
+					journalFormBase.note = Ext.ModelMgr.create({
+					    id: item.id,
+					    registration: item.registration,
+					    imei: item.imei,
+					    make: item.make,
+					    model: item.model,
+					    second_ref: item.second_ref,
+						installation_time: item.installation_time,
+					    vehicle_id: item.vehicle_id,
+					    cl_state: item.cl_state,
+					    // client_uid: item.client_uid,
+					    action: 'edit'},
+					    'Vehicle');
+								
+		        });
+				
+		        journalsListComp.getStore().loadData(notes, false);
+                searchMainPanel.hide();
+				searchResultsListComp.show();
+                // showVehiclePanel.update(searchVal);
+                // showVehiclePanel.show();
+				*/
+            
 		};
 		
         cacheItemLocally = function(item, index) {
