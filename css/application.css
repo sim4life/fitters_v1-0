@@ -135,7 +135,7 @@ background: #666 url(../rsc/bg-body.png) repeat;
 #install_comp_field input {
     padding-top: 2em;
 }
-#install1SearchButton, #install1NextButton, #install3SubmitButton, #install2NextButton, #deinstallSubmitButton, .x-toolbar .x-button.x-button-action , #searchSubmitButton {
+#install1SearchButton, #install1NextButton, #install2NextButton, #install3SubmitButton, #install3RefreshButton, #deinstallSubmitButton, .x-toolbar .x-button.x-button-action , #searchSubmitButton {
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ff0084), color-stop(0%,#ff4ca5), color-stop(52%,#ff49a4), color-stop(54%,#ff0084), color-stop(100%,#ff0084)); /* Chrome,Safari4+ */
 border:none;
 

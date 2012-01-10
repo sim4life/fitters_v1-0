@@ -591,7 +591,7 @@ var Install = {
 	                ui: 'Normal',
 	                text: 'Refresh',
 	                name: 'Refresh',
-	                id: 'install3SubmitButton',
+	                id: 'install3RefreshButton',
 	                flex: 1,
 	                handler: refreshCB
 				}]
