@@ -584,26 +584,28 @@ var Install = {
                 xtype: 'fieldset',
                 title: 'New Install - Step 3 of 3',
                 id: 'install3_field',
-                
-		            xtype: 'fieldset',
-		            items: [{
-		                xtype: 'button',
-		                ui: 'Normal',
-		                text: 'Refresh',
-		                name: 'Refresh',
-		                id: 'install3SubmitButton',
-		                flex: 1,
-		                handler: refreshCB
-		            }, {
-						xtype: 'textareafield',
-	                    name: 'install_refresh',
-	                    // placeHolder: 'Installation Completion Date/Time',
-	                    required: true,
-	                    useClearIcon: true,
-	                    hideOnMaskTap: true,
-	                    autoCapitalize : true,
-	                    id: 'install_refresh_field'
-					
+			}, {
+           	    xtype: 'fieldset',
+	            items: [{
+	                xtype: 'button',
+	                ui: 'Normal',
+	                text: 'Refresh',
+	                name: 'Refresh',
+	                id: 'install3SubmitButton',
+	                flex: 1,
+	                handler: refreshCB
+				}]
+			}, {
+				xtype: 'fieldset',
+	            items: [{
+					xtype: 'textareafield',
+                    name: 'install_refresh',
+                    // placeHolder: 'Installation Completion Date/Time',
+                    required: true,
+                    useClearIcon: true,
+                    hideOnMaskTap: true,
+                    autoCapitalize : true,
+                    id: 'install_refresh_field'
 				}]
             }, {
                 xtype: 'fieldset',
@@ -635,7 +637,8 @@ var Install = {
                     autoCapitalize : true,
                     id: 'installer_name_field'
                 }]
-            }, {
+            // }]
+			}, {
 	            xtype: 'fieldset',
 	            items: [{
 	                xtype: 'button',
@@ -646,6 +649,7 @@ var Install = {
 	                flex: 1,
 	                handler: submitCB
 	            }]
+			// }]
 			}]
         };
     }
@@ -690,6 +694,11 @@ var Deinstall = {
                     hideOnMaskTap: true,
                     autoCapitalize : true,
                     id: 'imei_field'
+                }, {
+                    xtype: 'checkboxfield',
+                    name: 'replace_unit',
+                    label: 'Replacement Unit fitter:',
+                    id: 'replace_unit_field'
                 }]
             }, {
 	            xtype: 'fieldset',
@@ -843,10 +852,11 @@ var Util = function() {
         getItemState: getItemState,
         getItemsSize: getItemsSize,
         cacheItemLocally: cacheItemLocally,
-        searchVehicle: searchVehicle,
+        searchVehicleRemotely: searchVehicleRemotely,
 		findVehicleRemotely: findVehicleRemotely,
 		saveVehicleInfoRemotely: saveVehicleInfoRemotely,
-		assignVehicleRemotely: assignVehicleRemotely
+		assignVehicleRemotely: assignVehicleRemotely,
+		deinstallVehicleRemotely: deinstallVehicleRemotely
     };
     
     function logger(txt, obj) {
@@ -973,7 +983,7 @@ var Util = function() {
         
 		// SOAPClient.username = uname;
 		// SOAPClient.password = pswd;
-		var retVehicleObj = new Object();
+		var resp, params, retVehicleObj = new Object();
 		var account_key = Api.getLocalStorageProp('account_key');
 		Util.logger('account_key is:', account_key);
         
@@ -986,7 +996,7 @@ var Util = function() {
            	Util.logger('vin is:', vehicle.vin);
            	// Util.logger('imei is:', vehicle.imei);
 			
-			var params = new SOAPClientParameters();
+			params = new SOAPClientParameters();
 			params.add("registration", vehicle.registration);
 			params.add("make", vehicle.make);
 			params.add("model", vehicle.model);
@@ -995,7 +1005,7 @@ var Util = function() {
 			// params.add("imei", vehicle.imei);
 			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
 			// GetInstallationLogByVehicleRegistration
-			var resp = SOAPClient.invoke(apiDomain, "saveVehicleInformation", params, true, function(res1, res2) {
+			resp = SOAPClient.invoke(apiDomain, "saveVehicleInformation", params, true, function(res1, res2) {
 	           	Util.logger('SOAP response is:', res1);
 	           	Util.logger('SOAP response2 is:', res2);
 
@@ -1004,14 +1014,33 @@ var Util = function() {
 				retVehicleObj.model = res1.DvlaModel;
 				retVehicleObj.colour = res1.DvlaColour;
 				retVehicleObj.vin = res1.DvlaVin;
-				// SOAPClient.username = uname;
-				// SOAPClient.password = pswd;
-				// if(SOAPClient.session_cookie)
-					// Api.setLocalStorageProp('account_key', SOAPClient.session_cookie);
 
-				Ext.getBody().unmask();
+				params = new SOAPClientParameters();
+				params.add("vehicleRegistration", vehicle.registration);
 
-				callBack(retVehicleObj);
+				// Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
+				resp = SOAPClient.invoke(apiDomain, "GetInstallationLogByVehicleRegistration", params, true, function(resp1, resp2) {
+		           Util.logger('SOAP again response is:', resp1);
+		           Util.logger('SOAP again response2 is:', resp2);
+
+					// retVehicleObj.registration = resp1.VehicleRegistration;
+					// retVehicleObj.make = resp1.DvlaMake;
+					// retVehicleObj.model = resp1.DvlaModel;
+					// retVehicleObj.colour = resp1.DvlaColour;
+					// retVehicleObj.vin = resp1.DvlaVin;
+					retVehicleObj.imei = resp1.Imei;
+					retVehicleObj.second_ref = resp1.secondReference;
+					retVehicleObj.mileage = resp1.InitialMileage;
+
+					Ext.getBody().unmask();
+
+					callBack(retVehicleObj);
+
+				});
+
+				// Ext.getBody().unmask();
+
+				// callBack(retVehicleObj);
 				
 				// succCallback();
 
@@ -1075,7 +1104,7 @@ var Util = function() {
 		}
 	};
     
-    function searchVehicle(vehicleRegVal, imeiVal, _2ndRefVal, callBack) {
+    function searchVehicleRemotely(vehicleRegVal, imeiVal, _2ndRefVal, callBack) {
 		var remoteMethod, retVehicleObj = new Object();
 
 		// SOAPClient.username = uname;
@@ -1113,6 +1142,9 @@ var Util = function() {
 				retVehicleObj.model = res1.DvlaModel;
 				retVehicleObj.colour = res1.DvlaColour;
 				retVehicleObj.vin = res1.DvlaVin;
+				retVehicleObj.imei = res1.Imei;
+				retVehicleObj.second_ref = res1.secondReference;
+				retVehicleObj.mileage = res1.InitialMileage;
 
 				Ext.getBody().unmask();
 
@@ -1122,6 +1154,63 @@ var Util = function() {
 		}
         // return null;
     };
+
+		function deinstallVehicleRemotely(registration, imei, isReplacementUnit, callBack) {
+		    Util.logger('In deinstallVehicleRemotely()');
+
+			var retVehicleObj = new Object();
+
+			// SOAPClient.username = uname;
+			// SOAPClient.password = pswd;
+			var account_key = Api.getLocalStorageProp('account_key');
+			Util.logger('account_key is:', account_key);
+
+			if(!Ext.isEmpty(account_key)) {
+
+				SOAPClient.session_cookie = account_key;
+	           	Util.logger('registration is:', registration);
+	           	Util.logger('imei is:', imei);
+	           	Util.logger('replacementUnit is:', isReplacementUnit);
+
+				var params = new SOAPClientParameters();
+				params.add("vehicleRegistration", registration);
+				params.add("imei", imei);
+				params.add("replacementFitted", isReplacementUnit);
+
+				Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
+				var resp = SOAPClient.invoke(apiDomain, "DeInstall", params, true, function(res1, res2) {
+		            Util.logger('SOAP response is:', res1);
+		            Util.logger('SOAP response2 is:', res2);
+	/*
+					retVehicleObj.registration = res1.VehicleRegistration;
+					retVehicleObj.make = res1.DvlaMake;
+					retVehicleObj.model = res1.DvlaModel;
+					retVehicleObj.colour = res1.DvlaColour;
+					retVehicleObj.vin = res1.DvlaVin;
+	*/				
+					// SOAPClient.username = uname;
+					// SOAPClient.password = pswd;
+					// if(SOAPClient.session_cookie)
+						// Api.setLocalStorageProp('account_key', SOAPClient.session_cookie);
+					/*
+					params = new SOAPClientParameters();
+					params.add("VehicleRegistration", "sdfds3243");
+					SOAPClient.invoke(apiDomain, "GetVehicleInformation", params, true, function(r1, r22) {
+						Util.logger('SOAP response is:', r1);
+			            Util.logger('SOAP response2 is:', r22);
+
+			           });
+
+					*/
+					Ext.getBody().unmask();
+
+					callBack(retVehicleObj);
+					// succCallback();
+
+				});
+			}
+		};
+
 
 	
 }();

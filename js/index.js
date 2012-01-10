@@ -547,8 +547,10 @@ Ext.setup({
                     installStep1Panel.updateRecord(installStep1FormBase.vehicle1, true);
         
                     newVehicle = copyToVehicleObject(installStep1FormBase.vehicle1);
-                    saveVehicleInfo(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add', moveStep1NextStep2);
 
+					// Util.searchVehicleRemotely(newVehicle.registration, '', '', updateVehicleModel);
+
+                    saveVehicleInfo(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add', moveStep1NextStep2);
 
                     Util.logger('After updateRecord vehicle1::', installStep1FormBase.vehicle1);
 
@@ -682,13 +684,18 @@ Ext.setup({
             var searchVal;
             var vehicleRegFieldVal = Ext.getCmp('vehicle_reg_field').getValue();
             var imeiFieldVal = Ext.getCmp('imei_field').getValue();
+            var replaceUnitFieldVal = Ext.getCmp('replace_unit_field').isChecked();
             if(Ext.isEmpty(vehicleRegFieldVal) && Ext.isEmpty(imeiFieldVal)) {
                 Ext.Msg.alert("Error", "Please enter either Registration or IMEI", Ext.emptyFn);
             } else {
-                Util.logger('val is::', vehicleRegFieldVal);
-                Util.logger('val is::', Ext.isEmpty(imeiFieldVal));
+                Util.logger('val reg is::', vehicleRegFieldVal);
+                Util.logger('val imei is::', imeiFieldVal);
+                Util.logger('val replace fitted is::', replaceUnitFieldVal);
             
-                searchVal = Util.searchVehicle(vehicleRegFieldVal, imeiFieldVal);
+				Util.deinstallVehicleRemotely(vehicleRegFieldVal, imeiFieldVal, replaceUnitFieldVal, confirmDeinstall);
+				/*
+                searchVal = Util.searchVehicleRemotely(vehicleRegFieldVal, imeiFieldVal);
+
                 if(Ext.isEmpty(searchVal)) {
                     Ext.Msg.alert("Error", "No record found", Ext.emptyFn);                    
                 } else {
@@ -702,6 +709,7 @@ Ext.setup({
                         }
                     });
                 }
+				*/
             }
         };
         
@@ -727,7 +735,7 @@ Ext.setup({
                 Util.logger('imeival is::', searchImeiFieldVal);
                 Util.logger('_2ndRefVal is::', search2ndrefFieldVal);
 
-                Util.searchVehicle(searchRegFieldVal, searchImeiFieldVal, search2ndrefFieldVal, updateSearchResults);
+                Util.searchVehicleRemotely(searchRegFieldVal, searchImeiFieldVal, search2ndrefFieldVal, updateSearchResults);
                 
             }
         };
@@ -829,6 +837,23 @@ Ext.setup({
     //        }
         };
 
+        findVehicleInfo = function(vehicleParam, index, curr_state, action, callBack/*, syncCallBack, failCallBack*/) {
+            Util.logger('In findVehicle()');
+
+            vehicleParam.status = 'installed';
+            vehicleParam.updated_at = Api.formatToUTCDate(new Date());
+            vehicleParam.vehicle_id = index+1;
+            vehicleParam.cl_state = Util.getItemState(curr_state, action);
+
+            Util.logger('vehicleParam before saving:::', JSON.stringify(vehicleParam));
+
+            Util.findVehicleRemotely(vehicleParam, action, callBack/*, syncCallBack, failCallBack*/);
+
+            cacheItemLocally(vehicleParam, index);
+            // callBack();
+    //        }
+        };
+
         assignVehicle = function(vehicleParam, index, curr_state, action, callBack/*, syncCallBack, failCallBack*/) {
             Util.logger('In assignVehicle()');
 
@@ -879,6 +904,19 @@ Ext.setup({
             installStep2Panel.hide();
             installStep3Panel.show();
             installBackBtn.show();
+		};
+		
+		updateVehicleModel = function(vehicle) {
+			Util.logger('In updateVehicleModel');
+			
+			newVehicle.imei = vehicle.imei;
+			newVehicle.mileage = vehicle.mileage;
+			newVehicle.second_ref = vehicle.second_ref;
+			
+		};
+		
+		confirmDeinstall = function(vehicle) {
+			Util.logger('In confirmDeinstall');
 		};
 		
 		updateSearchResults = function(vehicles) {
