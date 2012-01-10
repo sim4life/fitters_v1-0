@@ -584,7 +584,6 @@ var Install = {
                 xtype: 'fieldset',
                 title: 'New Install - Step 3 of 3',
                 id: 'install3_field',
-<<<<<<< HEAD
 			}, {
            	    xtype: 'fieldset',
 	            items: [{
