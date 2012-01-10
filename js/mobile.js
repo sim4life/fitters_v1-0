@@ -584,6 +584,7 @@ var Install = {
                 xtype: 'fieldset',
                 title: 'New Install - Step 3 of 3',
                 id: 'install3_field',
+<<<<<<< HEAD
 			}, {
            	    xtype: 'fieldset',
 	            items: [{
@@ -606,6 +607,26 @@ var Install = {
                     hideOnMaskTap: true,
                     autoCapitalize : true,
                     id: 'install_refresh_field'
+=======
+		            xtype: 'fieldset',
+		            items: [{
+		                xtype: 'button',
+		                ui: 'Normal',
+		                text: 'Refresh',
+		                name: 'Refresh',
+		                id: 'install3SubmitButton',
+		                flex: 1,
+		                handler: refreshCB
+		            }, {
+						xtype: 'textareafield',
+	                    name: 'install_refresh',
+	                    // placeHolder: 'Installation Completion Date/Time',
+	                    required: true,
+	                    useClearIcon: true,
+	                    hideOnMaskTap: true,
+	                    autoCapitalize : true,
+	                    id: 'install_refresh_field'
+>>>>>>> ee9a3523f62af6d6e9e6258bcec231ca197430ab
 				}]
             }, {
                 xtype: 'fieldset',
