@@ -623,6 +623,25 @@ Ext.setup({
 		onRefreshStep3InstallBtnTapCB = function() {
             Util.logger('In onRefreshStep3InstallBtnTapCB()');
 			
+			var current_state = 'select',
+            	model = Ext.ModelMgr.create(installStep3Panel.getValues(), 'Vehicle3'),
+            	message = "", errors = model.validate(), newVehicle;
+            
+            var vehicleRefField = Ext.get('installer_name_field');
+            vehicleRefField.down('input').dom.focus();
+            vehicleRefField.down('input').dom.blur();
+
+            if(Ext.is.Android)
+                window.KeyBoard.hideKeyBoard();
+
+                newVehicle = copyToVehicleObject(installStep1FormBase.vehicle1, installStep2FormBase.vehicle2, installStep3FormBase.vehicle3);
+
+			Util.logger('newVehicle is::', newVehicle);
+			if(!Ext.isEmpty(newVehicle)) {
+                Util.refreshVehicleRemotely(newVehicle, 'add', refreshInstallStep3);
+                
+			}
+            
 		};
 		
         onSubmitStep3InstallBtnTapCB = function() {
@@ -891,6 +910,7 @@ Ext.setup({
 		};
 		
 		moveStep1NextStep2 = function(vehicle) {
+			Util.logger('In moveStep1NextStep2');
 			
 			installStep1Panel.hide();
             installStep3Panel.hide();
@@ -899,11 +919,28 @@ Ext.setup({
 		};
 		
 		moveStep2NextStep3 = function(vehicle) {
+			Util.logger('In moveStep2NextStep3');
 			
 			installStep1Panel.hide();
             installStep2Panel.hide();
             installStep3Panel.show();
             installBackBtn.show();
+		};
+		
+		refreshInstallStep3 = function(vehicle) {
+			Util.logger('In refreshInstallStep3');
+			
+			/*
+			installStep1FormBase.vehicle1.set('registration', vehicle.registration);
+			installStep1FormBase.vehicle1.set('make', vehicle.make);
+			installStep1FormBase.vehicle1.set('model', vehicle.model);
+			installStep1FormBase.vehicle1.set('colour', vehicle.colour);
+			*/
+			
+			installStep1FormBase.vehicle1.set('vin', vehicle.vin);
+
+			installStep1Panel.load(installStep1FormBase.vehicle1);
+			
 		};
 		
 		updateVehicleModel = function(vehicle) {
