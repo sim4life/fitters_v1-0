@@ -200,7 +200,7 @@ background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004
     padding-top: 0;
 }
 
-#install_refresh_field text area{
+#install_refresh_field textarea{
     -webkit-border-radius: 0.4em;
     border-radius: 0.4em;
 }
