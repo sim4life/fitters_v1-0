@@ -980,6 +980,19 @@ Ext.setup({
 				
 				searchResults = [];
 				searchResults.push(vehicle);
+
+				vehicle = new Object();
+				vehicle.id = 2;
+				vehicle.registration = 'X847YCC';
+				vehicle.imei = 654321;
+				vehicle.make = 'MERCEDES';
+				vehicle.model = 'ML 270 CDI AUTO';
+				vehicle.colour = 'SILVER';
+				vehicle.vin = 'WDC1631132X734543';
+				vehicle.second_ref = 'You';
+				vehicle.install_completion = new Date();
+
+				searchResults.push(vehicle);
 				//in case data is synced with server and requires update
                 Util.logger('new searchResults is::', searchResults);
 /*
