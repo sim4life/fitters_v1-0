@@ -256,12 +256,12 @@ Ext.setup({
 
 	        var resultsTpl = new Ext.XTemplate(
                 '<div class="resultsMain">',
-                    '<div class="results_list_item registration">registration</div>', 
-					'<div class="results_list_item imei">imei</div>', 
-					'<div class="results_list_item make">make</div>', 
-					'<div class="results_list_item model">model</div>', 
+                    '<div class="results_list_item registration">{registration}</div>', 
+					'<div class="results_list_item imei">{imei}</div>', 
+					'<div class="results_list_item make">{make}</div>', 
+					'<div class="results_list_item model">{model}</div>', 
                 '</div>', 
-                '<p class="installed_time">{installed_time:date("j/n/y G:i:s")}</p>', 
+                '<p class="installed_time">{install_completion:date("j/n/y G:i:s")}</p>', 
 	            {
 	                hasTitle: function(c) {
 	                    return !Ext.isEmpty(c);
@@ -323,7 +323,7 @@ Ext.setup({
             searchMainPanel = Search.createSearchMainPanel(onSubmitSearchBtnTapCB);
 
 	        Ext.regModel('Vehicles', {
-	            fields: ['id', 'registration', 'imei', 'make', 'model', '2nd_ref', 'installed_time', 'client_uid']
+	            fields: ['id', 'registration', 'imei', 'make', 'model', 'colour', 'second_ref', 'install_completion', 'client_uid']
 	        });
 
 	        searchResultsListComp = new Ext.List(Ext.apply(Search.getListBase(resultsTpl, vehicles, Ext.emptyFn)));
@@ -557,11 +557,12 @@ Ext.setup({
                 }
 
 	            // BottomTabsInline.setActiveItem(installPanel);
-/*
+				/*
 	            installStep1Panel.hide();
 	            installStep3Panel.hide();
 	            installStep2Panel.show();
-	            installBackBtn.show();*/
+	            installBackBtn.show();
+				*/
 
 
             } else {
@@ -755,7 +756,6 @@ Ext.setup({
                 Util.logger('_2ndRefVal is::', search2ndrefFieldVal);
 
                 Util.searchVehicleRemotely(searchRegFieldVal, searchImeiFieldVal, search2ndrefFieldVal, updateSearchResults);
-                
             }
         };
         
@@ -958,14 +958,31 @@ Ext.setup({
 		
 		updateSearchResults = function(vehicles) {
 			Util.logger('In updateSearchResults');
-			/*
+			var vehicle = new Object(), searchResults = [];
+
+			searchResults = vehicles;
 			if(Ext.isEmpty(searchResults)) {
                 Ext.Msg.alert("Error", "No record found", Ext.emptyFn);                    
             } else {
-                Util.logger('searchResults is::',searchResults);
+                Util.logger('searchResults is::', searchResults);
                 
 
+				vehicle.id = 1;
+				vehicle.registration = 'MT11BKD';
+				vehicle.imei = 123456;
+				vehicle.make = 'ALFA ROMEO';
+				vehicle.model = 'GIULIETTA VELOCE JTDM-2';
+				vehicle.colour = 'WHITE';
+				vehicle.vin = 'ZAR94000007081769';
+				vehicle.second_ref = 'Me';
+				vehicle.install_completion = new Date();
+				// vehicle.client_uid = 'XYZ';
+				
+				searchResults = [];
+				searchResults.push(vehicle);
 				//in case data is synced with server and requires update
+                Util.logger('new searchResults is::', searchResults);
+/*
 				Ext.each(searchResults, function(item, index, allItems) {
 					journalFormBase.note = Ext.ModelMgr.create({
 					    id: item.id,
@@ -982,13 +999,14 @@ Ext.setup({
 					    'Vehicle');
 								
 		        });
+*/
+			}
 				
-		        journalsListComp.getStore().loadData(notes, false);
+		        searchResultsListComp.getStore().loadData(searchResults, false);
                 searchMainPanel.hide();
 				searchResultsListComp.show();
                 // showVehiclePanel.update(searchVal);
                 // showVehiclePanel.show();
-				*/
             
 		};
 		

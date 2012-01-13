@@ -796,7 +796,7 @@ var Search = {
             indexBar: true,
 */          
             emptyText: '<p class="emptyResultMessage"><strong>You have no search results</strong></p>',
-            grouped: true,
+            grouped: false,
             store: Search.getResultsListStore(resultsData),
             fullscreen: true,
             scroll: 'vertical',
@@ -1063,7 +1063,7 @@ var Util = function() {
 
 			SOAPClient.session_cookie = account_key;
            	Util.logger('registration is:', vehicle.registration);
-           	// Util.logger('imei is:', vehicle.imei);
+           	Util.logger('imei is:', vehicle.imei);
 
 			var params = new SOAPClientParameters();
 			params.add("serviceId", vehicle.imei);
