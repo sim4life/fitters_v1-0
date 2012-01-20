@@ -501,7 +501,7 @@ Ext.setup({
 
 				if(installStep1FormBase.vehicle1.get('registration')) {        
                     newVehicle = copyToVehicleObject(installStep1FormBase.vehicle1);
-                    findVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add', refillStep1Form);
+                    findVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add', refillStep1Form, failSearchStep1Install);
 
                     Util.logger('After updateRecord vehicle1::', installStep1FormBase.vehicle1);
 
@@ -550,7 +550,7 @@ Ext.setup({
 
 					// Util.searchVehicleRemotely(newVehicle.registration, '', '', updateVehicleModel);
 
-                    saveVehicleInfo(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add', moveStep1NextStep2);
+                    saveVehicleInfo(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add', moveStep1NextStep2, failNextStep1Install);
 
                     Util.logger('After updateRecord vehicle1::', installStep1FormBase.vehicle1);
 
@@ -599,7 +599,7 @@ Ext.setup({
                     Util.logger('After updateRecord vehicle2::', installStep2FormBase.vehicle2);
 
                     newVehicle = copyToVehicleObject(installStep1FormBase.vehicle1, installStep2FormBase.vehicle2);
-                    assignVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add', moveStep2NextStep3);
+                    assignVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add', moveStep2NextStep3, failNextStep2Install);
                     
                 }
 
@@ -639,7 +639,7 @@ Ext.setup({
 
 			Util.logger('newVehicle is::', newVehicle);
 			if(!Ext.isEmpty(newVehicle)) {
-                Util.refreshVehicleRemotely(newVehicle, 'add', refreshInstallStep3);
+                Util.refreshVehicleRemotely(newVehicle, 'add', refreshInstallStep3, failRefreshStep3Install);
                 
 			}
             
@@ -670,7 +670,7 @@ Ext.setup({
                     
                     // localStorage[entity+'_'+user_id+'['+index+']'] = Ext.encode(item);
                     newVehicle = copyToVehicleObject(installStep1FormBase.vehicle1, installStep2FormBase.vehicle2, installStep3FormBase.vehicle3);
-                    saveVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add');
+                    saveVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add', moveStep3SubmitHome, failSubmitStep3Install);
                 }
             } else {
                 Ext.each(errors.items, function(rec, i) {
@@ -680,14 +680,6 @@ Ext.setup({
                 Ext.Msg.alert("Oops!", message, Ext.emptyFn);
             }
             
-            // BottomTabsInline.setActiveItem(installPanel);
-            installStep1Panel.hide();
-            installStep2Panel.hide();
-            installStep3Panel.hide();
-            installBackBtn.hide();
-            
-            showVehiclePanel.update(newVehicle);
-            showVehiclePanel.show();
             
         };
         
@@ -712,7 +704,7 @@ Ext.setup({
                 Util.logger('val imei is::', imeiFieldVal);
                 Util.logger('val replace fitted is::', replaceUnitFieldVal);
             
-				Util.deinstallVehicleRemotely(vehicleRegFieldVal, imeiFieldVal, replaceUnitFieldVal, confirmDeinstall);
+				Util.deinstallVehicleRemotely(vehicleRegFieldVal, imeiFieldVal, replaceUnitFieldVal, confirmDeinstall, failDeinstall);
 				/*
                 searchVal = Util.searchVehicleRemotely(vehicleRegFieldVal, imeiFieldVal);
 
@@ -755,7 +747,7 @@ Ext.setup({
                 Util.logger('imeival is::', searchImeiFieldVal);
                 Util.logger('_2ndRefVal is::', search2ndrefFieldVal);
 
-                Util.searchVehicleRemotely(searchRegFieldVal, searchImeiFieldVal, search2ndrefFieldVal, updateSearchResults);
+                Util.searchVehicleRemotely(searchRegFieldVal, searchImeiFieldVal, search2ndrefFieldVal, updateSearchResults, failSearch);
             }
         };
         
@@ -805,7 +797,7 @@ Ext.setup({
             return vehicleObj;
         };
 
-        saveVehicle = function(vehicleParam, index, curr_state, action/*, callBack, syncCallBack, failCallBack*/) {
+        saveVehicle = function(vehicleParam, index, curr_state, action, callBack, failCallBack/*, syncCallBack*/) {
             Util.logger('In saveVehicle()');
 
             vehicleParam.status = 'installed';
@@ -815,14 +807,14 @@ Ext.setup({
 
             Util.logger('vehicleParam before saving:::', JSON.stringify(vehicleParam));
 
-            // Util.remoteSyncItem(vehicleParam, action/*, callBack, syncCallBack, failCallBack*/);
+            Util.saveVehicleRemotely(vehicleParam, action, callBack, failCallBack/*, syncCallBack*/);
 
             cacheItemLocally(vehicleParam, index);
             // callBack();
     //        }
         };
 
-        findVehicle = function(vehicleParam, index, curr_state, action, callBack/*, syncCallBack, failCallBack*/) {
+        findVehicle = function(vehicleParam, index, curr_state, action, callBack, failCallBack/*, syncCallBack*/) {
             Util.logger('In findVehicle()');
 
             vehicleParam.status = 'installed';
@@ -832,14 +824,14 @@ Ext.setup({
 
             Util.logger('vehicleParam before saving:::', JSON.stringify(vehicleParam));
 
-            Util.findVehicleRemotely(vehicleParam, action, callBack/*, syncCallBack, failCallBack*/);
+            Util.findVehicleRemotely(vehicleParam, action, callBack, failCallBack/*, syncCallBack*/);
 
             cacheItemLocally(vehicleParam, index);
             // callBack();
     //        }
         };
 
-        saveVehicleInfo = function(vehicleParam, index, curr_state, action, callBack/*, syncCallBack, failCallBack*/) {
+        saveVehicleInfo = function(vehicleParam, index, curr_state, action, callBack, failCallBack/*, syncCallBack*/) {
             Util.logger('In saveVehicleInfo()');
 
             vehicleParam.status = 'installed';
@@ -849,7 +841,7 @@ Ext.setup({
 
             Util.logger('vehicleParam before saving:::', JSON.stringify(vehicleParam));
 
-            Util.saveVehicleInfoRemotely(vehicleParam, action, callBack/*, syncCallBack, failCallBack*/);
+            Util.saveVehicleInfoRemotely(vehicleParam, action, callBack, failCallBack/*, syncCallBack*/);
 
             cacheItemLocally(vehicleParam, index);
             // callBack();
@@ -873,7 +865,7 @@ Ext.setup({
     //        }
         };
 
-        assignVehicle = function(vehicleParam, index, curr_state, action, callBack/*, syncCallBack, failCallBack*/) {
+        assignVehicle = function(vehicleParam, index, curr_state, action, callBack, failCallBack/*, syncCallBack*/) {
             Util.logger('In assignVehicle()');
 
             vehicleParam.status = 'installed';
@@ -883,7 +875,7 @@ Ext.setup({
 
             Util.logger('vehicleParam before saving:::', JSON.stringify(vehicleParam));
 
-            Util.assignVehicleRemotely(vehicleParam, action, callBack/*, syncCallBack, failCallBack*/);
+            Util.assignVehicleRemotely(vehicleParam, action, callBack, failCallBack/*, syncCallBack*/);
 
             cacheItemLocally(vehicleParam, index);
             // callBack();
@@ -943,6 +935,20 @@ Ext.setup({
 			
 		};
 		
+		
+		moveStep3SubmitHome = function(vehicle) {
+			Util.logger('In moveStep3SubmitHome');
+	        // BottomTabsInline.setActiveItem(installPanel);
+	        installStep1Panel.hide();
+	        installStep2Panel.hide();
+	        installStep3Panel.hide();
+	        installBackBtn.hide();
+        
+	        showVehiclePanel.update(newVehicle);
+	        showVehiclePanel.show();
+		
+		};
+
 		updateVehicleModel = function(vehicle) {
 			Util.logger('In updateVehicleModel');
 			
@@ -954,6 +960,10 @@ Ext.setup({
 		
 		confirmDeinstall = function(vehicle) {
 			Util.logger('In confirmDeinstall');
+
+			//show confirm box here
+			deinstallPanel.hide();
+            
 		};
 		
 		updateSearchResults = function(vehicles) {
@@ -1021,6 +1031,107 @@ Ext.setup({
                 // showVehiclePanel.update(searchVal);
                 // showVehiclePanel.show();
             
+		};
+		
+		failSearchStep1Install = function(vehicle) {
+			Util.logger('In failSearchStep1Install');
+			
+			installStep1Panel.hide();
+            installStep3Panel.hide();
+            installStep2Panel.hide();
+            installBackBtn.hide();
+			
+			vehicle.cl_state = 'step1';
+			
+			failForwardToLogin(vehicle);
+		};
+		
+		failNextStep1Install = function(vehicle) {
+			Util.logger('In failNextStep1Install');
+			
+			installStep1Panel.hide();
+            installStep3Panel.hide();
+            installStep2Panel.hide();
+            installBackBtn.hide();
+			
+			vehicle.cl_state = 'step1';
+			
+			failForwardToLogin(vehicle);
+		};
+		
+		failNextStep2Install = function(vehicle) {
+			Util.logger('In failNextStep2Install');
+			
+			installStep1Panel.hide();
+            installStep3Panel.hide();
+            installStep2Panel.hide();
+            installBackBtn.hide();
+			
+			vehicle.cl_state = 'step2';
+			
+			failForwardToLogin(vehicle);
+		};
+		
+		failRefreshStep3Install = function(vehicle) {
+			Util.logger('In failNextStep3Install');
+			
+			installStep1Panel.hide();
+            installStep3Panel.hide();
+            installStep2Panel.hide();
+            installBackBtn.hide();
+
+			vehicle.cl_state = 'step3';
+			
+			failForwardToLogin(vehicle);
+		};
+		
+		failSubmitStep3Install = function(vehicle) {
+			Util.logger('In failSubmitStep3Install');
+			
+			installStep1Panel.hide();
+            installStep3Panel.hide();
+            installStep2Panel.hide();
+            installBackBtn.hide();
+
+			vehicle.cl_state = 'step3';
+			
+			failForwardToLogin(vehicle);
+		};
+		
+		failDeinstall = function(vehicle) {
+			Util.logger('In failDeinstall');
+			
+			installStep1Panel.hide();
+            installStep3Panel.hide();
+            installStep2Panel.hide();
+            deinstallPanel.hide();
+
+			vehicle.cl_state = 'deinstall';
+			
+			failForwardToLogin(vehicle);
+		};
+		
+		failSearch = function(vehicle) {
+			Util.logger('In failSearch');
+			
+			installStep1Panel.hide();
+            installStep3Panel.hide();
+            installStep2Panel.hide();
+            deinstallPanel.hide();
+
+            searchMainPanel.hide();
+			searchResultsListComp.hide();
+
+			vehicle.cl_state = 'search';
+			
+			failForwardToLogin(vehicle);
+		};
+        
+		failForwardToLogin = function(vehicle) {
+
+			localStorage['tmp_vehicle'] = Ext.encode(vehicle);
+			
+			form.show();
 		};
 		
         cacheItemLocally = function(item, index) {
