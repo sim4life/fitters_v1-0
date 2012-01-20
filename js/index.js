@@ -256,12 +256,12 @@ Ext.setup({
 
 	        var resultsTpl = new Ext.XTemplate(
                 '<div class="resultsMain">',
-                    '<div class="results_list_item registration">{registration}</div>', 
-					'<div class="results_list_item imei">{imei}</div>', 
-					'<div class="results_list_item make">{make}</div>', 
+                    '<div class="results_list_item make">{make}</div>', 
 					'<div class="results_list_item model">{model}</div>', 
+                    '<div class="results_list_item registration">Registration: {registration}</div>', 
+					'<div class="results_list_item imei">IMEI: {imei}</div>', 
                 '</div>', 
-                '<p class="installed_time">{install_completion:date("j/n/y G:i:s")}</p>', 
+                '<p class="installed_time">Installed: {install_completion:date("j/n/y G:i:s")}</p>', 
 	            {
 	                hasTitle: function(c) {
 	                    return !Ext.isEmpty(c);
