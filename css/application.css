@@ -3,7 +3,7 @@
 #loginButton {
     margin-bottom: 20px;
     text-shadow: none;
-background-image: none;
+    background-image: none;
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FF0084), color-stop(0%,#FF4CA5), color-stop(52%,#FF49A4), color-stop(54%,#FF0084), color-stop(100%,#FF0084));
     border:none;
 }
@@ -13,8 +13,7 @@ background-image: none;
 background:-webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004A), color-stop(49%,#E80078), color-stop(98%,#90004A));
 }
 .x-tabbar-light.x-docked-bottom .x-tab-active {
-    background-color: #E10D7B;
-    background-image: none;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FF0084), color-stop(0%,#FF4CA5), color-stop(52%,#FF49A4), color-stop(54%,#FF0084), color-stop(100%,#FF0084));
 }
 
 .x-tabbar-light {
