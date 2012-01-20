@@ -857,6 +857,7 @@ var Util = function() {
 		saveVehicleInfoRemotely: saveVehicleInfoRemotely,
 		assignVehicleRemotely: assignVehicleRemotely,
 		refreshVehicleRemotely: refreshVehicleRemotely,
+		saveVehicleRemotely: saveVehicleRemotely,
 		deinstallVehicleRemotely: deinstallVehicleRemotely
     };
     
@@ -935,7 +936,7 @@ var Util = function() {
         
     };
 
-	function findVehicleRemotely(vehicle, action, callBack) {
+	function findVehicleRemotely(vehicle, action, callBack, failCallBack) {
 	    Util.logger('In findVehicleRemotely()');
         
 		// SOAPClient.username = uname;
@@ -959,6 +960,11 @@ var Util = function() {
 	           	Util.logger('SOAP response is:', res1);
 	           	Util.logger('SOAP response2 is:', res2);
 
+				/*
+				if(failed)
+					failCallBack(vehicle);
+				else {}
+				*/
 				retVehicleObj.registration = res1.VehicleRegistration;
 				retVehicleObj.make = res1.DvlaMake;
 				retVehicleObj.model = res1.DvlaModel;
@@ -979,7 +985,7 @@ var Util = function() {
 		}
 	};
 	
-	function saveVehicleInfoRemotely(vehicle, action, callBack) {
+	function saveVehicleInfoRemotely(vehicle, action, callBack, failCallBack) {
 	    Util.logger('In saveVehicleInfoRemotely()');
         
 		// SOAPClient.username = uname;
@@ -1010,6 +1016,12 @@ var Util = function() {
 	           	Util.logger('SOAP response is:', res1);
 	           	Util.logger('SOAP response2 is:', res2);
 
+				/*
+				if(failed)
+					failCallBack(vehicle);
+				else {}
+				*/
+
 				retVehicleObj.registration = res1.VehicleRegistration;
 				retVehicleObj.make = res1.DvlaMake;
 				retVehicleObj.model = res1.DvlaModel;
@@ -1023,6 +1035,12 @@ var Util = function() {
 				resp = SOAPClient.invoke(apiDomain, "GetInstallationLogByVehicleRegistration", params, true, function(resp1, resp2) {
 		           Util.logger('SOAP again response is:', resp1);
 		           Util.logger('SOAP again response2 is:', resp2);
+
+					/*
+					if(failed)
+						failCallBack(vehicle);
+					else {}
+					*/
 
 					// retVehicleObj.registration = resp1.VehicleRegistration;
 					// retVehicleObj.make = resp1.DvlaMake;
@@ -1049,7 +1067,7 @@ var Util = function() {
 		}
 	};
 	
-	function refreshVehicleRemotely(vehicle, action, callBack) {
+	function refreshVehicleRemotely(vehicle, action, callBack, failCallBack) {
 	    Util.logger('In refreshVehicleRemotely()');
 		
 		var retVehicleObj = new Object();
@@ -1073,6 +1091,12 @@ var Util = function() {
 	            Util.logger('SOAP response is:', res1);
 	            Util.logger('SOAP response2 is:', res2);
 
+				/*
+				if(failed)
+					failCallBack(vehicle);
+				else {}
+				*/
+
 				Ext.getBody().unmask();
 
 				callBack(retVehicleObj);
@@ -1083,7 +1107,7 @@ var Util = function() {
 		
 	};
 	
-	function assignVehicleRemotely(vehicle, action, callBack) {
+	function assignVehicleRemotely(vehicle, action, callBack, failCallBack) {
 	    Util.logger('In assignVehicleRemotely()');
         
 		var retVehicleObj = new Object();
@@ -1109,6 +1133,14 @@ var Util = function() {
 			var resp = SOAPClient.invoke(apiDomain, "AssignIMEIToRegistration", params, true, function(res1, res2) {
 	            Util.logger('SOAP response is:', res1);
 	            Util.logger('SOAP response2 is:', res2);
+				/*
+				if(failed)
+					failCallBack(vehicle);
+				else {}
+				*/
+
+	
+	
 /*
 				retVehicleObj.registration = res1.VehicleRegistration;
 				retVehicleObj.make = res1.DvlaMake;
@@ -1139,7 +1171,7 @@ var Util = function() {
 		}
 	};
     
-    function searchVehicleRemotely(vehicleRegVal, imeiVal, _2ndRefVal, callBack) {
+    function searchVehicleRemotely(vehicleRegVal, imeiVal, _2ndRefVal, callBack, failCallBack) {
 		var remoteMethod, retVehicleObj = new Object();
 
 		// SOAPClient.username = uname;
@@ -1172,6 +1204,12 @@ var Util = function() {
 	           Util.logger('SOAP response is:', res1);
 	           Util.logger('SOAP response2 is:', res2);
 
+				/*
+				if(failed)
+					failCallBack(vehicle);
+				else {}
+				*/
+
 				retVehicleObj.registration = res1.VehicleRegistration;
 				retVehicleObj.make = res1.DvlaMake;
 				retVehicleObj.model = res1.DvlaModel;
@@ -1190,61 +1228,102 @@ var Util = function() {
         // return null;
     };
 
-		function deinstallVehicleRemotely(registration, imei, isReplacementUnit, callBack) {
-		    Util.logger('In deinstallVehicleRemotely()');
+	function saveVehicleRemotely(vehicle, action, callBack, failCallBack) {
+	    Util.logger('In saveVehicleRemotely()');
+		
+		var retVehicleObj = new Object();
 
-			var retVehicleObj = new Object();
+		// SOAPClient.username = uname;
+		// SOAPClient.password = pswd;
+		var account_key = Api.getLocalStorageProp('account_key');
+		Util.logger('account_key is:', account_key);
 
-			// SOAPClient.username = uname;
-			// SOAPClient.password = pswd;
-			var account_key = Api.getLocalStorageProp('account_key');
-			Util.logger('account_key is:', account_key);
+		if(!Ext.isEmpty(account_key)) {
 
-			if(!Ext.isEmpty(account_key)) {
+			SOAPClient.session_cookie = account_key;
+           	Util.logger('registration is:', vehicle.registration);
+           	Util.logger('imei is:', vehicle.imei);
 
-				SOAPClient.session_cookie = account_key;
-	           	Util.logger('registration is:', registration);
-	           	Util.logger('imei is:', imei);
-	           	Util.logger('replacementUnit is:', isReplacementUnit);
+			var params = new SOAPClientParameters();
+			// params.add("serviceId", vehicle.imei);
+			// params.add("serviceId", 654321);
+			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
+			var resp = SOAPClient.invoke(apiDomain, "SaveInstallationLog", params, true, function(res1, res2) {
+	            Util.logger('SOAP response is:', res1);
+	            Util.logger('SOAP response2 is:', res2);
 
-				var params = new SOAPClientParameters();
-				params.add("vehicleRegistration", registration);
-				params.add("imei", imei);
-				params.add("replacementFitted", isReplacementUnit);
+				/*
+				if(failed)
+					failCallBack(vehicle);
+				else {}
+				*/
 
-				Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
-				var resp = SOAPClient.invoke(apiDomain, "DeInstall", params, true, function(res1, res2) {
-		            Util.logger('SOAP response is:', res1);
-		            Util.logger('SOAP response2 is:', res2);
-	/*
-					retVehicleObj.registration = res1.VehicleRegistration;
-					retVehicleObj.make = res1.DvlaMake;
-					retVehicleObj.model = res1.DvlaModel;
-					retVehicleObj.colour = res1.DvlaColour;
-					retVehicleObj.vin = res1.DvlaVin;
-	*/				
-					// SOAPClient.username = uname;
-					// SOAPClient.password = pswd;
-					// if(SOAPClient.session_cookie)
-						// Api.setLocalStorageProp('account_key', SOAPClient.session_cookie);
-					/*
-					params = new SOAPClientParameters();
-					params.add("VehicleRegistration", "sdfds3243");
-					SOAPClient.invoke(apiDomain, "GetVehicleInformation", params, true, function(r1, r22) {
-						Util.logger('SOAP response is:', r1);
-			            Util.logger('SOAP response2 is:', r22);
+				Ext.getBody().unmask();
 
-			           });
+				callBack(retVehicleObj);
+				// succCallback();
 
-					*/
-					Ext.getBody().unmask();
+			});
+		}
+		
+	};
+	
 
-					callBack(retVehicleObj);
-					// succCallback();
+	function deinstallVehicleRemotely(registration, imei, isReplacementUnit, callBack) {
+	    Util.logger('In deinstallVehicleRemotely()');
 
-				});
-			}
-		};
+		var retVehicleObj = new Object();
+
+		// SOAPClient.username = uname;
+		// SOAPClient.password = pswd;
+		var account_key = Api.getLocalStorageProp('account_key');
+		Util.logger('account_key is:', account_key);
+
+		if(!Ext.isEmpty(account_key)) {
+
+			SOAPClient.session_cookie = account_key;
+           	Util.logger('registration is:', registration);
+           	Util.logger('imei is:', imei);
+           	Util.logger('replacementUnit is:', isReplacementUnit);
+
+			var params = new SOAPClientParameters();
+			params.add("vehicleRegistration", registration);
+			params.add("imei", imei);
+			params.add("replacementFitted", isReplacementUnit);
+
+			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
+			var resp = SOAPClient.invoke(apiDomain, "DeInstall", params, true, function(res1, res2) {
+	            Util.logger('SOAP response is:', res1);
+	            Util.logger('SOAP response2 is:', res2);
+/*
+				retVehicleObj.registration = res1.VehicleRegistration;
+				retVehicleObj.make = res1.DvlaMake;
+				retVehicleObj.model = res1.DvlaModel;
+				retVehicleObj.colour = res1.DvlaColour;
+				retVehicleObj.vin = res1.DvlaVin;
+*/				
+				// SOAPClient.username = uname;
+				// SOAPClient.password = pswd;
+				// if(SOAPClient.session_cookie)
+					// Api.setLocalStorageProp('account_key', SOAPClient.session_cookie);
+				/*
+				params = new SOAPClientParameters();
+				params.add("VehicleRegistration", "sdfds3243");
+				SOAPClient.invoke(apiDomain, "GetVehicleInformation", params, true, function(r1, r22) {
+					Util.logger('SOAP response is:', r1);
+		            Util.logger('SOAP response2 is:', r22);
+
+		           });
+
+				*/
+				Ext.getBody().unmask();
+
+				callBack(retVehicleObj);
+				// succCallback();
+
+			});
+		}
+	};
 
 
 	
