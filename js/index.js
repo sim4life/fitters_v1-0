@@ -40,9 +40,9 @@ Ext.setup({
             if(Ext.isEmpty(BottomTabsInline)) {
                 displayPanelCB = renderAllWithDataCB;
             } 
-            /*else {
+            else {
                 displayPanelCB = updatePanelWithDataCB;
-            }*/
+            }
         
             passwordField2 = Ext.get('loginPasswordField');
             passwordField2.down('input').dom.focus();
@@ -433,6 +433,19 @@ Ext.setup({
             renderAllComp();
             
             // performMasterSyncCB();
+            
+        };
+
+        updatePanelWithDataCB = function() {
+            Util.logger('>>>>>>>>>>>>>>>>>>>>updatePanelWithDataCB called!<<<<<<<<<<<<<<<<<<<<<<<<<');
+            // var user_id = Api.getLocalStorageProp('user_id');
+			// Util.logger('user_id is::', user_id);
+			// Util.logger('isEmpty is::', Ext.isEmpty(Api.getLocalStorageProp('feed_'+user_id+'[0]')));
+			
+            Init.initState();
+			
+            //in case the logout action occurred
+            BottomTabsInline.show();
             
         };
 
@@ -1131,6 +1144,11 @@ Ext.setup({
 
 			localStorage['tmp_vehicle'] = Ext.encode(vehicle);
 			
+			BottomTabsInline.hide();
+            if(form === undefined)
+				form = new Ext.form.FormPanel(loginFormBase);
+	            
+			form.reset();
 			form.show();
 		};
 		

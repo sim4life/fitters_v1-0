@@ -960,23 +960,36 @@ var Util = function() {
 	           	Util.logger('SOAP response is:', res1);
 	           	Util.logger('SOAP response2 is:', res2);
 
-				/*
-				if(failed)
-					failCallBack(vehicle);
-				else {}
-				*/
-				retVehicleObj.registration = res1.VehicleRegistration;
-				retVehicleObj.make = res1.DvlaMake;
-				retVehicleObj.model = res1.DvlaModel;
-				retVehicleObj.colour = res1.DvlaColour;
-				retVehicleObj.vin = res1.DvlaVin;
-				// SOAPClient.username = uname;
-				// SOAPClient.password = pswd;
-				// if(SOAPClient.session_cookie)
-					// Api.setLocalStorageProp('account_key', SOAPClient.session_cookie);
+				Util.logger('SOAP response message is:', res1.message);
+				Util.logger('SOAP response2 message is:', res2.message);
 
-				callBack(retVehicleObj);
+				Util.logger('SOAP response2 faultstring is:', res2.getElementsByTagName("faultstring"));				
+/*
+				Util.logger('SOAP response2 faultstring[0] is:', res2.getElementsByTagName("faultstring")[0]);
+				Util.logger('SOAP response2 faultstring[0].childNodes[0] is:', res2.getElementsByTagName("faultstring")[0].childNodes[0]);
+				Util.logger('SOAP response2 faultstring complete is:', res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue);
+				Util.logger('SOAP response2 faultcode complete is:', res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue);
+*/
 				
+				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
+					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
+					Util.logger('Not logged in');
+					failCallBack(vehicle);
+				} else {
+					Util.logger('Logged in');
+					retVehicleObj.registration = res1.VehicleRegistration;
+					retVehicleObj.make = res1.DvlaMake;
+					retVehicleObj.model = res1.DvlaModel;
+					retVehicleObj.colour = res1.DvlaColour;
+					retVehicleObj.vin = res1.DvlaVin;
+					// SOAPClient.username = uname;
+					// SOAPClient.password = pswd;
+					// if(SOAPClient.session_cookie)
+						// Api.setLocalStorageProp('account_key', SOAPClient.session_cookie);
+
+					callBack(retVehicleObj);
+				}				
 				Ext.getBody().unmask();
 
 				// succCallback();
@@ -1016,47 +1029,50 @@ var Util = function() {
 	           	Util.logger('SOAP response is:', res1);
 	           	Util.logger('SOAP response2 is:', res2);
 
-				/*
-				if(failed)
+				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
+					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
+					Util.logger('Not logged in');
 					failCallBack(vehicle);
-				else {}
-				*/
+				} else {
 
-				retVehicleObj.registration = res1.VehicleRegistration;
-				retVehicleObj.make = res1.DvlaMake;
-				retVehicleObj.model = res1.DvlaModel;
-				retVehicleObj.colour = res1.DvlaColour;
-				retVehicleObj.vin = res1.DvlaVin;
+					retVehicleObj.registration = res1.VehicleRegistration;
+					retVehicleObj.make = res1.DvlaMake;
+					retVehicleObj.model = res1.DvlaModel;
+					retVehicleObj.colour = res1.DvlaColour;
+					retVehicleObj.vin = res1.DvlaVin;
 
-				params = new SOAPClientParameters();
-				params.add("vehicleRegistration", vehicle.registration);
+					params = new SOAPClientParameters();
+					params.add("vehicleRegistration", vehicle.registration);
 
-				// Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
-				resp = SOAPClient.invoke(apiDomain, "GetInstallationLogByVehicleRegistration", params, true, function(resp1, resp2) {
-		           Util.logger('SOAP again response is:', resp1);
-		           Util.logger('SOAP again response2 is:', resp2);
+					// Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
+					resp = SOAPClient.invoke(apiDomain, "GetInstallationLogByVehicleRegistration", params, true, function(resp1, resp2) {
+			           Util.logger('SOAP again response is:', resp1);
+			           Util.logger('SOAP again response2 is:', resp2);
 
-					/*
-					if(failed)
-						failCallBack(vehicle);
-					else {}
-					*/
+						if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+							res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
+							res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
+							Util.logger('Not logged in');
+							failCallBack(vehicle);
+						} else {
 
-					// retVehicleObj.registration = resp1.VehicleRegistration;
-					// retVehicleObj.make = resp1.DvlaMake;
-					// retVehicleObj.model = resp1.DvlaModel;
-					// retVehicleObj.colour = resp1.DvlaColour;
-					// retVehicleObj.vin = resp1.DvlaVin;
-					retVehicleObj.imei = resp1.Imei;
-					retVehicleObj.second_ref = resp1.secondReference;
-					retVehicleObj.mileage = resp1.InitialMileage;
+							// retVehicleObj.registration = resp1.VehicleRegistration;
+							// retVehicleObj.make = resp1.DvlaMake;
+							// retVehicleObj.model = resp1.DvlaModel;
+							// retVehicleObj.colour = resp1.DvlaColour;
+							// retVehicleObj.vin = resp1.DvlaVin;
+							retVehicleObj.imei = resp1.Imei;
+							retVehicleObj.second_ref = resp1.secondReference;
+							retVehicleObj.mileage = resp1.InitialMileage;
 
-					Ext.getBody().unmask();
+							callBack(retVehicleObj);
+						}
+						Ext.getBody().unmask();
 
-					callBack(retVehicleObj);
+					});
 
-				});
-
+				}
 				// Ext.getBody().unmask();
 
 				// callBack(retVehicleObj);
@@ -1091,15 +1107,18 @@ var Util = function() {
 	            Util.logger('SOAP response is:', res1);
 	            Util.logger('SOAP response2 is:', res2);
 
-				/*
-				if(failed)
+				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
+					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
+					Util.logger('Not logged in');
 					failCallBack(vehicle);
-				else {}
-				*/
+				} else {
 
+					callBack(retVehicleObj);
+				}
+				
 				Ext.getBody().unmask();
 
-				callBack(retVehicleObj);
 				// succCallback();
 
 			});
@@ -1133,13 +1152,13 @@ var Util = function() {
 			var resp = SOAPClient.invoke(apiDomain, "AssignIMEIToRegistration", params, true, function(res1, res2) {
 	            Util.logger('SOAP response is:', res1);
 	            Util.logger('SOAP response2 is:', res2);
-				/*
-				if(failed)
+				
+				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
+					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
+					Util.logger('Not logged in');
 					failCallBack(vehicle);
-				else {}
-				*/
-
-	
+				} else {
 	
 /*
 				retVehicleObj.registration = res1.VehicleRegistration;
@@ -1162,9 +1181,12 @@ var Util = function() {
 		           });
 
 				*/
+
+					callBack(retVehicleObj);
+				}
+
 				Ext.getBody().unmask();
 
-				callBack(retVehicleObj);
 				// succCallback();
 
 			});
@@ -1204,24 +1226,26 @@ var Util = function() {
 	           Util.logger('SOAP response is:', res1);
 	           Util.logger('SOAP response2 is:', res2);
 
-				/*
-				if(failed)
+				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
+					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
+					Util.logger('Not logged in');
 					failCallBack(vehicle);
-				else {}
-				*/
+				} else {
 
-				retVehicleObj.registration = res1.VehicleRegistration;
-				retVehicleObj.make = res1.DvlaMake;
-				retVehicleObj.model = res1.DvlaModel;
-				retVehicleObj.colour = res1.DvlaColour;
-				retVehicleObj.vin = res1.DvlaVin;
-				retVehicleObj.imei = res1.Imei;
-				retVehicleObj.second_ref = res1.secondReference;
-				retVehicleObj.mileage = res1.InitialMileage;
+					retVehicleObj.registration = res1.VehicleRegistration;
+					retVehicleObj.make = res1.DvlaMake;
+					retVehicleObj.model = res1.DvlaModel;
+					retVehicleObj.colour = res1.DvlaColour;
+					retVehicleObj.vin = res1.DvlaVin;
+					retVehicleObj.imei = res1.Imei;
+					retVehicleObj.second_ref = res1.secondReference;
+					retVehicleObj.mileage = res1.InitialMileage;
 
+					callBack(retVehicleObj);
+				}
 				Ext.getBody().unmask();
 
-				callBack(retVehicleObj);
 
 			});
 		}
@@ -1252,15 +1276,17 @@ var Util = function() {
 	            Util.logger('SOAP response is:', res1);
 	            Util.logger('SOAP response2 is:', res2);
 
-				/*
-				if(failed)
+				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
+					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
+					Util.logger('Not logged in');
 					failCallBack(vehicle);
-				else {}
-				*/
+				} else {
 
+					callBack(retVehicleObj);
+				}
 				Ext.getBody().unmask();
 
-				callBack(retVehicleObj);
 				// succCallback();
 
 			});
@@ -1295,6 +1321,14 @@ var Util = function() {
 			var resp = SOAPClient.invoke(apiDomain, "DeInstall", params, true, function(res1, res2) {
 	            Util.logger('SOAP response is:', res1);
 	            Util.logger('SOAP response2 is:', res2);
+	
+				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
+					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
+					Util.logger('Not logged in');
+					failCallBack(vehicle);
+				} else {
+				
 /*
 				retVehicleObj.registration = res1.VehicleRegistration;
 				retVehicleObj.make = res1.DvlaMake;
@@ -1316,9 +1350,12 @@ var Util = function() {
 		           });
 
 				*/
+					callBack(retVehicleObj);
+				}
+
+
 				Ext.getBody().unmask();
 
-				callBack(retVehicleObj);
 				// succCallback();
 
 			});
