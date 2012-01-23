@@ -8,7 +8,8 @@ Ext.setup({
     onReady: function() {
         var form, loginFormBase;
         BottomTabsInline = '';
-        
+        newVehicle = new Object();
+
         Util.logger('Abt to register deviceready event!');
         // if(Ext.is.Android)
         document.addEventListener("deviceready", onDeviceReady, false);
@@ -120,7 +121,7 @@ Ext.setup({
         renderAllComp = function() {
             Util.logger('renderAllComp() called');
             
-            var homePanel, vehicles = [];
+            var vehicles = [];
             
             panelIndex = {home: 0, install: 1, deinstall: 2, search: 3, help: 4};
             
@@ -156,6 +157,8 @@ Ext.setup({
             Ext.regModel('Vehicle', { 
                 fields: [
                     {name: 'id', type: 'int'},
+                    {name: 'service_id', type: 'int'},
+                    {name: 'user_id', type: 'int'},
                     {name: 'registration', type: 'string'},
                     {name: 'make', type: 'string'},
                     {name: 'model', type: 'string'},
@@ -166,7 +169,14 @@ Ext.setup({
                     {name: 'second_ref', type: 'string'},
                     {name: 'install_completion', type: 'date'},
                     {name: 'installer_name', type: 'string'},
-                    {name: 'notes', type: 'string'},
+                    {name: 'install_notes', type: 'string'},
+                    {name: 'install_refresh', type: 'string'},
+                    {name: 'install_status', type: 'boolean'},
+                    {name: 'replace_unit', type: 'boolean'},
+                    {name: 'cap_confirmed', type: 'boolean'},
+                    {name: 'signal_received', type: 'boolean'},
+                    {name: 'service_time', type: 'date'},
+                    {name: 'remote_error', type: 'string'},
                     {name: 'vehicle_id', type: 'int'},
                     {name: 'cl_state', type: 'string'},
                     {name: 'action', type: 'string'}
@@ -217,7 +227,8 @@ Ext.setup({
                     {name: 'install_completion', type: 'date'},
                     {name: 'installer_name', type: 'string'},
                     // {name: 'rep_name', type: 'string'},
-                    {name: 'notes', type: 'string'},
+                    {name: 'install_notes', type: 'string'},
+                    {name: 'install_refresh', type: 'string'},
                     {name: 'vehicle_id', type: 'int'},
                     {name: 'cl_state', type: 'string'},
                     // {name: 'client_uid', type: 'string'},
@@ -238,7 +249,7 @@ Ext.setup({
             installStep1Panel = new Ext.form.FormPanel(installStep1FormBase);
             installStep2FormBase = Install.createInstallStep2Panel(onNextStep2InstallBtnTapCB);
             installStep2Panel = new Ext.form.FormPanel(installStep2FormBase);
-            installStep3FormBase = Install.createInstallStep3Panel(onRefreshStep3InstallBtnTapCB, onSubmitStep3InstallBtnTapCB);
+            installStep3FormBase = Install.createInstallStep3Panel(onRefreshStep3InstallBtnTapCB, onCompStep3InstallBtnTapCB);
             installStep3Panel = new Ext.form.FormPanel(installStep3FormBase);
 
             var vehicleTpl = new Ext.XTemplate(
@@ -314,10 +325,13 @@ Ext.setup({
                 dockedItems: [ deinstallNavBar ]
             });
             
+            searchBackBtn = new Ext.Button(Api.getButtonBase('Back', true, 'install_back', onBackSearchBtnTap));
+            
             searchNavBar = new Ext.Toolbar({
                 ui: 'dark',
                 dock: 'top',
-                title: 'OnBoard Fitters'
+                title: 'OnBoard Fitters',
+				items: [searchBackBtn]
             });
 
             searchMainPanel = Search.createSearchMainPanel(onSubmitSearchBtnTapCB);
@@ -394,7 +408,7 @@ Ext.setup({
                 defaults: {
                     scroll: 'vertical'
                 },
-                items: [ homePanel, installPanel, deinstallPanel, searchPanel, helpPanel],
+                items: [ homePanel, installPanel, deinstallPanel, searchPanel, helpPanel ],
                 listeners: {
                     cardswitch : function(cont, newCard, oldCard, index, isAnimated) {
                         //change: function(tabBar, tab, card) may also be used
@@ -441,11 +455,81 @@ Ext.setup({
             // var user_id = Api.getLocalStorageProp('user_id');
 			// Util.logger('user_id is::', user_id);
 			// Util.logger('isEmpty is::', Ext.isEmpty(Api.getLocalStorageProp('feed_'+user_id+'[0]')));
+			// var vehicle;
 			
             Init.initState();
-			
+			var vehicleModel = '';
+			Util.logger('tmp_vehicle is:', localStorage['tmp_vehicle']);
             //in case the logout action occurred
             BottomTabsInline.show();
+			if(!Ext.isEmpty(localStorage['tmp_vehicle'])) {
+				newVehicle = Ext.decode(localStorage['tmp_vehicle']);
+				Util.logger('vehicle is: ', newVehicle);
+				
+				if(newVehicle.cl_state == 'step1') {
+					installStep2Panel.hide();
+	                installStep3Panel.hide();
+	                installBackBtn.hide();
+
+					if(Ext.isEmpty(installStep1FormBase.vehicle1))
+						resetVehicleFormPanel();
+						
+					copyToVehicleModel1(newVehicle, installStep1FormBase.vehicle1);
+					installStep1Panel.load(installStep1FormBase.vehicle1);
+	                installStep1Panel.show();
+	                
+					BottomTabsInline.setActiveItem(installPanel);
+				} else if(newVehicle.cl_state == 'step2') {
+					installStep1Panel.hide();
+	                installStep3Panel.hide();
+	                installBackBtn.show();
+                
+					if(Ext.isEmpty(installStep1FormBase.vehicle1) || Ext.isEmpty(installStep2FormBase.vehicle2))
+						resetVehicleFormPanel();
+						
+					copyToVehicleModel1(newVehicle, installStep1FormBase.vehicle1);
+					copyToVehicleModel2(newVehicle, installStep2FormBase.vehicle2);
+					installStep1Panel.load(installStep1FormBase.vehicle1);
+					installStep2Panel.load(installStep2FormBase.vehicle2);
+					
+	                installStep2Panel.show();
+                
+					BottomTabsInline.setActiveItem(installPanel);
+				} else if(newVehicle.cl_state == 'step3') {
+					installStep1Panel.hide();
+	                installStep2Panel.hide();
+	                installBackBtn.show();
+                
+/*
+					if(Ext.isEmpty(installStep1FormBase.vehicle1) || Ext.isEmpty(installStep2FormBase.vehicle2) || Ext.isEmpty(installStep3FormBase.vehicle3))
+						resetVehicleFormPanel();
+						
+					copyToVehicleModel1(newVehicle, installStep1FormBase.vehicle1);
+					copyToVehicleModel2(newVehicle, installStep2FormBase.vehicle2);
+					copyToVehicleModel3(newVehicle, installStep3FormBase.vehicle3);
+*/
+					installStep1FormBase.vehicle1 = Ext.ModelMgr.create(newVehicle, 'Vehicle1');
+					installStep2FormBase.vehicle2 = Ext.ModelMgr.create(newVehicle, 'Vehicle2');
+					installStep3FormBase.vehicle3 = Ext.ModelMgr.create(newVehicle, 'Vehicle3');
+					installStep1Panel.load(installStep1FormBase.vehicle1);
+					installStep2Panel.load(installStep2FormBase.vehicle2);
+					installStep3Panel.load(installStep3FormBase.vehicle3);
+
+	                installStep3Panel.show();
+                
+					BottomTabsInline.setActiveItem(installPanel);
+				} else if(newVehicle.cl_state == 'search') {
+					vehicleModel = Ext.ModelMgr.create(newVehicle, 'Vehicle');
+					searchMainPanel.load(vehicleModel);
+					BottomTabsInline.setActiveItem(searchPanel);
+				} else if(newVehicle.cl_state == 'deinstall'){
+					vehicleModel = Ext.ModelMgr.create(newVehicle, 'Vehicle');
+					deinstallMainPanel.load(vehicleModel);					
+					BottomTabsInline.setActiveItem(deinstallPanel);
+				}
+					
+				newVehicle.cl_state = 'insert';
+			}
             
         };
 
@@ -513,7 +597,7 @@ Ext.setup({
 				Util.logger('*******reg val is::', installStep1FormBase.vehicle1.get('registration'));
 
 				if(installStep1FormBase.vehicle1.get('registration')) {        
-                    newVehicle = copyToVehicleObject(installStep1FormBase.vehicle1);
+                    newVehicle = copyToVehicleObject(newVehicle, installStep1FormBase.vehicle1);
                     findVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add', refillStep1Form, failSearchStep1Install);
 
                     Util.logger('After updateRecord vehicle1::', installStep1FormBase.vehicle1);
@@ -559,7 +643,7 @@ Ext.setup({
                     Util.logger('vehicle1::', installStep1FormBase.vehicle1);
                     installStep1Panel.updateRecord(installStep1FormBase.vehicle1, true);
         
-                    newVehicle = copyToVehicleObject(installStep1FormBase.vehicle1);
+                    newVehicle = copyToVehicleObject(newVehicle, installStep1FormBase.vehicle1);
 
 					// Util.searchVehicleRemotely(newVehicle.registration, '', '', updateVehicleModel);
 
@@ -593,7 +677,7 @@ Ext.setup({
 
             var current_state = 'select',
              	model = Ext.ModelMgr.create(installStep2Panel.getValues(), 'Vehicle2'),
-            	message = "", errors = model.validate(), newVehicle;
+            	message = "", errors = model.validate();
             
             var vehicleRegField = Ext.get('enter_imei_field');
             vehicleRegField.down('input').dom.focus();
@@ -611,7 +695,8 @@ Ext.setup({
         
                     Util.logger('After updateRecord vehicle2::', installStep2FormBase.vehicle2);
 
-                    newVehicle = copyToVehicleObject(installStep1FormBase.vehicle1, installStep2FormBase.vehicle2);
+                    // newVehicle = copyToVehicleObject(installStep1FormBase.vehicle1, installStep2FormBase.vehicle2);
+                    newVehicle = copyToVehicleObject(newVehicle, '', installStep2FormBase.vehicle2);
                     assignVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add', moveStep2NextStep3, failNextStep2Install);
                     
                 }
@@ -639,7 +724,7 @@ Ext.setup({
 			
 			var current_state = 'select',
             	model = Ext.ModelMgr.create(installStep3Panel.getValues(), 'Vehicle3'),
-            	message = "", errors = model.validate(), newVehicle;
+            	message = "", errors = model.validate();
             
             var vehicleRefField = Ext.get('installer_name_field');
             vehicleRefField.down('input').dom.focus();
@@ -648,7 +733,7 @@ Ext.setup({
             if(Ext.is.Android)
                 window.KeyBoard.hideKeyBoard();
 
-                newVehicle = copyToVehicleObject(installStep1FormBase.vehicle1, installStep2FormBase.vehicle2, installStep3FormBase.vehicle3);
+                newVehicle = copyToVehicleObject(newVehicle, installStep1FormBase.vehicle1, installStep2FormBase.vehicle2, installStep3FormBase.vehicle3);
 
 			Util.logger('newVehicle is::', newVehicle);
 			if(!Ext.isEmpty(newVehicle)) {
@@ -658,16 +743,18 @@ Ext.setup({
             
 		};
 		
-        onSubmitStep3InstallBtnTapCB = function() {
-            Util.logger('In onSubmitStep3InstallBtnTapCB()');
+        onCompStep3InstallBtnTapCB = function(isComplete) {
+            Util.logger('In onCompStep3InstallBtnTapCB()');
 
             var current_state = 'select',
             	model = Ext.ModelMgr.create(installStep3Panel.getValues(), 'Vehicle3'),
-            	message = "", errors = model.validate(), newVehicle;
+            	message = "", errors = model.validate();
             
-            var vehicleRegField = Ext.get('install_comp_field');
+            var vehicleRegField = Ext.get('installer_name_field');
             vehicleRegField.down('input').dom.focus();
             vehicleRegField.down('input').dom.blur();
+
+            Util.logger('Is it complete or NOT? ', isComplete);
 
             if(Ext.is.Android)
                 window.KeyBoard.hideKeyBoard();
@@ -682,7 +769,8 @@ Ext.setup({
                     Util.logger('After updateRecord vehicle3::', installStep3FormBase.vehicle3);
                     
                     // localStorage[entity+'_'+user_id+'['+index+']'] = Ext.encode(item);
-                    newVehicle = copyToVehicleObject(installStep1FormBase.vehicle1, installStep2FormBase.vehicle2, installStep3FormBase.vehicle3);
+                    newVehicle = copyToVehicleObject(newVehicle, installStep1FormBase.vehicle1, installStep2FormBase.vehicle2, installStep3FormBase.vehicle3);
+					newVehicle.install_status = isComplete;
                     saveVehicle(newVehicle, Util.getItemsSize(), newVehicle.cl_state, 'add', moveStep3SubmitHome, failSubmitStep3Install);
                 }
             } else {
@@ -699,7 +787,7 @@ Ext.setup({
         onSubmitDeinstallBtnTapCB = function() {
             Util.logger('In onSubmitDeinstallBtnTapCB()');
             
-            var vehicleRegField = Ext.get('vehicle_reg_field');
+            var vehicleRegField = Ext.get('vehicle_imei_field');
             vehicleRegField.down('input').dom.focus();
             vehicleRegField.down('input').dom.blur();
 
@@ -707,17 +795,17 @@ Ext.setup({
                 window.KeyBoard.hideKeyBoard();
             
             var searchVal;
-            var vehicleRegFieldVal = Ext.getCmp('vehicle_reg_field').getValue();
-            var imeiFieldVal = Ext.getCmp('imei_field').getValue();
+            // var vehicleRegFieldVal = Ext.getCmp('vehicle_reg_field').getValue();
+            var imeiFieldVal = Ext.getCmp('vehicle_imei_field').getValue();
             var replaceUnitFieldVal = Ext.getCmp('replace_unit_field').isChecked();
-            if(Ext.isEmpty(vehicleRegFieldVal) && Ext.isEmpty(imeiFieldVal)) {
-                Ext.Msg.alert("Error", "Please enter either Registration or IMEI", Ext.emptyFn);
+            if(/*Ext.isEmpty(vehicleRegFieldVal) &&*/ Ext.isEmpty(imeiFieldVal)) {
+                Ext.Msg.alert("Error", "Please enter Vehicle IMEI", Ext.emptyFn);
             } else {
-                Util.logger('val reg is::', vehicleRegFieldVal);
+                // Util.logger('val reg is::', vehicleRegFieldVal);
                 Util.logger('val imei is::', imeiFieldVal);
                 Util.logger('val replace fitted is::', replaceUnitFieldVal);
             
-				Util.deinstallVehicleRemotely(vehicleRegFieldVal, imeiFieldVal, replaceUnitFieldVal, confirmDeinstall, failDeinstall);
+				Util.deinstallVehicleRemotely(/*vehicleRegFieldVal, */imeiFieldVal, replaceUnitFieldVal, confirmDeinstall, failDeinstall);
 				/*
                 searchVal = Util.searchVehicleRemotely(vehicleRegFieldVal, imeiFieldVal);
 
@@ -727,7 +815,7 @@ Ext.setup({
                     Util.logger('serachVal is::',searchVal);
                     Ext.Msg.confirm("Confirmation", "Are you sure you want to Deinstall this vehicle?", function(btn) {
                         if(btn == 'yes') {
-                            searchVal.status = 'deinstalled';
+                            searchVal.install_status = 'deinstalled';
                             saveVehicle(searchVal, searchVal.vehicle_id-1, searchVal.cl_state, 'edit');
 
                             deinstallMainPanel.hide();
@@ -764,56 +852,137 @@ Ext.setup({
             }
         };
         
+		onBackSearchBtnTap = function() {
+			searchResultsListComp.hide();
+            searchMainPanel.show();
+			searchBackBtn.hide();
+	        
+		};
+		
         //__VEHICLES action handlers start============================================================
 
         resetVehicleFormPanel = function() {
-            installStep1FormBase.vehicle1 = Ext.ModelMgr.create({ id: null, registration: '', make: '', model: '', colour: '', vin: '', 
+            installStep1FormBase.vehicle1 = Ext.ModelMgr.create({ id: 0, registration: '', make: '', model: '', colour: '', vin: '', 
 									vehicle_id: null, cl_state: 'insert', /*client_uid: Api.randomString(), */action: 'new'}, 'Vehicle1');
             installStep1Panel.load(installStep1FormBase.vehicle1);
             
-            installStep2FormBase.vehicle2 = Ext.ModelMgr.create({ id: null, imei: '', mileage: '', second_ref: '', vehicle_id: null, 
+            installStep2FormBase.vehicle2 = Ext.ModelMgr.create({ id: 0, imei: '', mileage: '', second_ref: '', vehicle_id: null, 
                                     cl_state: 'insert', /*client_uid: Api.randomString(), */action: 'new'}, 'Vehicle2');
             installStep2Panel.load(installStep2FormBase.vehicle2);
 
-            installStep3FormBase.vehicle3 = Ext.ModelMgr.create({ id: null, extension: false, telematics: false, diagnostic: false, 
-                                    install_completion: new Date(), installer_name: '', rep_name: '', notes: '', vehicle_id: null, cl_state: 'insert', 
-                                    /*client_uid: Api.randomString(), */action: 'new'}, 'Vehicle3');
+            installStep3FormBase.vehicle3 = Ext.ModelMgr.create({ id: 0, /*extension: false, telematics: false, diagnostic: false, */
+               install_completion: new Date(), installer_name: '', /*rep_name: '', */install_notes: '', install_refresh: '', vehicle_id: null, 
+							cl_state: 'insert', /*client_uid: Api.randomString(), */action: 'new'}, 'Vehicle3');
             installStep3Panel.load(installStep3FormBase.vehicle3);
         };
 
-        copyToVehicleObject = function(vehicleModel1, vehicleModel2, vehicleModel3) {
-            var vehicleObj = new Object();
-            vehicleObj.id = vehicleModel1.get('id');
-            vehicleObj.registration = vehicleModel1.get('registration');
-            vehicleObj.make = vehicleModel1.get('make');
-            vehicleObj.model = vehicleModel1.get('model');
-            vehicleObj.colour = vehicleModel1.get('colour');
-            vehicleObj.vin = vehicleModel1.get('vin');
+        copyToVehicleObject = function(vehicle, vehicleModel1, vehicleModel2, vehicleModel3) {
+            Util.logger('In copyToVehicleObject()');
+            var vehicleObj = vehicle;
+			
+			Util.logger('Vehicle1 is:', vehicleModel1);
+			Util.logger('Vehicle2 is:', vehicleModel2);
+			Util.logger('Vehicle3 is:', vehicleModel3);
+			Util.logger('vehicle is:', vehicle);
+			
+			if(!Ext.isEmpty(vehicleModel1)) {
+			
+	            vehicleObj.id = vehicleModel1.get('id');
+	            vehicleObj.registration = vehicleModel1.get('registration');
+	            vehicleObj.make = vehicleModel1.get('make');
+	            vehicleObj.model = vehicleModel1.get('model');
+	            vehicleObj.colour = vehicleModel1.get('colour');
+	            vehicleObj.vin = vehicleModel1.get('vin');
+			}
 			if(!Ext.isEmpty(vehicleModel2)) {
 	            vehicleObj.imei = vehicleModel2.get('imei');
 	            vehicleObj.mileage = vehicleModel2.get('mileage');
 	            vehicleObj.second_ref = vehicleModel2.get('second_ref');
 			}
 			if(!Ext.isEmpty(vehicleModel3)) {
+/*
 				vehicleObj.extension = vehicleModel3.get('extension');
 	            vehicleObj.telematics = vehicleModel3.get('telematics');
 	            vehicleObj.diagnostic = vehicleModel3.get('diagnostic');
+*/
 	            vehicleObj.install_completion = vehicleModel3.get('install_completion');
 	            vehicleObj.installer_name = vehicleModel3.get('installer_name');
-	            vehicleObj.rep_name = vehicleModel3.get('rep_name');
-	            vehicleObj.notes = vehicleModel3.get('notes');	
+	            // vehicleObj.rep_name = vehicleModel3.get('rep_name');
+	            vehicleObj.install_notes = vehicleModel3.get('install_notes');	
+	            vehicleObj.install_refresh = vehicleModel3.get('install_refresh');
 			}
             
-            vehicleObj.vehicle_id = vehicleModel1.get('vehicle_id');
-            vehicleObj.cl_state = vehicleModel1.get('cl_state');
-            // vehicleObj.client_uid = todoModel.get('client_uid');
+            // vehicleObj.vehicle_id = vehicleModel1.get('vehicle_id');
+            // vehicleObj.cl_state = vehicleModel1.get('cl_state');
             return vehicleObj;
         };
+
+		copyToVehicleModel = function(vehicle, vehicleModel) {
+			if(!Ext.isEmpty(vehicle)) {
+			
+	            vehicleModel.set('id', vehicle.id);
+	            vehicleModel.set('registration', vehicle.registration);
+	            vehicleModel.set('make', vehicle.make);
+	            vehicleModel.set('model', vehicle.model);
+	            vehicleModel.set('colour', vehicle.colour);
+	            vehicleModel.set('vin', vehicle.vin);
+	            vehicleModel.set('imei', vehicle.imei);
+	            vehicleModel.set('mileage', vehicle.mileage);
+	            vehicleModel.set('second_ref', vehicle.second_ref);
+	            vehicleModel.set('install_completion', vehicle.install_completion);
+	            vehicleModel.set('installer_name', vehicle.installer_name);
+	            vehicleModel.set('install_notes', vehicle.install_notes);
+	            vehicleModel.set('install_refresh', vehicle.install_refresh);
+	
+			}
+			
+			return vehicleModel;
+		};
+
+		copyToVehicleModel1 = function(vehicle, vehicleModel) {
+			if(!Ext.isEmpty(vehicle)) {
+			
+	            vehicleModel.set('id', vehicle.id);
+	            vehicleModel.set('registration', vehicle.registration);
+	            vehicleModel.set('make', vehicle.make);
+	            vehicleModel.set('model', vehicle.model);
+	            vehicleModel.set('colour', vehicle.colour);
+	            vehicleModel.set('vin', vehicle.vin);
+			}
+			
+			return vehicleModel;
+		};
+
+		copyToVehicleModel2 = function(vehicle, vehicleModel) {
+			if(!Ext.isEmpty(vehicle)) {
+			
+	            vehicleModel.set('id', vehicle.id);
+	            vehicleModel.set('imei', vehicle.imei);
+	            vehicleModel.set('mileage', vehicle.mileage);
+	            vehicleModel.set('second_ref', vehicle.second_ref);
+			}
+			
+			return vehicleModel;
+		};
+
+		copyToVehicleModel3 = function(vehicle, vehicleModel) {
+			if(!Ext.isEmpty(vehicle)) {
+			
+	            vehicleModel.set('id', vehicle.id);
+	            vehicleModel.set('install_completion', vehicle.install_completion);
+	            vehicleModel.set('installer_name', vehicle.installer_name);
+	            vehicleModel.set('install_notes', vehicle.install_notes);
+	            vehicleModel.set('install_refresh', vehicle.install_refresh);
+			}
+			
+			return vehicleModel;
+		};
 
         saveVehicle = function(vehicleParam, index, curr_state, action, callBack, failCallBack/*, syncCallBack*/) {
             Util.logger('In saveVehicle()');
 
-            vehicleParam.status = 'installed';
+            // vehicleParam.status = 'installed';
+			// vehicleParam.install_status = true;
             vehicleParam.updated_at = Api.formatToUTCDate(new Date());
             vehicleParam.vehicle_id = index+1;
             vehicleParam.cl_state = Util.getItemState(curr_state, action);
@@ -830,7 +999,8 @@ Ext.setup({
         findVehicle = function(vehicleParam, index, curr_state, action, callBack, failCallBack/*, syncCallBack*/) {
             Util.logger('In findVehicle()');
 
-            vehicleParam.status = 'installed';
+            // vehicleParam.status = 'installed';
+			// vehicleParam.install_status = true;
             vehicleParam.updated_at = Api.formatToUTCDate(new Date());
             vehicleParam.vehicle_id = index+1;
             vehicleParam.cl_state = Util.getItemState(curr_state, action);
@@ -847,7 +1017,8 @@ Ext.setup({
         saveVehicleInfo = function(vehicleParam, index, curr_state, action, callBack, failCallBack/*, syncCallBack*/) {
             Util.logger('In saveVehicleInfo()');
 
-            vehicleParam.status = 'installed';
+            // vehicleParam.status = 'installed';
+			// vehicleParam.install_status = true;
             vehicleParam.updated_at = Api.formatToUTCDate(new Date());
             vehicleParam.vehicle_id = index+1;
             vehicleParam.cl_state = Util.getItemState(curr_state, action);
@@ -864,7 +1035,8 @@ Ext.setup({
         findVehicleInfo = function(vehicleParam, index, curr_state, action, callBack/*, syncCallBack, failCallBack*/) {
             Util.logger('In findVehicle()');
 
-            vehicleParam.status = 'installed';
+            // vehicleParam.status = 'installed';
+			// vehicleParam.install_status = true;
             vehicleParam.updated_at = Api.formatToUTCDate(new Date());
             vehicleParam.vehicle_id = index+1;
             vehicleParam.cl_state = Util.getItemState(curr_state, action);
@@ -881,7 +1053,8 @@ Ext.setup({
         assignVehicle = function(vehicleParam, index, curr_state, action, callBack, failCallBack/*, syncCallBack*/) {
             Util.logger('In assignVehicle()');
 
-            vehicleParam.status = 'installed';
+            // vehicleParam.status = 'installed';
+			// vehicleParam.install_status = true;
             vehicleParam.updated_at = Api.formatToUTCDate(new Date());
             vehicleParam.vehicle_id = index+1;
             vehicleParam.cl_state = Util.getItemState(curr_state, action);
@@ -904,11 +1077,19 @@ Ext.setup({
 
 			Util.logger('vehicle param is::', vehicle);
 			
+			if(!Ext.isEmpty(vehicle.make) && !Ext.isEmpty(vehicle.model) && !Ext.isEmpty(vehicle.colour) && !Ext.isEmpty(vehicle.vin))
+				vehicle.cap_confirmed = true;
+			else
+				vehicle.cap_confirmed = false;
+/*
 			installStep1FormBase.vehicle1.set('registration', vehicle.registration);
 			installStep1FormBase.vehicle1.set('make', vehicle.make);
 			installStep1FormBase.vehicle1.set('model', vehicle.model);
 			installStep1FormBase.vehicle1.set('colour', vehicle.colour);
 			installStep1FormBase.vehicle1.set('vin', vehicle.vin);
+*/
+			newVehicle = vehicle;
+			copyToVehicleModel1(newVehicle, installStep1FormBase.vehicle1);
 
 			installStep1Panel.load(installStep1FormBase.vehicle1);
 			
@@ -917,19 +1098,41 @@ Ext.setup({
 		moveStep1NextStep2 = function(vehicle) {
 			Util.logger('In moveStep1NextStep2');
 			
-			installStep1Panel.hide();
-            installStep3Panel.hide();
-            installStep2Panel.show();
-            installBackBtn.show();
+			if(!Ext.isEmpty(vehicle.remote_error)) {
+				Ext.Msg.alert("Save Installation Info", vehicle.remote_error, Ext.emptyFn);
+				vehicle.remote_error = '';
+
+			} else {
+
+				newVehicle = vehicle;
+				
+				installStep1Panel.hide();
+	            installStep3Panel.hide();
+	            installStep2Panel.show();
+	            installBackBtn.show();
+	
+				Util.logger('newVehicle is:', newVehicle);
+	
+			}
 		};
 		
 		moveStep2NextStep3 = function(vehicle) {
 			Util.logger('In moveStep2NextStep3');
-			
-			installStep1Panel.hide();
-            installStep2Panel.hide();
-            installStep3Panel.show();
-            installBackBtn.show();
+
+			// if(!Ext.isEmpty(vehicle.remote_error)) {
+				Ext.Msg.alert("Assign IMEI", vehicle.remote_error, Ext.emptyFn);
+				vehicle.remote_error = '';
+			// } else {
+				newVehicle = vehicle;
+				
+				installStep1Panel.hide();
+	            installStep2Panel.hide();
+	            installStep3Panel.show();
+	            installBackBtn.show();
+	
+				Util.logger('newVehicle is:', newVehicle);
+	
+			// }
 		};
 		
 		refreshInstallStep3 = function(vehicle) {
@@ -942,9 +1145,12 @@ Ext.setup({
 			installStep1FormBase.vehicle1.set('colour', vehicle.colour);
 			*/
 			
-			installStep1FormBase.vehicle1.set('vin', vehicle.vin);
+			newVehicle = vehicle;
+			installStep3FormBase.vehicle3.set('install_refresh', vehicle.install_refresh);
 
-			installStep1Panel.load(installStep1FormBase.vehicle1);
+			installStep3Panel.load(installStep3FormBase.vehicle3);
+			
+			Util.logger('newVehicle is:', newVehicle);
 			
 		};
 		
@@ -952,13 +1158,23 @@ Ext.setup({
 		moveStep3SubmitHome = function(vehicle) {
 			Util.logger('In moveStep3SubmitHome');
 	        // BottomTabsInline.setActiveItem(installPanel);
-	        installStep1Panel.hide();
-	        installStep2Panel.hide();
-	        installStep3Panel.hide();
-	        installBackBtn.hide();
-        
-	        showVehiclePanel.update(newVehicle);
-	        showVehiclePanel.show();
+	        // showVehiclePanel.update(newVehicle);
+	        // showVehiclePanel.show();
+			if(!Ext.isEmpty(vehicle.remote_error)) {
+				Ext.Msg.alert("Save Vehicle", vehicle.remote_error, Ext.emptyFn);
+				vehicle.remote_error = '';
+			} else {
+				Ext.Msg.alert("Save Vehicle", 'Vehicle info Saved successfully!', 
+				function() {
+			        installStep1Panel.hide();
+			        installStep2Panel.hide();
+			        installStep3Panel.hide();
+			        installBackBtn.hide();
+
+					BottomTabsInline.setActiveItem(homePanel);
+				});
+			}
+	
 		
 		};
 
@@ -974,8 +1190,16 @@ Ext.setup({
 		confirmDeinstall = function(vehicle) {
 			Util.logger('In confirmDeinstall');
 
-			//show confirm box here
-			deinstallPanel.hide();
+			if(!Ext.isEmpty(vehicle.remote_error)) {
+				Ext.Msg.alert("Deinstall", vehicle.remote_error, Ext.emptyFn);
+				vehicle.remote_error = '';
+			} else {
+				Ext.Msg.alert("Deinstall", 'Vehicle Deinstalled successfully!', 
+				function() {
+					deinstallPanel.hide();
+					BottomTabsInline.setActiveItem(homePanel);
+				});
+			}
             
 		};
 		
@@ -988,34 +1212,37 @@ Ext.setup({
                 Ext.Msg.alert("Error", "No record found", Ext.emptyFn);                    
             } else {
                 Util.logger('searchResults is::', searchResults);
+                /*
+
+
+                				vehicle.id = 1;
+                				vehicle.registration = 'MT11BKD';
+                				vehicle.imei = 123456;
+                				vehicle.make = 'ALFA ROMEO';
+                				vehicle.model = 'GIULIETTA VELOCE JTDM-2';
+                				vehicle.colour = 'WHITE';
+                				vehicle.vin = 'ZAR94000007081769';
+                				vehicle.second_ref = 'Me';
+                				vehicle.install_completion = new Date();
+                				// vehicle.client_uid = 'XYZ';
+                				
+                				searchResults = [];
+                				searchResults.push(vehicle);
+
+                				vehicle = new Object();
+                				vehicle.id = 2;
+                				vehicle.registration = 'X847YCC';
+                				vehicle.imei = 654321;
+                				vehicle.make = 'MERCEDES';
+                				vehicle.model = 'ML 270 CDI AUTO';
+                				vehicle.colour = 'SILVER';
+                				vehicle.vin = 'WDC1631132X734543';
+                				vehicle.second_ref = 'You';
+                				vehicle.install_completion = new Date();
+
+                				searchResults.push(vehicle);
+				*/
                 
-
-				vehicle.id = 1;
-				vehicle.registration = 'MT11BKD';
-				vehicle.imei = 123456;
-				vehicle.make = 'ALFA ROMEO';
-				vehicle.model = 'GIULIETTA VELOCE JTDM-2';
-				vehicle.colour = 'WHITE';
-				vehicle.vin = 'ZAR94000007081769';
-				vehicle.second_ref = 'Me';
-				vehicle.install_completion = new Date();
-				// vehicle.client_uid = 'XYZ';
-				
-				searchResults = [];
-				searchResults.push(vehicle);
-
-				vehicle = new Object();
-				vehicle.id = 2;
-				vehicle.registration = 'X847YCC';
-				vehicle.imei = 654321;
-				vehicle.make = 'MERCEDES';
-				vehicle.model = 'ML 270 CDI AUTO';
-				vehicle.colour = 'SILVER';
-				vehicle.vin = 'WDC1631132X734543';
-				vehicle.second_ref = 'You';
-				vehicle.install_completion = new Date();
-
-				searchResults.push(vehicle);
 				//in case data is synced with server and requires update
                 Util.logger('new searchResults is::', searchResults);
 /*
@@ -1041,6 +1268,7 @@ Ext.setup({
 		        searchResultsListComp.getStore().loadData(searchResults, false);
                 searchMainPanel.hide();
 				searchResultsListComp.show();
+				searchBackBtn.show();
                 // showVehiclePanel.update(searchVal);
                 // showVehiclePanel.show();
             

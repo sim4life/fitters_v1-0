@@ -140,7 +140,7 @@ background: #666 url(../rsc/bg-body.png) repeat;
 #install_comp_field input {
     padding-top: 2em;
 }
-#install1SearchButton, #install1NextButton, #install2NextButton, #install3SubmitButton, #install3RefreshButton, #deinstallSubmitButton, .x-toolbar .x-button.x-button-action , #searchSubmitButton {
+#install1SearchButton, #install1NextButton, #install2NextButton, #install3CompButton, #install3NotCompButton, #install3RefreshButton, #deinstallSubmitButton, .x-toolbar .x-button.x-button-action , #searchSubmitButton {
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ff0084), color-stop(0%,#ff4ca5), color-stop(52%,#ff49a4), color-stop(54%,#ff0084), color-stop(100%,#ff0084)); /* Chrome,Safari4+ */
 border:none;
 
@@ -158,7 +158,7 @@ border:none;
 .x-form-fieldset .x-panel-body {
     -webkit-box-shadow: none;
 }
-#install1NextButton.x-button-pressed, #install2NextButton.x-button-pressed, #install3SubmitButton.x-button-pressed, #deinstallSubmitButton.x-button-pressed, .x-toolbar .x-button.x-button-action.x-button-pressed, #searchSubmitButton.x-button-pressed {
+#install1NextButton.x-button-pressed, #install2NextButton.x-button-pressed, #install3CompButton.x-button-pressed, #install3NotCompButton.x-button-pressed, #deinstallSubmitButton.x-button-pressed, .x-toolbar .x-button.x-button-action.x-button-pressed, #searchSubmitButton.x-button-pressed {
 background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004a), color-stop(49%,#e80078), color-stop(98%,#90004a)); /* Chrome,Safari4+ */
 
 }
@@ -172,7 +172,7 @@ background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004
     margin-bottom: 1em;
 }
 
-#install3SubmitButton {
+#install3CompButton, #install3NotCompButton {
     margin-bottom: 1em;
 }
 

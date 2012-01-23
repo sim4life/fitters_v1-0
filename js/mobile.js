@@ -88,7 +88,7 @@ var Api = {
         } else {
             Util.logger('[WARN]:: Clearing all KEYS from localStorage');
             //these are all the user-defined or retainable keys
-            var retainableKeysMap = {};
+            var retainableKeysMap = {tmp_vehicle: '0'};
                 
             var retainableKeyVals = {};
             for(var key in retainableKeysMap) {
@@ -620,13 +620,13 @@ var Install = {
                     id: 'install_notes_field'
                 }, {
                     xtype: 'datepickerfield',
-                    name: 'instal_comp_date',
+                    name: 'install_completion',
                     placeHolder: 'Installation Completion Date',
                     required: true,
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'instal_comp_date_field'
+                    id: 'install_completion_field'
                 }, {
                     xtype: 'textfield',
                     name: 'installer_name',
@@ -637,19 +637,28 @@ var Install = {
                     autoCapitalize : true,
                     id: 'installer_name_field'
                 }]
-            // }]
 			}, {
 	            xtype: 'fieldset',
 	            items: [{
 	                xtype: 'button',
 	                ui: 'Normal',
-	                text: 'Submit',
-	                name: 'submit',
-	                id: 'install3SubmitButton',
+	                text: 'Installation Complete',
+	                name: 'complete',
+	                id: 'install3CompButton',
 	                flex: 1,
-	                handler: submitCB
+	                handler: function() {submitCB(true);}
 	            }]
-			// }]
+			}, {
+	            xtype: 'fieldset',
+	            items: [{
+	                xtype: 'button',
+	                ui: 'Normal',
+	                text: 'Installation Not Complete',
+	                name: 'notComplete',
+	                id: 'install3NotCompButton',
+	                flex: 1,
+	                handler: function() {submitCB(false);}
+	            }]
 			}]
         };
     }
@@ -676,7 +685,8 @@ var Deinstall = {
                 }]
             }, {
                 xtype: 'fieldset',*/
-                items: [{
+                items: [
+				/*{
                     xtype: 'textfield',
                     name: 'vehicle_reg',
                     placeHolder: 'Vehicle registration',
@@ -685,7 +695,7 @@ var Deinstall = {
                     hideOnMaskTap: true,
                     autoCapitalize : true,
                     id: 'vehicle_reg_field'
-                }, {
+                },*/ {
                     xtype: 'textfield',
                     name: 'imei',
                     placeHolder: 'IMEI',
@@ -693,7 +703,7 @@ var Deinstall = {
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'imei_field'
+                    id: 'vehicle_imei_field'
                 }, {
                     xtype: 'checkboxfield',
                     name: 'replace_unit',
@@ -738,7 +748,7 @@ var Search = {
                 xtype: 'fieldset',*/
                 items: [{
                     xtype: 'textfield',
-                    name: 'search_reg',
+                    name: 'registration',
                     placeHolder: 'Search by registration',
                     required: true,
                     useClearIcon: true,
@@ -747,7 +757,7 @@ var Search = {
                     id: 'search_reg_field'
                 }, {
                     xtype: 'textfield',
-                    name: 'search_imei',
+                    name: 'imei',
                     placeHolder: 'Search by IMEI',
                     required: true,
                     useClearIcon: true,
@@ -756,7 +766,7 @@ var Search = {
                     id: 'search_imei_field'
 				}, {
                     xtype: 'textfield',
-                    name: 'search_2ndref',
+                    name: 'second_ref',
                     placeHolder: 'Search by 2nd Ref',
                     required: true,
                     useClearIcon: true,
@@ -852,13 +862,13 @@ var Util = function() {
         getItemState: getItemState,
         getItemsSize: getItemsSize,
         cacheItemLocally: cacheItemLocally,
-        searchVehicleRemotely: searchVehicleRemotely,
 		findVehicleRemotely: findVehicleRemotely,
 		saveVehicleInfoRemotely: saveVehicleInfoRemotely,
 		assignVehicleRemotely: assignVehicleRemotely,
 		refreshVehicleRemotely: refreshVehicleRemotely,
 		saveVehicleRemotely: saveVehicleRemotely,
-		deinstallVehicleRemotely: deinstallVehicleRemotely
+		deinstallVehicleRemotely: deinstallVehicleRemotely,
+		searchVehicleRemotely: searchVehicleRemotely
     };
     
     function logger(txt, obj) {
@@ -941,7 +951,7 @@ var Util = function() {
         
 		// SOAPClient.username = uname;
 		// SOAPClient.password = pswd;
-		var retVehicleObj = new Object();
+		var retVehicleObj = vehicle;
 		var account_key = Api.getLocalStorageProp('account_key');
 		Util.logger('account_key is:', account_key);
         
@@ -1003,7 +1013,7 @@ var Util = function() {
         
 		// SOAPClient.username = uname;
 		// SOAPClient.password = pswd;
-		var resp, params, retVehicleObj = new Object();
+		var resp, params, retVehicleObj = vehicle;
 		var account_key = Api.getLocalStorageProp('account_key');
 		Util.logger('account_key is:', account_key);
         
@@ -1034,7 +1044,21 @@ var Util = function() {
 					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
 					Util.logger('Not logged in');
 					failCallBack(vehicle);
-				} else {
+				}
+				else if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') {
+					errorStr = res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue;
+					errorStr = errorStr.slice('Server was unable to process request. ---> '.length-1);
+					
+					retVehicleObj = vehicle;
+					retVehicleObj.remote_error = errorStr;
+					callBack(retVehicleObj);
+
+				} /* else if(!res1) {
+					errorStr = "Vehicle Info could NOT be saved";
+					callBack(errorStr);
+				
+				} */else {
 
 					retVehicleObj.registration = res1.VehicleRegistration;
 					retVehicleObj.make = res1.DvlaMake;
@@ -1042,9 +1066,11 @@ var Util = function() {
 					retVehicleObj.colour = res1.DvlaColour;
 					retVehicleObj.vin = res1.DvlaVin;
 
+					/*
 					params = new SOAPClientParameters();
 					params.add("vehicleRegistration", vehicle.registration);
 
+					
 					// Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
 					resp = SOAPClient.invoke(apiDomain, "GetInstallationLogByVehicleRegistration", params, true, function(resp1, resp2) {
 			           Util.logger('SOAP again response is:', resp1);
@@ -1071,59 +1097,18 @@ var Util = function() {
 						Ext.getBody().unmask();
 
 					});
+					*/
+					Ext.getBody().unmask();
 
+					callBack(retVehicleObj);					
 				}
 				// Ext.getBody().unmask();
 
-				// callBack(retVehicleObj);
 				
 				// succCallback();
 
 			});
 		}
-	};
-	
-	function refreshVehicleRemotely(vehicle, action, callBack, failCallBack) {
-	    Util.logger('In refreshVehicleRemotely()');
-		
-		var retVehicleObj = new Object();
-
-		// SOAPClient.username = uname;
-		// SOAPClient.password = pswd;
-		var account_key = Api.getLocalStorageProp('account_key');
-		Util.logger('account_key is:', account_key);
-
-		if(!Ext.isEmpty(account_key)) {
-
-			SOAPClient.session_cookie = account_key;
-           	Util.logger('registration is:', vehicle.registration);
-           	Util.logger('imei is:', vehicle.imei);
-
-			var params = new SOAPClientParameters();
-			params.add("serviceId", vehicle.imei);
-			// params.add("serviceId", 654321);
-			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
-			var resp = SOAPClient.invoke(apiDomain, "GetLatestPosition", params, true, function(res1, res2) {
-	            Util.logger('SOAP response is:', res1);
-	            Util.logger('SOAP response2 is:', res2);
-
-				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
-					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
-					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
-					Util.logger('Not logged in');
-					failCallBack(vehicle);
-				} else {
-
-					callBack(retVehicleObj);
-				}
-				
-				Ext.getBody().unmask();
-
-				// succCallback();
-
-			});
-		}
-		
 	};
 	
 	function assignVehicleRemotely(vehicle, action, callBack, failCallBack) {
@@ -1158,7 +1143,21 @@ var Util = function() {
 					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
 					Util.logger('Not logged in');
 					failCallBack(vehicle);
-				} else {
+				}
+				else if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') {
+					errorStr = res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue;
+					errorStr = errorStr.slice('Server was unable to process request. ---> '.length-1);
+
+					retVehicleObj = vehicle;
+					retVehicleObj.remote_error = errorStr;
+					callBack(retVehicleObj);
+
+				} /*else if(!res1) {
+					errorStr = "IMEI could NOT be assigned to Vehicle";
+					callBack(errorStr);
+				
+				} */else {
 	
 /*
 				retVehicleObj.registration = res1.VehicleRegistration;
@@ -1181,6 +1180,8 @@ var Util = function() {
 		           });
 
 				*/
+					retVehicleObj = vehicle;
+					retVehicleObj.service_id = res1.sysServiceId;
 
 					callBack(retVehicleObj);
 				}
@@ -1193,8 +1194,10 @@ var Util = function() {
 		}
 	};
     
-    function searchVehicleRemotely(vehicleRegVal, imeiVal, _2ndRefVal, callBack, failCallBack) {
-		var remoteMethod, retVehicleObj = new Object();
+	function refreshVehicleRemotely(vehicle, action, callBack, failCallBack) {
+	    Util.logger('In refreshVehicleRemotely()');
+		
+		var retVehicleObj = new Object();
 
 		// SOAPClient.username = uname;
 		// SOAPClient.password = pswd;
@@ -1204,27 +1207,16 @@ var Util = function() {
 		if(!Ext.isEmpty(account_key)) {
 
 			SOAPClient.session_cookie = account_key;
-           	Util.logger('registration is:', vehicleRegVal);
-           	Util.logger('imei is:', imeiVal);
-           	Util.logger('2ndRef is:', _2ndRefVal);
+           	Util.logger('registration is:', vehicle.registration);
+           	Util.logger('imei is:', vehicle.imei);
 
 			var params = new SOAPClientParameters();
-	        if(!Ext.isEmpty(vehicleRegVal)) {
-				params.add("vehicleRegistration", vehicleRegVal);
-				remoteMethod = "GetInstallationLogByVehicleRegistration";
-			} else if(!Ext.isEmpty(imeiVal)) {
-				params.add("imei", imeiVal);
-				remoteMethod = "GetInstallationLogByIMEI";
-			} else {
-				params.add("secondReference", _2ndRefVal);
-				remoteMethod = "GetInstallationLogBySecondReference";					
-			}
-
+			params.add("serviceId", vehicle.service_id);
 
 			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
-			var resp = SOAPClient.invoke(apiDomain, remoteMethod, params, true, function(res1, res2) {
-	           Util.logger('SOAP response is:', res1);
-	           Util.logger('SOAP response2 is:', res2);
+			var resp = SOAPClient.invoke(apiDomain, "GetLatestPosition", params, true, function(res1, res2) {
+	            Util.logger('SOAP response is:', res1);
+	            Util.logger('SOAP response2 is:', res2);
 
 				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
 					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
@@ -1233,25 +1225,29 @@ var Util = function() {
 					failCallBack(vehicle);
 				} else {
 
-					retVehicleObj.registration = res1.VehicleRegistration;
-					retVehicleObj.make = res1.DvlaMake;
-					retVehicleObj.model = res1.DvlaModel;
-					retVehicleObj.colour = res1.DvlaColour;
-					retVehicleObj.vin = res1.DvlaVin;
-					retVehicleObj.imei = res1.Imei;
-					retVehicleObj.second_ref = res1.secondReference;
-					retVehicleObj.mileage = res1.InitialMileage;
-
+					if(res1.gpsLatitude == 0 && res1.gpsLongitude == 0)
+						vehicle.signal_received = false;
+					else
+						vehicle.signal_received = true;
+						
+					Util.logger('GPS time is: ', res1.gpsTime);
+					Util.logger('GPS time date is: ', new Date(res1.gpsTime));
+					
+					vehicle.service_time = new Date(res1.gpsTime);
+					
+					retVehicleObj = vehicle;
 					callBack(retVehicleObj);
 				}
+				
 				Ext.getBody().unmask();
 
+				// succCallback();
 
 			});
 		}
-        // return null;
-    };
-
+		
+	};
+	
 	function saveVehicleRemotely(vehicle, action, callBack, failCallBack) {
 	    Util.logger('In saveVehicleRemotely()');
 		
@@ -1269,8 +1265,26 @@ var Util = function() {
            	Util.logger('imei is:', vehicle.imei);
 
 			var params = new SOAPClientParameters();
-			// params.add("serviceId", vehicle.imei);
-			// params.add("serviceId", 654321);
+			params.add("Id", 0);
+			params.add("SysServiceId", vehicle.service_id);
+			params.add("SysAdminUserId", vehicle.user_id);
+			params.add("SysInsuranceProviderId", 0);
+			params.add("SysCreated", new Date());
+			params.add("InitialMileage", vehicle.mileage);
+			params.add("Imei", vehicle.imei);
+			params.add("SecondReference", vehicle.second_ref);
+			params.add("VehicleCapConfirmed", vehicle.cap_confirmed);
+			params.add("InstallationStatus", vehicle.install_status);
+			params.add("SignalReceived", vehicle.signal_received);
+			params.add("LocationCorrect", false);
+			params.add("InstallationTimestamp", new Date());
+			params.add("InstallerName", vehicle.installer_name);
+			params.add("RepresentativeName", vehicle.second_ref);
+			params.add("ServiceTimestamp", vehicle.service_time);
+			params.add("Notes", vehicle.install_notes);
+			
+			
+			
 			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
 			var resp = SOAPClient.invoke(apiDomain, "SaveInstallationLog", params, true, function(res1, res2) {
 	            Util.logger('SOAP response is:', res1);
@@ -1281,8 +1295,21 @@ var Util = function() {
 					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
 					Util.logger('Not logged in');
 					failCallBack(vehicle);
-				} else {
+				} else if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') {
+					errorStr = res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue;
+					errorStr = errorStr.slice('Server was unable to process request. ---> '.length-1);
 
+					retVehicleObj = vehicle;
+					retVehicleObj.remote_error = errorStr;
+					callBack(retVehicleObj);
+
+				} /*else if(!res1) {
+					errorStr = "IMEI could NOT be assigned to Vehicle";
+					callBack(errorStr);
+
+				} */else {
+					retVehicleObj = vehicle;
 					callBack(retVehicleObj);
 				}
 				Ext.getBody().unmask();
@@ -1295,10 +1322,10 @@ var Util = function() {
 	};
 	
 
-	function deinstallVehicleRemotely(registration, imei, isReplacementUnit, callBack) {
+	function deinstallVehicleRemotely(/*registration, */imei, isReplacementUnit, callBack, failCallBack) {
 	    Util.logger('In deinstallVehicleRemotely()');
 
-		var retVehicleObj = new Object();
+		var errorStr = '', retVehicleObj = new Object();
 
 		// SOAPClient.username = uname;
 		// SOAPClient.password = pswd;
@@ -1308,27 +1335,50 @@ var Util = function() {
 		if(!Ext.isEmpty(account_key)) {
 
 			SOAPClient.session_cookie = account_key;
-           	Util.logger('registration is:', registration);
+           	// Util.logger('registration is:', registration);
            	Util.logger('imei is:', imei);
            	Util.logger('replacementUnit is:', isReplacementUnit);
 
 			var params = new SOAPClientParameters();
-			params.add("vehicleRegistration", registration);
+			// params.add("vehicleRegistration", registration);
 			params.add("imei", imei);
 			params.add("replacementFitted", isReplacementUnit);
+			
+			// retVehicleObj.registration = registration;
+			retVehicleObj.imei = imei;
+			retVehicleObj.replace_unit = isReplacementUnit;
 
 			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
 			var resp = SOAPClient.invoke(apiDomain, "DeInstall", params, true, function(res1, res2) {
 	            Util.logger('SOAP response is:', res1);
 	            Util.logger('SOAP response2 is:', res2);
 	
+/*
+				Util.logger('SOAP response2 faultstring[0] is:', res2.getElementsByTagName("faultstring")[0]);
+				Util.logger('SOAP response2 faultstring[0].childNodes[0] is:', res2.getElementsByTagName("faultstring")[0].childNodes[0]);
+				Util.logger('SOAP response2 faultstring complete is:', res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue);
+				Util.logger('SOAP response2 faultcode complete is:', res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue);
+*/
+	
 				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
 					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
 					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
 					Util.logger('Not logged in');
-					failCallBack(vehicle);
-				} else {
+					failCallBack(retVehicleObj);
+				} 
+				else if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') {
+					errorStr = res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue;
+					errorStr = errorStr.slice('Server was unable to process request. ---> '.length-1);
+					
+					retVehicleObj.remote_error = errorStr;
+					callBack(retVehicleObj);
+					
+				} /*else if(!res1) {
+					errorStr = "Vehicle could NOT be Deinstalled";
+					callBack(errorStr);
 				
+				} */else {
 /*
 				retVehicleObj.registration = res1.VehicleRegistration;
 				retVehicleObj.make = res1.DvlaMake;
@@ -1361,6 +1411,102 @@ var Util = function() {
 			});
 		}
 	};
+
+    function searchVehicleRemotely(vehicleRegVal, imeiVal, _2ndRefVal, callBack, failCallBack) {
+		var remoteMethod, retVehicleObj = new Object(), retVehicleObjs = [];
+
+		// SOAPClient.username = uname;
+		// SOAPClient.password = pswd;
+		var account_key = Api.getLocalStorageProp('account_key');
+		Util.logger('account_key is:', account_key);
+
+		if(!Ext.isEmpty(account_key)) {
+
+			SOAPClient.session_cookie = account_key;
+           	Util.logger('registration is:', vehicleRegVal);
+           	Util.logger('imei is:', imeiVal);
+           	Util.logger('2ndRef is:', _2ndRefVal);
+
+			var params = new SOAPClientParameters();
+	        if(!Ext.isEmpty(vehicleRegVal)) {
+				params.add("vehicleRegistration", vehicleRegVal);
+				remoteMethod = "GetInstallationLogByVehicleRegistration";
+				retVehicleObj.registration = vehicleRegVal;
+			} else if(!Ext.isEmpty(imeiVal)) {
+				params.add("imei", imeiVal);
+				remoteMethod = "GetInstallationLogByIMEI";
+				retVehicleObj.imei = imeiVal;
+			} else {
+				params.add("secondReference", _2ndRefVal);
+				remoteMethod = "GetInstallationLogBySecondReference";					
+				retVehicleObj.second_ref = _2ndRefVal;
+			}
+
+
+			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
+			var resp = SOAPClient.invoke(apiDomain, remoteMethod, params, true, function(res1, res2) {
+	           Util.logger('SOAP response is:', res1);
+	           Util.logger('SOAP response2 is:', res2);
+
+				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
+					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
+					Util.logger('Not logged in');
+					failCallBack(retVehicleObj);
+				} else {
+					if(!Ext.isEmpty(res1[0])) {
+			            Util.logger('SOAP response installation log is:', res1[0].InstallationLog);
+			            Util.logger('SOAP response service is:', res1[0].Service);
+			            Util.logger('SOAP response service.vehreg is:', res1[0].Service.VehReg);
+			            Util.logger('SOAP response user is:', res1[0].User);
+					}
+
+					retVehicleObjs = [];
+					if(res1.length > 0) {
+						// for(var value in res1) {
+						var vehicleLen = res1.length;
+						for(var i = 0; i < vehicleLen; i++) {
+
+							retVehicleObj = new Object();
+							retVehicleObj.id = res1[i].InstallationLog.Id;
+							if(!Ext.isEmpty(res1[i].Service) && !Ext.isEmpty(res1[i].Service.VehReg))
+								retVehicleObj.registration = res1[i].Service.VehReg;
+							retVehicleObj.imei = res1[i].InstallationLog.Imei;
+							retVehicleObj.mileage = res1[i].InstallationLog.InitialMileage;
+							retVehicleObj.install_status = res1[i].InstallationLog.InstallationStatus;
+							retVehicleObj.installer_name = res1[i].InstallationLog.InstallerName;
+							retVehicleObj.install_completion = res1[i].InstallationLog.InstallationTimestamp;
+							retVehicleObj.install_notes = res1[i].InstallationLog.Notes;
+							retVehicleObj.second_ref = res1[i].InstallationLog.SecondReference;
+							retVehicleObj.service_id = res1[i].InstallationLog.SysServiceId;
+
+
+							retVehicleObjs.push(retVehicleObj);
+
+						}
+					}
+
+
+/*
+					retVehicleObj.registration = res1.VehicleRegistration;
+					retVehicleObj.make = res1.DvlaMake;
+					retVehicleObj.model = res1.DvlaModel;
+					retVehicleObj.colour = res1.DvlaColour;
+					retVehicleObj.vin = res1.DvlaVin;
+					retVehicleObj.imei = res1.Imei;
+					retVehicleObj.second_ref = res1.secondReference;
+					retVehicleObj.mileage = res1.InitialMileage;
+*/
+
+					callBack(retVehicleObjs);
+				}
+				Ext.getBody().unmask();
+
+
+			});
+		}
+        // return null;
+    };
 
 
 	
