@@ -17,7 +17,7 @@ function SOAPClientParameters()
     {
         _pl[name] = value;
         return this;
-    }
+    };
     this.toXml = function()
     {
         var xml = "";
@@ -36,7 +36,7 @@ function SOAPClientParameters()
             }
         }
         return xml;
-    }
+    };
 }
 SOAPClientParameters._serialize = function(t, o)
 {
@@ -100,6 +100,7 @@ SOAPClientParameters._serialize = function(t, o)
                         {
                             case "":
                                 type = typeof(o[p]);
+                                break;
                             case "String":
                                 type = "string";
                                 break;
@@ -124,10 +125,10 @@ SOAPClientParameters._serialize = function(t, o)
             }
             // Object or custom function
             else
-                for(var p in o)
+                for(var q in o)
                 {
                     s += "<" + t + ">";
-                    s += SOAPClientParameters._serialize(p, o[p]);
+                    s += SOAPClientParameters._serialize(q, o[q]);
                     s += "</" + t + ">";
                 }
             break;
@@ -135,7 +136,7 @@ SOAPClientParameters._serialize = function(t, o)
             break; // throw new Error(500, "SOAPClientParameters: type '" + typeof(o) + "' is not supported");
     }
     return s;
-}
+};
 
 function SOAPClient() {}
 
@@ -149,7 +150,7 @@ SOAPClient.invoke = function(url, method, parameters, async, callback)
         SOAPClient._loadWsdl(url, method, parameters, async, callback);
     else
         return SOAPClient._loadWsdl(url, method, parameters, async, callback);
-}
+};
 
 // private: wsdl cache
 SOAPClient_cacheWsdl = new Array();
@@ -170,18 +171,18 @@ SOAPClient._loadWsdl = function(url, method, parameters, async, callback)
         {
             if(xmlHttp.readyState == 4)
                 SOAPClient._onLoadWsdl(url, method, parameters, async, callback, xmlHttp);
-        }
+        };
     }
     xmlHttp.send(null);
     if (!async)
         return SOAPClient._onLoadWsdl(url, method, parameters, async, callback, xmlHttp);
-}
+};
 SOAPClient._onLoadWsdl = function(url, method, parameters, async, callback, req)
 {
     var wsdl = req.responseXML;
     SOAPClient_cacheWsdl[url] = wsdl;	// save a copy in cache
     return SOAPClient._sendSoapRequest(url, method, parameters, async, callback, wsdl);
-}
+};
 SOAPClient._sendSoapRequest = function(url, method, parameters, async, callback, wsdl)
 {
     // get namespace
@@ -213,9 +214,10 @@ SOAPClient._sendSoapRequest = function(url, method, parameters, async, callback,
     // send request
     var xmlHttp = SOAPClient._getXmlHttp();
     if (SOAPClient.userName && SOAPClient.password){
+        console.log('SOAPClient userName and password is set');
         xmlHttp.open("POST", url, async, SOAPClient.userName, SOAPClient.password);
         // Some WS implementations (i.e. BEA WebLogic Server 10.0 JAX-WS) don't support Challenge/Response HTTP BASIC, so we send authorization headers in the first request
-        xmlHttp.setRequestHeader("Authorization", "Basic " + SOAPClient._toBase64(SOAPClient.userName + ":" + SOAPClient.password));
+        // xmlHttp.setRequestHeader("Authorization", "Basic " + SOAPClient._toBase64(SOAPClient.userName + ":" + SOAPClient.password));
     }
     else
         xmlHttp.open("POST", url, async);
@@ -223,42 +225,39 @@ SOAPClient._sendSoapRequest = function(url, method, parameters, async, callback,
 	var host = url.substring(7);
     var soapaction = ((ns.lastIndexOf("/") != ns.length - 1) ? ns + "/" : ns) + method;
     // xmlHttp.setRequestHeader("SOAPAction", soapaction);//SOAP 1.2
-    xmlHttp.setRequestHeader("Host", host);
+    // xmlHttp.setRequestHeader("Host", host);//does not work in Android
     xmlHttp.setRequestHeader("Content-Type", "text/xml; charset=utf-8");//SOAP 1.0
     // xmlHttp.setRequestHeader("Content-Type", "application/soap+xml; charset=utf-8");//SOAP 1.2
 	if(SOAPClient.session_cookie) {
-		console.log("cookie is::", SOAPClient.session_cookie);
-	    xmlHttp.setRequestHeader("Cookie", SOAPClient.session_cookie);
+		console.log("cookie is::"+ SOAPClient.session_cookie);
+        xmlHttp.setRequestHeader("Cookie", SOAPClient.session_cookie);
 	} else
 		console.log("No Cookie::");
 		
-
-console.log("\n\nsoapaction is::", soapaction);
-console.log("\n\nxmlHttp is::", xmlHttp);
-
     if(async)
     {
         xmlHttp.onreadystatechange = function()
         {
             if(xmlHttp.readyState == 4)
                 SOAPClient._onSendSoapRequest(method, async, callback, wsdl, xmlHttp);
-        }
+        };
     }
-console.log('\n\nsr is::', sr);
+// console.log('\n\nsr is::'+ sr);
     xmlHttp.send(sr);
-	// console.log("\n\nAGAIN xmlHttp is::", xmlHttp.getResponseHeader("Set-Cookie"));
 // console.log("\n\nxmlHttp response headers are::", xmlHttp.getAllResponseHeaders());
-	console.log('it is::'+(xmlHttp !== 'undefined'));
-	console.log('it is::'+xmlHttp);
+	// console.log('it is::'+(xmlHttp !== 'undefined'));
+	// console.log('it is::'+xmlHttp);
 	if(xmlHttp !== 'undefined' && xmlHttp.getResponseHeader("Set-Cookie"))
 		SOAPClient.session_cookie = xmlHttp.getResponseHeader("Set-Cookie");
 
+    
     if (!async)
         return SOAPClient._onSendSoapRequest(method, async, callback, wsdl, xmlHttp);
-}
+};
 
 SOAPClient._onSendSoapRequest = function(method, async, callback, wsdl, req) 
 {
+    // console.log('req.responseXML::'+req.responseXML);
     var o = null;
     var nd = SOAPClient._getElementsByTagName(req.responseXML, method + "Result");
     if(nd.length == 0)
@@ -277,26 +276,17 @@ SOAPClient._onSendSoapRequest = function(method, async, callback, wsdl, req)
     }
     else
         o = SOAPClient._soapresult2object(nd[0], wsdl);
-console.log('raw request is::', req);
-console.log('cookie object is::', document.cookie);
-/*
-for(var propertyName in document) {
-  if(document.hasOwnProperty(propertyName)) {
-    console.log('click document prop is: '+propertyName);
-    console.log('click document prop value is: '+document[propertyName]);
-  }
-}
-*/
+
     if(callback)
         callback(o, req.responseXML);
     if(!async)
         return o;
-}
+};
 SOAPClient._soapresult2object = function(node, wsdl)
 {
     var wsdlTypes = SOAPClient._getTypesFromWsdl(wsdl);
     return SOAPClient._node2object(node, wsdlTypes);
-}
+};
 SOAPClient._node2object = function(node, wsdlTypes)
 {
     // null node
@@ -323,10 +313,10 @@ SOAPClient._node2object = function(node, wsdlTypes)
         var obj = null;
         if(node.hasChildNodes())
             obj = new Object();
-        for(var i = 0; i < node.childNodes.length; i++)
+        for(var j = 0; j < node.childNodes.length; j++)
         {
-            var p = SOAPClient._node2object(node.childNodes[i], wsdlTypes);
-            obj[node.childNodes[i].nodeName] = p;
+            var p = SOAPClient._node2object(node.childNodes[j], wsdlTypes);
+            obj[node.childNodes[j].nodeName] = p;
         }
         return obj;
     }
@@ -335,12 +325,12 @@ SOAPClient._node2object = function(node, wsdlTypes)
     {
         // create node ref
         var l = new Array();
-        for(var i = 0; i < node.childNodes.length; i++)
-            l[l.length] = SOAPClient._node2object(node.childNodes[i], wsdlTypes);
+        for(var k = 0; k < node.childNodes.length; k++)
+            l[l.length] = SOAPClient._node2object(node.childNodes[k], wsdlTypes);
         return l;
     }
     return null;
-}
+};
 SOAPClient._extractValue = function(node, wsdlTypes)
 {
     var value = node.nodeValue;
@@ -370,7 +360,7 @@ SOAPClient._extractValue = function(node, wsdlTypes)
                 return d;
             }
     }
-}
+};
 SOAPClient._getTypesFromWsdl = function(wsdl)
 {
     var wsdlTypes = new Array();
@@ -397,15 +387,16 @@ SOAPClient._getTypesFromWsdl = function(wsdl)
         }
     }
     return wsdlTypes;
-}
+};
 SOAPClient._getTypeFromWsdl = function(elementname, wsdlTypes)
 {
     var type = wsdlTypes[elementname] + "";
     return (type == "undefined") ? "" : type;
-}
+};
 // private: utils
 SOAPClient._getElementsByTagName = function(document, tagName)
 {
+    console.log('document is::'+document);
     try
     {
         // trying to get node omitting any namespaces (latest versions of MSXML.XMLDocument)
@@ -414,7 +405,7 @@ SOAPClient._getElementsByTagName = function(document, tagName)
     catch (ex) {}
     // old XML parser support
     return document.getElementsByTagName(tagName);
-}
+};
 // private: xmlhttp factory
 SOAPClient._getXmlHttp = function() 
 {
@@ -443,7 +434,7 @@ SOAPClient._getXmlHttp = function()
     }
     catch (ex) {}
     throw new Error("Your browser does not support XmlHttp objects");
-}
+};
 SOAPClient._getXmlHttpProgID = function()
 {
     if(SOAPClient._getXmlHttpProgID.progid)
@@ -457,10 +448,10 @@ SOAPClient._getXmlHttpProgID = function()
             o = new ActiveXObject(progids[i]);
             return SOAPClient._getXmlHttpProgID.progid = progids[i];
         }
-        catch (ex) {};
+        catch (ex) {}
     }
     throw new Error("Could not find an installed XML parser");
-}
+};
 
 SOAPClient._toBase64 = function(input)
 {
@@ -491,4 +482,4 @@ SOAPClient._toBase64 = function(input)
     } while (i < input.length);
 
     return output;
-}
+};
