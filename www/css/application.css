@@ -244,5 +244,7 @@ background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#7d7e7
 .installed_time {
     padding-bottom: 3px;
 }
-/*
+#install2_form_panel {
+    width: 290px;
+}
 
