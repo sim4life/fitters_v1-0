@@ -145,7 +145,7 @@ var User = {
                 items: [{
                     xtype: 'emailfield',
                     name: 'username',
-                    placeHolder: 'Email',
+                    placeHolder: 'Username',
                     autoCapitalize : false,
                     autoComplete: false,
                     autoCorrect: false
@@ -217,12 +217,13 @@ var User = {
     login: function(email, password, failForm, succCallback, failCallBack) {
         var errMsg = "Device Offline or Server not responding!";
 		
-/*		var uname = email,
+		var uname = email,
 			pswd = password;
-*/		
+		
+/*
         var uname = "onboardwebservice",
             pswd = "password";
-        
+*/        
         Api.setLocalStorageProp('login', email);
         Api.setLocalStorageProp('user_id', '1');
         
@@ -237,26 +238,37 @@ var User = {
 		var resp = SOAPClient.invoke(apiDomain, "Login", params, false, function(res1, res2) {
             Util.logger('SOAP response is:', res1);
             Util.logger('SOAP response2 is:', res2);
-			
-			// SOAPClient.username = uname;
-			// SOAPClient.password = pswd;
-			Util.logger('SOAP session_cookie is:', SOAPClient.session_cookie);
-			
-			if(SOAPClient.session_cookie)
-				Api.setLocalStorageProp('account_key', SOAPClient.session_cookie);
-			/*
-			params = new SOAPClientParameters();
-			params.add("VehicleRegistration", "sdfds3243");
-			SOAPClient.invoke(apiDomain, "GetVehicleInformation", params, true, function(r1, r22) {
-				Util.logger('SOAP response is:', r1);
-	            Util.logger('SOAP response2 is:', r22);
-	            
-            });
+			if(!res1) {
+                
+                Ext.getBody().unmask();
+                errorStr = "Username & password are incorrect";
+                failCallBack(failForm, 'Login Failed!', errorStr);
+            
+            } else {
 
-*/
-			Ext.getBody().unmask();
+    			// SOAPClient.username = uname;
+    			// SOAPClient.password = pswd;
+    			Util.logger('SOAP session_cookie is:', SOAPClient.session_cookie);
+    			
+    			if(SOAPClient.session_cookie)
+    				Api.setLocalStorageProp('account_key', SOAPClient.session_cookie);
+    			/*
+    			params = new SOAPClientParameters();
+    			params.add("VehicleRegistration", "sdfds3243");
+    			SOAPClient.invoke(apiDomain, "GetVehicleInformation", params, true, function(r1, r22) {
+    				Util.logger('SOAP response is:', r1);
+    	            Util.logger('SOAP response2 is:', r22);
+    	            
+                });
 
-			succCallback();
+    */
+
+                
+                Ext.getBody().unmask();
+                succCallback();
+            }
+
+
     		
 		});
 		
@@ -379,8 +391,8 @@ var Install = {
     createInstallStep1Panel: function(searchCB, nextCB) {
         return {
         
-        
-            // fullscreen: true,
+            // scroll: 'vertical',
+            fullscreen: true,
             hidden: false,
 			id: 'install1_form_panel',
             items: [{
@@ -390,7 +402,7 @@ var Install = {
                 items: [{
                     xtype: 'textfield',
                     name: 'registration',
-                    placeHolder: 'Enter Vehicle registration',
+                    placeHolder: 'Vehicle registration (*)',
                     required: true,
                     useClearIcon: true,
                     hideOnMaskTap: true,
@@ -494,7 +506,7 @@ var Install = {
                 items: [{
                     xtype: 'textfield',
                     name: 'imei',
-                    placeHolder: 'Enter IMEI',
+                    placeHolder: 'Enter IMEI (*)',
                     required: true,
                     useClearIcon: true,
                     hideOnMaskTap: true,
@@ -503,7 +515,7 @@ var Install = {
                 }, {
                     xtype: 'textfield',
                     name: 'mileage',
-                    placeHolder: 'Enter Vehicle Mileage',
+                    placeHolder: 'Enter Vehicle Mileage (*)',
                     required: true,
                     useClearIcon: true,
                     hideOnMaskTap: true,
@@ -512,7 +524,7 @@ var Install = {
                 }, {
                     xtype: 'textfield',
                     name: 'second_ref',
-                    placeHolder: 'Enter 2nd Reference',
+                    placeHolder: 'Enter 2nd Reference (*)',
                     required: true,
                     useClearIcon: true,
                     hideOnMaskTap: true,
@@ -633,7 +645,7 @@ var Install = {
                 }, {
                     xtype: 'textfield',
                     name: 'installer_name',
-                    placeHolder: 'Installer Name',
+                    placeHolder: 'Installer Name (*)',
                     required: true,
                     useClearIcon: true,
                     hideOnMaskTap: true,
@@ -701,7 +713,7 @@ var Deinstall = {
                 },*/ {
                     xtype: 'textfield',
                     name: 'imei',
-                    placeHolder: 'IMEI',
+                    placeHolder: 'IMEI (*)',
                     required: true,
                     useClearIcon: true,
                     hideOnMaskTap: true,
@@ -841,13 +853,53 @@ var Help = {
     createHelpMainPanel: function() {
         return new Ext.Panel({
             // hidden: true,
-            scroll: 'vertical',
+            // scroll: 'vertical',
             fullscreen: true,
             id: 'help_panel',
             html: [
                 '<div class="help_page_text">',
-                    '<p><strong>Q: Lorem ipsum dolor sit amet, consectetur adipiscing elit adipiscing elit</strong></p>',
-                    '<p>A: Nam rhoncus euismod blandit. Fusce imperdie</p>',
+                    '<p><strong>1. ASSEMBLE ONBOARD DEVICE</strong></p>',
+                    '<p>',
+                        'The Onboard Device needs to be connected to the battery pack prior to installation. ',
+                        'Push fit the OBD male plug on the device into the female socket on the battery pack.',
+                    '</p>',
+                '</div>',
+                '<div class="help_page_text">',
+                    '<p><strong>2. LOCATE THE VEHICLE\'S OBD PORT</strong></p>',
+                    '<p>',
+                        'The OBD port is normally located in the lower dashboard or kick well areas close ',
+                        'to either side of the steering wheel. The green areas shown on the diagram below ',
+                        'indicate typical OBD port locations.',
+                    '</p>',
+                '</div>',
+                '<div class="help_page_text">',
+                    '<p><strong>3. OPERATIONAL CHECKS</strong></p>',
+                    '<p>',
+                        'Plug the wire loom into the OBD port on the vehcile connecting it to the battery pack and Onboard ',
+                        'device. Turn the vehicle ignition on without starting the engine and observe the light sequence on the ',
+                        'side of the Onboard device. Ensure GSM and GPS connections. The exact light sequence can be seen overleaf.',
+                    '</p>',
+                '</div>',
+                '<div class="help_page_text">',
+                    '<p><strong>4. SECURING THE ONBOARD UNIT</strong></p>',
+                    '<p>',
+                        'Remove the vehicle\'s trim panels and choose your preferred fixing locations. Typical Onboard fixing positions ',
+                        'are identified on the diagram above. Secure the unit behind the trim panel against a solid frame or post, ',
+                        'using the properly rated adhesive tape supplied and at least one plastic tie.',
+                    '</p>',
+                '</div>',
+                '<div class="help_page_text">',
+                    '<p><strong>5. SECURING THE ONBOARD LOOM</strong></p>',
+                    '<p>',
+                        'When the device and battery pack have been fixed, ensure that the cable is secured and not left loose.',
+                    '</p>',
+                '</div>',
+                '<div class="help_page_text">',
+                    '<p><strong>6. REGISTER THE DEVICE</strong></p>',
+                    '<p>',
+                        'Following installation you need to register the device. Logon to https://installations.onboard.co.uk ',
+                        'and select the ‘New Install’ button.',
+                    '</p>',
                 '</div>'
             ]
         });
@@ -984,9 +1036,9 @@ var Util = function() {
 				Util.logger('SOAP response2 faultcode complete is:', res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue);
 */
 				
-				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
-					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
-					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
+				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) && 
+					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
+					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
 					Util.logger('Not logged in');
 					failCallBack(vehicle);
 				} else {
@@ -1042,9 +1094,9 @@ var Util = function() {
 	           	Util.logger('SOAP response is:', res1);
 	           	Util.logger('SOAP response2 is:', res2);
 
-				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
-					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
-					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
+				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]))&& 
+					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
+					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
 					Util.logger('Not logged in');
 					failCallBack(vehicle);
 				}
@@ -1141,9 +1193,9 @@ var Util = function() {
 	            Util.logger('SOAP response is:', res1);
 	            Util.logger('SOAP response2 is:', res2);
 				
-				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
-					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
-					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
+				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) && 
+					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
+					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
 					Util.logger('Not logged in');
 					failCallBack(vehicle);
 				}
@@ -1221,22 +1273,28 @@ var Util = function() {
 	            Util.logger('SOAP response is:', res1);
 	            Util.logger('SOAP response2 is:', res2);
 
-				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
-					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
-					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
+				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) && 
+					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
+					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
 					Util.logger('Not logged in');
 					failCallBack(vehicle);
 				} else {
 
-					if(res1.gpsLatitude == 0 && res1.gpsLongitude == 0)
+					if(res1.gpsLatitude == 0 && res1.gpsLongitude == 0) {
 						vehicle.signal_received = false;
-					else
+                        vehicle.install_refresh = 'NO SIGNAL RECEIVED!! Please ensure the Vehicle Ignition is on.';
+					} else {
 						vehicle.signal_received = true;
+                        vehicle.install_refresh = 'SIGNAL RECEIVED';
+                    }
 						
 					Util.logger('GPS time is: ', res1.gpsTime);
 					Util.logger('GPS time date is: ', new Date(res1.gpsTime));
 					
 					vehicle.service_time = new Date(res1.gpsTime);
+
+                    Util.logger('signal received is: ', vehicle.signal_received);
+                    Util.logger('service time is: ', vehicle.service_time);
 					
 					retVehicleObj = vehicle;
 					callBack(retVehicleObj);
@@ -1266,6 +1324,10 @@ var Util = function() {
 			SOAPClient.session_cookie = account_key;
            	Util.logger('registration is:', vehicle.registration);
            	Util.logger('imei is:', vehicle.imei);
+            Util.logger('InstallationTimestamp', vehicle.install_completion);
+            Util.logger('InstallerName', vehicle.installer_name);
+            Util.logger('InstallationTimestamp', vehicle.install_completion);
+            // Util.logger();
 
 			var params = new SOAPClientParameters();
 			params.add("Id", 0);
@@ -1280,7 +1342,7 @@ var Util = function() {
 			params.add("InstallationStatus", vehicle.install_status);
 			params.add("SignalReceived", vehicle.signal_received);
 			params.add("LocationCorrect", false);
-			params.add("InstallationTimestamp", new Date());
+			params.add("InstallationTimestamp", vehicle.install_completion);
 			params.add("InstallerName", vehicle.installer_name);
 			params.add("RepresentativeName", vehicle.second_ref);
 			params.add("ServiceTimestamp", vehicle.service_time);
@@ -1293,9 +1355,9 @@ var Util = function() {
 	            Util.logger('SOAP response is:', res1);
 	            Util.logger('SOAP response2 is:', res2);
 
-				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
-					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
-					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
+				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) && 
+					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
+					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
 					Util.logger('Not logged in');
 					failCallBack(vehicle);
 				} else if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
@@ -1363,9 +1425,9 @@ var Util = function() {
 				Util.logger('SOAP response2 faultcode complete is:', res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue);
 */
 	
-				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
-					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
-					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
+				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) && 
+					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
+					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
 					Util.logger('Not logged in');
 					failCallBack(retVehicleObj);
 				} 
@@ -1451,9 +1513,9 @@ var Util = function() {
 	           Util.logger('SOAP response is:', res1);
 	           Util.logger('SOAP response2 is:', res2);
 
-				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
-					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
-					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
+				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) && 
+					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
+					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
 					Util.logger('Not logged in');
 					failCallBack(retVehicleObj);
 				} else {
