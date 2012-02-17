@@ -130,20 +130,14 @@ var Api = {
 };
 
 var User = {
-    getLoginFormBase: function(loginCB/*, signupCB*/) {
+    getLoginFormBase: function(loginCB, signupCB) {
         return {
             fullscreen: true,
             standardSubmit: false,
             cls: 'auth_panel',
 			id: 'login_form_panel',
-/*
-            items:[{
-                xtype: 'fieldset',
-                id: 'login_form_cont',
-*/
             items: [{
                 xtype: 'fieldset',
-                // id: 'login_form_cont',
                 defaults: {
                     required: true, // has no visual effect as we use a placeHolder for the label
                     useClearIcon: true
@@ -151,7 +145,7 @@ var User = {
                 items: [{
                     xtype: 'emailfield',
                     name: 'username',
-                    placeHolder: 'Username',
+                    placeHolder: 'Email',
                     autoCapitalize : false,
                     autoComplete: false,
                     autoCorrect: false
@@ -211,15 +205,12 @@ var User = {
             listeners: {
                 // this is to handle the "Go" button on the iPhone keyboard, bit hacky can't find another way to do it
                 beforesubmit: function(formPanel, values, options) {
-                    /*
                     if(Ext.getCmp('loginButton').isHidden())
                         signupCB(formPanel, values);
                     else
-                    */
                         loginCB(formPanel, values);
                 }
             }
-        // }]
         };
     },
     
@@ -229,7 +220,6 @@ var User = {
 /*		var uname = email,
 			pswd = password;
 */		
-
         var uname = "onboardwebservice",
             pswd = "password";
         
@@ -243,48 +233,37 @@ var User = {
 		var params = new SOAPClientParameters();
 		params.add("username", uname);
 		params.add("password", pswd);
-        Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
+        Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
 		var resp = SOAPClient.invoke(apiDomain, "Login", params, false, function(res1, res2) {
             Util.logger('SOAP response is:', res1);
             Util.logger('SOAP response2 is:', res2);
-			if(!res1) {
-                
-                Ext.getBody().unmask();
-                errorStr = "Username & password are incorrect";
-                failCallBack(failForm, 'Login Failed!', errorStr);
-            
-            } else {
+			
+			// SOAPClient.username = uname;
+			// SOAPClient.password = pswd;
+			Util.logger('SOAP session_cookie is:', SOAPClient.session_cookie);
+			
+			if(SOAPClient.session_cookie)
+				Api.setLocalStorageProp('account_key', SOAPClient.session_cookie);
+			/*
+			params = new SOAPClientParameters();
+			params.add("VehicleRegistration", "sdfds3243");
+			SOAPClient.invoke(apiDomain, "GetVehicleInformation", params, true, function(r1, r22) {
+				Util.logger('SOAP response is:', r1);
+	            Util.logger('SOAP response2 is:', r22);
+	            
+            });
 
-                // SOAPClient.username = uname;
-                // SOAPClient.password = pswd;
-                Util.logger('SOAP session_cookie is:', SOAPClient.session_cookie);
+*/
+			Ext.getBody().unmask();
 
-                if(SOAPClient.session_cookie)
-                    Api.setLocalStorageProp('account_key', SOAPClient.session_cookie);
-                /*
-                params = new SOAPClientParameters();
-                params.add("VehicleRegistration", "sdfds3243");
-                SOAPClient.invoke(apiDomain, "GetVehicleInformation", params, true, function(r1, r22) {
-                    Util.logger('SOAP response is:', r1);
-                    Util.logger('SOAP response2 is:', r22);
-
-                });
-
-    */
-
-                
-                Ext.getBody().unmask();
-                succCallback();
-            }
-
-
+			succCallback();
     		
 		});
 		
 		Util.logger('raw response is::', resp);
 
         /*
-        Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
+        Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
         Ext.Ajax.request({
             url: Api.urlFor('/apiv2/auth/key'),
             method: 'POST',
@@ -320,7 +299,7 @@ var User = {
         var errMsg = "Device Offline or Server not responding!";
         var signup_key = '';
         
-        Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
+        Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
         Ext.Ajax.request({
             url: Api.urlFor('/apiv2/auth/signup_key'),
             method: 'POST',
@@ -400,8 +379,8 @@ var Install = {
     createInstallStep1Panel: function(searchCB, nextCB) {
         return {
         
-            // scroll: 'vertical',
-            fullscreen: true,
+        
+            // fullscreen: true,
             hidden: false,
 			id: 'install1_form_panel',
             items: [{
@@ -411,7 +390,7 @@ var Install = {
                 items: [{
                     xtype: 'textfield',
                     name: 'registration',
-                    placeHolder: 'Vehicle registration (*)',
+                    placeHolder: 'Enter Vehicle registration',
                     required: true,
                     useClearIcon: true,
                     hideOnMaskTap: true,
@@ -515,7 +494,7 @@ var Install = {
                 items: [{
                     xtype: 'textfield',
                     name: 'imei',
-                    placeHolder: 'Enter IMEI (*)',
+                    placeHolder: 'Enter IMEI',
                     required: true,
                     useClearIcon: true,
                     hideOnMaskTap: true,
@@ -524,7 +503,7 @@ var Install = {
                 }, {
                     xtype: 'textfield',
                     name: 'mileage',
-                    placeHolder: 'Enter Vehicle Mileage (*)',
+                    placeHolder: 'Enter Vehicle Mileage',
                     required: true,
                     useClearIcon: true,
                     hideOnMaskTap: true,
@@ -533,7 +512,7 @@ var Install = {
                 }, {
                     xtype: 'textfield',
                     name: 'second_ref',
-                    placeHolder: 'Enter 2nd Reference (*)',
+                    placeHolder: 'Enter 2nd Reference',
                     required: true,
                     useClearIcon: true,
                     hideOnMaskTap: true,
@@ -654,7 +633,7 @@ var Install = {
                 }, {
                     xtype: 'textfield',
                     name: 'installer_name',
-                    placeHolder: 'Installer Name (*)',
+                    placeHolder: 'Installer Name',
                     required: true,
                     useClearIcon: true,
                     hideOnMaskTap: true,
@@ -722,7 +701,7 @@ var Deinstall = {
                 },*/ {
                     xtype: 'textfield',
                     name: 'imei',
-                    placeHolder: 'IMEI (*)',
+                    placeHolder: 'IMEI',
                     required: true,
                     useClearIcon: true,
                     hideOnMaskTap: true,
@@ -862,53 +841,13 @@ var Help = {
     createHelpMainPanel: function() {
         return new Ext.Panel({
             // hidden: true,
-            // scroll: 'vertical',
+            scroll: 'vertical',
             fullscreen: true,
             id: 'help_panel',
             html: [
                 '<div class="help_page_text">',
-                    '<p><b>1. ASSEMBLE ONBOARD DEVICE</b></p>',
-                    '<p>',
-                        'The Onboard Device needs to be connected to the battery pack prior to installation. ',
-                        'Push fit the OBD male plug on the device into the female socket on the battery pack.',
-                    '</p>',
-                '</div>',
-                '<div class="help_page_text">',
-                    '<p><b>2. LOCATE THE VEHICLE\'S OBD PORT</b></p>',
-                    '<p>',
-                        'The OBD port is normally located in the lower dashboard or kick well areas close ',
-                        'to either side of the steering wheel. The green areas shown on the diagram below ',
-                        'indicate typical OBD port locations.',
-                    '</p>',
-                '</div>',
-                '<div class="help_page_text">',
-                    '<p><b>3. OPERATIONAL CHECKS</b></p>',
-                    '<p>',
-                        'Plug the wire loom into the OBD port on the vehcile connecting it to the battery pack and Onboard ',
-                        'device. Turn the vehicle ignition on without starting the engine and observe the light sequence on the ',
-                        'side of the Onboard device. Ensure GSM and GPS connections. The exact light sequence can be seen overleaf.',
-                    '</p>',
-                '</div>',
-                '<div class="help_page_text">',
-                    '<p><b>4. SECURING THE ONBOARD UNIT</b></p>',
-                    '<p>',
-                        'Remove the vehicle\'s trim panels and choose your preferred fixing locations. Typical Onboard fixing positions ',
-                        'are identified on the diagram above. Secure the unit behind the trim panel against a solid frame or post, ',
-                        'using the properly rated adhesive tape supplied and at least one plastic tie.',
-                    '</p>',
-                '</div>',
-                '<div class="help_page_text">',
-                    '<p><b>5. SECURING THE ONBOARD LOOM</b></p>',
-                    '<p>',
-                        'When the device and battery pack have been fixed, ensure that the cable is secured and not left loose.',
-                    '</p>',
-                '</div>',
-                '<div class="help_page_text">',
-                    '<p><b>6. REGISTER THE DEVICE</b></p>',
-                    '<p>',
-                        'Following installation you need to register the device. Logon to https://installations.onboard.co.uk ',
-                        'and select the ‘New Install’ button.',
-                    '</p>',
+                    '<p><strong>Q: Lorem ipsum dolor sit amet, consectetur adipiscing elit adipiscing elit</strong></p>',
+                    '<p>A: Nam rhoncus euismod blandit. Fusce imperdie</p>',
                 '</div>'
             ]
         });
@@ -1028,7 +967,7 @@ var Util = function() {
 			var params = new SOAPClientParameters();
 			params.add("VehicleRegistration", vehicle.registration);
 			// params.add("imei", vehicle.imei);
-			Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
+			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
 			// GetInstallationLogByVehicleRegistration
 			var resp = SOAPClient.invoke(apiDomain, "GetVehicleInformation", params, true, function(res1, res2) {
 	           	Util.logger('SOAP response is:', res1);
@@ -1045,9 +984,9 @@ var Util = function() {
 				Util.logger('SOAP response2 faultcode complete is:', res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue);
 */
 				
-				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) && 
-					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
-					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
+				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
+					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
 					Util.logger('Not logged in');
 					failCallBack(vehicle);
 				} else {
@@ -1097,15 +1036,15 @@ var Util = function() {
 			params.add("colour", vehicle.colour);
 			params.add("vin", vehicle.vin);
 			// params.add("imei", vehicle.imei);
-			Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
+			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
 			// GetInstallationLogByVehicleRegistration
 			resp = SOAPClient.invoke(apiDomain, "saveVehicleInformation", params, true, function(res1, res2) {
 	           	Util.logger('SOAP response is:', res1);
 	           	Util.logger('SOAP response2 is:', res2);
 
-				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]))&& 
-					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
-					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
+				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
+					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
 					Util.logger('Not logged in');
 					failCallBack(vehicle);
 				}
@@ -1135,7 +1074,7 @@ var Util = function() {
 					params.add("vehicleRegistration", vehicle.registration);
 
 					
-					// Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
+					// Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
 					resp = SOAPClient.invoke(apiDomain, "GetInstallationLogByVehicleRegistration", params, true, function(resp1, resp2) {
 			           Util.logger('SOAP again response is:', resp1);
 			           Util.logger('SOAP again response2 is:', resp2);
@@ -1197,14 +1136,14 @@ var Util = function() {
 			params.add("mileage", vehicle.mileage);
 			params.add("secondref", vehicle.second_ref);
 
-			Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
+			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
 			var resp = SOAPClient.invoke(apiDomain, "AssignIMEIToRegistration", params, true, function(res1, res2) {
 	            Util.logger('SOAP response is:', res1);
 	            Util.logger('SOAP response2 is:', res2);
 				
-				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) && 
-					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
-					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
+				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
+					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
 					Util.logger('Not logged in');
 					failCallBack(vehicle);
 				}
@@ -1277,33 +1216,27 @@ var Util = function() {
 			var params = new SOAPClientParameters();
 			params.add("serviceId", vehicle.service_id);
 
-			Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
+			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
 			var resp = SOAPClient.invoke(apiDomain, "GetLatestPosition", params, true, function(res1, res2) {
 	            Util.logger('SOAP response is:', res1);
 	            Util.logger('SOAP response2 is:', res2);
 
-				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) && 
-					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
-					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
+				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
+					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
 					Util.logger('Not logged in');
 					failCallBack(vehicle);
 				} else {
 
-					if(res1.gpsLatitude == 0 && res1.gpsLongitude == 0) {
+					if(res1.gpsLatitude == 0 && res1.gpsLongitude == 0)
 						vehicle.signal_received = false;
-                        vehicle.install_refresh = 'NO SIGNAL RECEIVED!! Please ensure the Vehicle Ignition is on.';
-					} else {
+					else
 						vehicle.signal_received = true;
-                        vehicle.install_refresh = 'SIGNAL RECEIVED';
-                    }
 						
 					Util.logger('GPS time is: ', res1.gpsTime);
 					Util.logger('GPS time date is: ', new Date(res1.gpsTime));
 					
 					vehicle.service_time = new Date(res1.gpsTime);
-
-                    Util.logger('signal received is: ', vehicle.signal_received);
-                    Util.logger('service time is: ', vehicle.service_time);
 					
 					retVehicleObj = vehicle;
 					callBack(retVehicleObj);
@@ -1333,10 +1266,6 @@ var Util = function() {
 			SOAPClient.session_cookie = account_key;
            	Util.logger('registration is:', vehicle.registration);
            	Util.logger('imei is:', vehicle.imei);
-            Util.logger('InstallationTimestamp', vehicle.install_completion);
-            Util.logger('InstallerName', vehicle.installer_name);
-            Util.logger('InstallationTimestamp', vehicle.install_completion);
-            // Util.logger();
 
 			var params = new SOAPClientParameters();
 			params.add("Id", 0);
@@ -1351,7 +1280,7 @@ var Util = function() {
 			params.add("InstallationStatus", vehicle.install_status);
 			params.add("SignalReceived", vehicle.signal_received);
 			params.add("LocationCorrect", false);
-			params.add("InstallationTimestamp", vehicle.install_completion);
+			params.add("InstallationTimestamp", new Date());
 			params.add("InstallerName", vehicle.installer_name);
 			params.add("RepresentativeName", vehicle.second_ref);
 			params.add("ServiceTimestamp", vehicle.service_time);
@@ -1359,14 +1288,14 @@ var Util = function() {
 			
 			
 			
-			Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
+			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
 			var resp = SOAPClient.invoke(apiDomain, "SaveInstallationLog", params, true, function(res1, res2) {
 	            Util.logger('SOAP response is:', res1);
 	            Util.logger('SOAP response2 is:', res2);
 
-				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) && 
-					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
-					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
+				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
+					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
 					Util.logger('Not logged in');
 					failCallBack(vehicle);
 				} else if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
@@ -1422,7 +1351,7 @@ var Util = function() {
 			retVehicleObj.imei = imei;
 			retVehicleObj.replace_unit = isReplacementUnit;
 
-			Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
+			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
 			var resp = SOAPClient.invoke(apiDomain, "DeInstall", params, true, function(res1, res2) {
 	            Util.logger('SOAP response is:', res1);
 	            Util.logger('SOAP response2 is:', res2);
@@ -1434,9 +1363,9 @@ var Util = function() {
 				Util.logger('SOAP response2 faultcode complete is:', res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue);
 */
 	
-				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) && 
-					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
-					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
+				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
+					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
 					Util.logger('Not logged in');
 					failCallBack(retVehicleObj);
 				} 
@@ -1517,14 +1446,14 @@ var Util = function() {
 			}
 
 
-			Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
+			Ext.getBody().mask('Authenticating...', 'x-mask-loading', false);
 			var resp = SOAPClient.invoke(apiDomain, remoteMethod, params, true, function(res1, res2) {
 	           Util.logger('SOAP response is:', res1);
 	           Util.logger('SOAP response2 is:', res2);
 
-				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) && 
-					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
-					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
+				if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
+					res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
 					Util.logger('Not logged in');
 					failCallBack(retVehicleObj);
 				} else {

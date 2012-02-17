@@ -1,0 +1,55 @@
+#! /bin/sh
+#
+# create a phonegap/android project
+# 
+# USAGE
+#   ./create [path package activity]
+#
+
+self="${0#./}"
+echo "self is $self"
+
+# load up the config
+. ./phonegap/_phonegap/config
+
+PACKAGE_AS_PATH=$(echo $PACKAGE | sed 's/\./\//g')
+ACTIVITY_PATH=./src/$PACKAGE_AS_PATH/$ACTIVITY.java
+MANIFEST_PATH=./AndroidManifest.xml
+STRINGS_PATH=./res/values/strings.xml
+
+echo "target is: $TARGET"
+echo "path is: $."
+echo "package is: $PACKAGE"
+echo "activity is: $ACTIVITY"
+echo "name is: $ACTIVITY"
+
+# create the project
+android create project --target $TARGET --path . --package $PACKAGE --activity $ACTIVITY --name $ACTIVITY
+
+echo android project created
+
+# copy all the phonegap scripts etc in there
+cp -R ./phonegap/templates/project/* .
+
+# copy in phonegap.js
+cp ./phonegap/_phonegap/android/phonegap-$VERSION.js ./assets/www
+
+# copy in phonegap.jar
+cp ./phonegap/_phonegap/android/phonegap-$VERSION.jar ./libs
+
+# copy in default activity
+cat ./phonegap/templates/Activity.java > $ACTIVITY_PATH
+
+# copy supporting files
+cp ./phonegap/templates/KeyBoard.java ./src/$PACKAGE_AS_PATH
+
+# interpolate the acivity name and package
+find "$ACTIVITY_PATH" | xargs grep '__ACTIVITY__' -sl | xargs -L1 sed -i "" "s/__ACTIVITY__/${ACTIVITY}/g"
+find "$ACTIVITY_PATH" | xargs grep '__ID__' -sl | xargs -L1 sed -i "" "s/__ID__/${PACKAGE}/g"
+
+find "./src/$PACKAGE_AS_PATH/KeyBoard.java" | xargs grep '__ID__' -sl | xargs -L1 sed -i "" "s/__ID__/${PACKAGE}/g"
+
+find "$MANIFEST_PATH" | xargs grep '__ACTIVITY__' -sl | xargs -L1 sed -i "" "s/__ACTIVITY__/${ACTIVITY}/g"
+find "$MANIFEST_PATH" | xargs grep '__PACKAGE__' -sl | xargs -L1 sed -i "" "s/__PACKAGE__/${PACKAGE}/g"
+
+find "$STRINGS_PATH" | xargs grep '__ACTIVITY__' -sl | xargs -L1 sed -i "" "s/__ACTIVITY__/${ACTIVITY}/g"

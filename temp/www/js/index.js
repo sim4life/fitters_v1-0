@@ -8,7 +8,6 @@ Ext.setup({
     onReady: function() {
         // delete /Users/shahzad/workarea/fitters_v1-0/fitters/phonegap/_phonegap/android then
         // $>/usr/local/callback-android/bin/create ~/workarea/fitters_v1-0/fitters com.onboardservice.fitters Fitters
-        // $>ant debug install
         var form, loginFormBase;
         BottomTabsInline = '';
         newVehicle = {};//new Object();
@@ -27,24 +26,23 @@ Ext.setup({
             handleLoginSignup(Ext.emptyFn, User.login);
         };
         
-        /*
         signupHandlerCB = function(ele, eve) {
             Util.logger('Signup button handler called!');
             
             handleLoginSignup(errorsHandlerCB, User.signup);
         };
-        */
+        
         handleLoginSignup = function(errorsHandlerCB, userCB) {
             Api.clearLocalStorage();
             Init.initState();
             
-            var displayPanelCB, passwordField2,
+            var displayPanelCB,
                 model = Ext.ModelMgr.create(form.getValues(), 'User'),
                 message = "", errors = model.validate();
             
             if(Ext.isEmpty(BottomTabsInline)) {
                 displayPanelCB = renderAllWithDataCB;
-            }
+            } 
             else {
                 displayPanelCB = updatePanelWithDataCB;
             }
@@ -55,17 +53,14 @@ Ext.setup({
                 passwordField2.down('input').dom.blur();
             }
             
-            //SIM - forces the soft keyboard to hide for Android devices using Phonegap mechanism
+            //SIM - forces the soft keyboard to hide for Android devices using Phonegap mechanism 
             //http://wiki.phonegap.com/w/page/27915465/How-to-show-and-hide-soft-keyboard-in-Android
             if(Ext.is.Android) {
-                passwordField2 = Ext.get('loginPasswordField');
-                passwordField2.down('input').dom.focus();
-                passwordField2.down('input').dom.blur();
                 window.KeyBoard.hideKeyBoard();
                 //PhoneGap.fireEvent('hidekeyboard');
             }
 
-            // errors = (errorsHandlerCB != Ext.emptyFn) ? errorsHandlerCB(model, errors) : errors;
+            errors = (errorsHandlerCB != Ext.emptyFn) ? errorsHandlerCB(model, errors) : errors;
             /*
             if(model.get('password') != model.get('password2')) {
                 var error = {field: 'password2', message: 'Passwords mismatch'};
@@ -90,7 +85,6 @@ Ext.setup({
             return false;
         };
         
-        /*
         errorsHandlerCB = function(model, errors) {
             if(model.get('password') != model.get('password2')) {
                 var error = {field: 'password2', message: 'Passwords mismatch'};
@@ -98,7 +92,7 @@ Ext.setup({
             }
             return errors;
         };
-        */
+        
         // KL - http://www.sencha.com/forum/showthread.php?112719-Best-practice-for-form-validation&highlight=textfield
         Ext.regModel('User', { 
             fields: [
@@ -114,7 +108,7 @@ Ext.setup({
         });
 
         registerLoginHandler = function() {
-            loginFormBase = User.getLoginFormBase(loginHandlerCB/*, signupHandlerCB*/);
+            loginFormBase = User.getLoginFormBase(loginHandlerCB, signupHandlerCB);
 
             loginFormBase.user = Ext.ModelMgr.create({ username: '', password: ''}, 'User');
         };
@@ -167,7 +161,7 @@ Ext.setup({
             
             //__HOME panels layout end==================================================================================
             
-            Ext.regModel('Vehicle', {
+            Ext.regModel('Vehicle', { 
                 fields: [
                     {name: 'id', type: 'int'},
                     {name: 'service_id', type: 'int'},
@@ -197,7 +191,7 @@ Ext.setup({
             });
 
 
-            Ext.regModel('Vehicle1', {
+            Ext.regModel('Vehicle1', { 
                 fields: [
                     {name: 'id', type: 'int'},
                     {name: 'registration', type: 'string'},
@@ -216,7 +210,7 @@ Ext.setup({
                 ]
             });
 
-            Ext.regModel('Vehicle2', {
+            Ext.regModel('Vehicle2', { 
                 fields: [
                     {name: 'id', type: 'int'},
                     {name: 'imei', type: 'string'},
@@ -234,7 +228,7 @@ Ext.setup({
                 ]
             });
             
-            Ext.regModel('Vehicle3', {
+            Ext.regModel('Vehicle3', { 
                 fields: [
                     {name: 'id', type: 'int'},
 /*
@@ -263,7 +257,6 @@ Ext.setup({
                 ui: 'dark',
                 dock: 'top',
                 title: 'OnBoard Fitters',
-                id: 'titleContainer',
                 items: [installBackBtn]
             });
 
@@ -324,17 +317,15 @@ Ext.setup({
                 id: 'tab'+panelIndex.install+1,
                 cls: 'card' + (panelIndex.install+1) + ' install_panel',
                 iconCls: 'install',
-                scroll: 'vertical',
                 // layout: 'card',
-                items: [ installStep1Panel, installStep2Panel, installStep3Panel/*, showVehiclePanel*/ ],
+                items: [ installStep1Panel, installStep2Panel, installStep3Panel, showVehiclePanel ],
                 dockedItems: [ installNavBar ]
             });
             
             deinstallNavBar = new Ext.Toolbar({
                 ui: 'dark',
                 dock: 'top',
-                title: 'OnBoard Fitters',
-                id: 'titleContainer'
+                title: 'OnBoard Fitters'
             });
 
             deinstallMainPanel = Deinstall.createDeinstallMainPanel(onSubmitDeinstallBtnTapCB);
@@ -345,7 +336,7 @@ Ext.setup({
                 cls: 'card' + (panelIndex.deinstall+1) + ' deinstall_panel',
                 iconCls: 'deinstall',
                 // layout: 'card',
-                items: [ deinstallMainPanel/*, showVehiclePanel */],
+                items: [ deinstallMainPanel, showVehiclePanel ],
                 dockedItems: [ deinstallNavBar ]
             });
             
@@ -355,7 +346,6 @@ Ext.setup({
                 ui: 'dark',
                 dock: 'top',
                 title: 'OnBoard Fitters',
-                id: 'titleContainer',
 				items: [searchBackBtn]
             });
 
@@ -373,7 +363,6 @@ Ext.setup({
                 id: 'tab'+panelIndex.search+1,
                 cls: 'card' + (panelIndex.search+1) + ' search_panel',
                 iconCls: 'search',
-                scroll: 'vertical',
                 // layout: 'card',
                 items: [ searchMainPanel, searchResultsListComp /*,showVehiclePanel*/ ],
                 dockedItems: [ searchNavBar ]
@@ -392,8 +381,7 @@ Ext.setup({
             helpNavBar = new Ext.Toolbar({
                 ui: 'dark',
                 dock: 'top',
-                title: 'OnBoard Fitters',
-                id: 'titleContainer'
+                title: 'OnBoard Fitters'
             });
 
             helpMainPanel = Help.createHelpMainPanel();
@@ -403,7 +391,6 @@ Ext.setup({
                 id: 'tab'+panelIndex.help+1,
                 cls: 'card'+(panelIndex.help+1) + ' help_panel',
                 iconCls: 'help',
-                scroll: 'vertical',
                 // layout: 'card',
                 // fullscreen: true,
                 items: [ helpMainPanel ],
@@ -433,10 +420,10 @@ Ext.setup({
                 fullscreen: true,
                 ui: 'light',
                 cardSwitchAnimation: null,
-/*                defaults: {
+                defaults: {
                     scroll: 'vertical'
                 },
-*/                items: [ homePanel, installPanel, deinstallPanel, searchPanel, helpPanel ],
+                items: [ homePanel, installPanel, deinstallPanel, searchPanel, helpPanel ],
                 listeners: {
                     cardswitch : function(cont, newCard, oldCard, index, isAnimated) {
                         //change: function(tabBar, tab, card) may also be used
@@ -495,7 +482,6 @@ Ext.setup({
             Init.initState();
 			var vehicleModel = '';
 			Util.logger('tmp_vehicle is:', localStorage['tmp_vehicle']);
-            Util.logger('newVehicle.cl_state is::', newVehicle.cl_state);
             //in case the logout action occurred
             BottomTabsInline.show();
 			if(!Ext.isEmpty(localStorage['tmp_vehicle'])) {
@@ -580,8 +566,8 @@ Ext.setup({
                     installStep1Panel.show();
                     // installStep3Panel.show();
                     // installStep2Panel.show();
-                    homePanel.show();
-                    deinstallPanel.show();
+                    // homePanel.show();
+                    // deinstallPanel.show();
                     helpPanel.show();
                     // helpMainPanel.show();
 
@@ -956,16 +942,16 @@ Ext.setup({
         //__VEHICLES action handlers start============================================================
 
         resetVehicleFormPanel = function() {
-            installStep1FormBase.vehicle1 = Ext.ModelMgr.create({ id: 0, registration: '', make: '', model: '', colour: '', vin: '',
+            installStep1FormBase.vehicle1 = Ext.ModelMgr.create({ id: 0, registration: '', make: '', model: '', colour: '', vin: '', 
 									vehicle_id: null, cl_state: 'insert', /*client_uid: Api.randomString(), */action: 'new'}, 'Vehicle1');
             installStep1Panel.load(installStep1FormBase.vehicle1);
             
-            installStep2FormBase.vehicle2 = Ext.ModelMgr.create({ id: 0, imei: '', mileage: '', second_ref: '', vehicle_id: null,
+            installStep2FormBase.vehicle2 = Ext.ModelMgr.create({ id: 0, imei: '', mileage: '', second_ref: '', vehicle_id: null, 
                                     cl_state: 'insert', /*client_uid: Api.randomString(), */action: 'new'}, 'Vehicle2');
             installStep2Panel.load(installStep2FormBase.vehicle2);
 
             installStep3FormBase.vehicle3 = Ext.ModelMgr.create({ id: 0, /*extension: false, telematics: false, diagnostic: false, */
-               install_completion: new Date(), installer_name: '', /*rep_name: '', */install_notes: '', install_refresh: '', vehicle_id: null,
+               install_completion: new Date(), installer_name: '', /*rep_name: '', */install_notes: '', install_refresh: '', vehicle_id: null, 
 							cl_state: 'insert', /*client_uid: Api.randomString(), */action: 'new'}, 'Vehicle3');
             installStep3Panel.load(installStep3FormBase.vehicle3);
         };
@@ -1266,7 +1252,7 @@ Ext.setup({
 				Ext.Msg.alert("Save Vehicle", vehicle.remote_error, Ext.emptyFn);
 				vehicle.remote_error = '';
 			} else {
-				Ext.Msg.alert("Save Vehicle", 'Vehicle info Saved successfully!',
+				Ext.Msg.alert("Save Vehicle", 'Vehicle info Saved successfully!', 
 				function() {
                     installStep1Panel.hide();
                     installStep2Panel.hide();
@@ -1380,7 +1366,7 @@ Ext.setup({
             deinstallPanel.hide();
             searchPanel.hide();
             helpPanel.hide();
-            // helpMainPanel.hide();
+            helpMainPanel.hide();
                 
 			vehicle.cl_state = 'step1';
 			
@@ -1398,7 +1384,7 @@ Ext.setup({
             deinstallPanel.hide();
             searchPanel.hide();
             helpPanel.hide();
-            // helpMainPanel.hide();
+            helpMainPanel.hide();
             
 			vehicle.cl_state = 'step1';
 			
@@ -1416,7 +1402,7 @@ Ext.setup({
             deinstallPanel.hide();
             searchPanel.hide();
             helpPanel.hide();
-            // helpMainPanel.hide();
+            helpMainPanel.hide();
             
 			vehicle.cl_state = 'step2';
 			
@@ -1434,7 +1420,7 @@ Ext.setup({
             deinstallPanel.hide();
             searchPanel.hide();
             helpPanel.hide();
-            // helpMainPanel.hide();
+            helpMainPanel.hide();
             
 			vehicle.cl_state = 'step3';
 			
@@ -1452,7 +1438,7 @@ Ext.setup({
             deinstallPanel.hide();
             searchPanel.hide();
             helpPanel.hide();
-            // helpMainPanel.hide();
+            helpMainPanel.hide();
                 
 			vehicle.cl_state = 'step3';
 			
@@ -1469,7 +1455,7 @@ Ext.setup({
             deinstallPanel.hide();
             searchPanel.hide();
             helpPanel.hide();
-            // helpMainPanel.hide();
+            helpMainPanel.hide();
             
 			vehicle.cl_state = 'deinstall';
 			
@@ -1485,8 +1471,8 @@ Ext.setup({
             homePanel.hide();
             deinstallPanel.hide();
             searchPanel.hide();
-            helpPanel.hide();
-            // helpMainPanel.hide();
+            // helpPanel.hide();
+            helpMainPanel.hide();
 
             searchMainPanel.hide();
 			searchResultsListComp.hide();
