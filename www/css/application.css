@@ -75,7 +75,7 @@ background: #666 url(../rsc/bg-body.png) repeat;
 
 
 .x-tabbar-light.x-docked-bottom .x-tab img {
-    background-color: white;
+    background-color: transparent;
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #fff), color-stop(50%, #fff), color-stop(51%, #fff), color-stop(100%, #fff));
     background-image: linear-gradient(top, #fff 0%, #fff 50%, #fff 51%, #fff 100%);
 }
@@ -120,6 +120,12 @@ background: #666 url(../rsc/bg-body.png) repeat;
     padding: 1em;
 }
 
+/*
+#help_panel .x-form .x-panel-body.x-fullscreen {
+    background: none;
+}
+*/
+
 #show_vehicle_panel {
 /*     background: #EEE; */
     padding: 1em;
@@ -127,7 +133,7 @@ background: #666 url(../rsc/bg-body.png) repeat;
 
 
 #help_panel p {
-    padding: 0.5em 0;
+    padding: 0.3em 0;
 }
 
 
@@ -181,14 +187,29 @@ background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004
 }
 
 .vehicle_page_text, .help_page_text {
-    padding: .5em;
-    background-color: #ccc;
+    padding: .2em .5em;
+    background-color: #f2f2f2;
+    opacity: 0.7;
     border-radius:10px; 
     border: 1px solid #fff;
     margin-bottom: 1em;
     color: #494949;
 }
 
+
+.vehicle_page_text, .help_page_text p{
+
+    opacity: 1;
+    color:#000;
+     font-size: .6em;
+
+}
+
+.vehicle_page_text, .help_page_text p:first-child{
+color: #FF0084;
+ font-size: .7em;
+ font-weight: bold;
+}
 
 
 #install1_form_panel .x-panel-body, #install2_form_panel .x-panel-body, #deinstall_form_panel .x-panel-body, #search_form_panel .x-panel-body, #install3_form_panel .x-panel-body {
@@ -248,3 +269,23 @@ background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#7d7e7
     width: 290px;
 }
 
+.deinstall_panel .x-toolbar-title, .install_panel .x-toolbar-title, .search_panel .x-toolbar-title, .help_panel .x-toolbar-title{
+    background: url(../rsc/logo-title.png) center no-repeat, -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #5A5A5A), color-stop(50%, #5A5A5A), color-stop(51%, black), color-stop(100%, black)) ;
+     
+    text-indent: -9999em;
+}
+
+.home_panel .x-toolbar-title{
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #5A5A5A), color-stop(50%, #5A5A5A), color-stop(51%, black), color-stop(100%, black)) ;
+     
+    text-indent: -9999em;
+}
+
+
+
+
+#login_form_panel {
+   background: #666 url(../rsc/bg-body.png) repeat;
+  
+    padding-top: 100px;
+}
