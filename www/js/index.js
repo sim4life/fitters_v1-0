@@ -148,7 +148,7 @@ Ext.setup({
             homeNavBar = new Ext.Toolbar({
                 ui: 'dark',
                 dock: 'top',
-                title: 'OnBoard Fitters',
+                //title: 'OnBoard Fitters',
                 id: 'titleContainer'
             });
 

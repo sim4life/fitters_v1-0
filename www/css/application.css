@@ -48,14 +48,10 @@ background:-webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004A
 
 
 .x-form .x-panel-body, .x-fullscreen {
-
-background: #666 url(../rsc/bg-body.png) repeat;
+    background: #666 url(../rsc/bg-body.png) repeat;
 }
 
-.home_page_text {
-    color: white;
-    text-align: center;
-}
+
 
 .x-toolbar-dark {
     background-color: #000;
@@ -65,9 +61,20 @@ background: #666 url(../rsc/bg-body.png) repeat;
 .x-toolbar-title { font-size: 1em;}
 
 .home_page_text {
-    background: url(../rsc/welcome-dummy.png) no-repeat 7px 20px;
-    height: 320px;
+    background: url(../rsc/icn-home.png) no-repeat center center;
+    margin-top: 50px;
+    padding-bottom: 120px;
 }
+
+#outer {height: 100%; overflow: hidden; position: relative;}
+#outer[id] {display: table; position: static;}
+
+#middle {position: absolute; top: 50%;} /* for explorer only*/
+#middle[id] {display: table-cell; vertical-align: middle; width: 100%;}
+
+#inner {position: relative; top: -50%} /* for explorer only */
+/* optional: #inner[id] {position: static;} */
+
 
 .help_page, .x-button-label {
     color: white;
@@ -77,14 +84,16 @@ background: #666 url(../rsc/bg-body.png) repeat;
 .x-tabbar-light.x-docked-bottom .x-tab img {
     background-color: transparent;
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #fff), color-stop(50%, #fff), color-stop(51%, #fff), color-stop(100%, #fff));
-    background-image: linear-gradient(top, #fff 0%, #fff 50%, #fff 51%, #fff 100%);
+/*     background-image: linear-gradient(top, #fff 0%, #fff 50%, #fff 51%, #fff 100%); */
 }
 
 .x-tab img.home {-webkit-mask-image:url('../rsc/home.png');}
 
 .x-tab img.install {-webkit-mask-image:url('../rsc/icn-install.png');}
 
-.x-tab img.deinstall {-webkit-mask-image:url('../rsc/icn-deinstall.png');}
+.x-tab img.deinstall {
+    -webkit-mask-image:url('../rsc/icn-deinstall.png');
+    }
 
 .x-tab img.search {-webkit-mask-image:url('../rsc/icn-search.png');}
 
@@ -269,23 +278,22 @@ background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#7d7e7
     width: 290px;
 }
 
-.deinstall_panel .x-toolbar-title, .install_panel .x-toolbar-title, .search_panel .x-toolbar-title, .help_panel .x-toolbar-title{
+.deinstall_panel .x-toolbar-title, .install_panel .x-toolbar-title, .search_panel .x-toolbar-title, .help_panel .x-toolbar-title, .home_panel .x-toolbar-title{
     background: url(../rsc/logo-title.png) center no-repeat, -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #5A5A5A), color-stop(50%, #5A5A5A), color-stop(51%, black), color-stop(100%, black)) ;
      
     text-indent: -9999em;
 }
 
-.home_panel .x-toolbar-title{
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #5A5A5A), color-stop(50%, #5A5A5A), color-stop(51%, black), color-stop(100%, black)) ;
-     
-    text-indent: -9999em;
+
+#loginUserField {
+       background: transparent url(../rsc/logo-title.png) top center no-repeat;
+       padding-top: 50px;
+
 }
-
-
 
 
 #login_form_panel {
    background: #666 url(../rsc/bg-body.png) repeat;
   
-    padding-top: 100px;
+
 }

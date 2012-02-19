@@ -154,7 +154,8 @@ var User = {
                     placeHolder: 'Username',
                     autoCapitalize : false,
                     autoComplete: false,
-                    autoCorrect: false
+                    autoCorrect: false,
+                    id: 'loginUserField'
                 }, {
                     xtype: 'passwordfield',
                     name: 'password',
@@ -389,9 +390,9 @@ var Home = {
             fullscreen: true,
             id: 'home_screen_panel',
             html: [
-                '<div class="home_page_text" style="padding-bottom: 60px">',
-                '</div>'
-            ]
+                    '<div class="home_page_text"></div>'
+                   
+        ]
         });
     }
 };
