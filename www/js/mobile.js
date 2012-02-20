@@ -227,13 +227,13 @@ var User = {
     login: function(email, password, failForm, succCallback, failCallBack) {
         var errMsg = "Device Offline or Server not responding!";
 		
-/*		var uname = email,
+		var uname = email,
 			pswd = password;
-*/		
-
+		
+/*
         var uname = "onboardwebservice",
             pswd = "password";
-        
+*/        
         Api.setLocalStorageProp('login', email);
         Api.setLocalStorageProp('user_id', '1');
         
@@ -732,7 +732,7 @@ var Deinstall = {
                 }, {
                     xtype: 'checkboxfield',
                     name: 'replace_unit',
-                    label: 'Replacement Unit fitter:',
+                    label: 'Replacement Unit Fitted:',
                     id: 'replace_unit_field'
                 }]
             }, {
@@ -759,7 +759,7 @@ var Search = {
 			id: 'search_form_panel',
             items: [{
                 xtype: 'fieldset',
-                title: 'New Install',
+                title: 'Search Vehicles',
                 id: 'new_install_field',
                 /*items:[{
                     xtype: 'textfield',
