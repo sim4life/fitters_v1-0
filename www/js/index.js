@@ -9,10 +9,6 @@ Ext.setup({
         // delete /Users/shahzad/workarea/fitters_v1-0/fitters/phonegap/_phonegap/android then
         // $>/usr/local/callback-android/bin/create ~/workarea/fitters_v1-0/fitters com.onboardservice.fitters Fitters
         // $>ant debug install
-
-        //For release
-        // $>ant release
-        // $>adb install bin/Fitters-release.apk
         var form, loginFormBase;
         BottomTabsInline = '';
         newVehicle = {};//new Object();
@@ -449,23 +445,19 @@ Ext.setup({
                         // var newCardTitle = (newCard.title == 'Journal') ? 'journals' : newCard.title.toLowerCase();
                         Util.logger('cardswitch! index is: ', index);
                         /*
-                        if(index == panelIndex.home) {
-                            // refreshDashAndListPanelsCB('', '');
-                        } else if(index == panelIndex.install) {
-                            // installPanel.doLayout();
-                            // installPanel.doComponentLayout();
-                            // helpPanel.doLayout();
-                            // helpPanel.doComponentLayout();
-                            // BottomTabsInline.setActiveItem(helpPanel);
-                        } else if(index == panelIndex.deinstall) {
-                            // Journals.showFreshJournalsListPanel();
-                        } else if(index == panelIndex.search) {
-                            // Tasks.showFreshTasksListPanel();
-                        } else if(index == panelIndex.help) {
+                        if(index == panelIndex.home)
+                            refreshDashAndListPanelsCB('', '');
+                        else if(index == panelIndex.install)
+                            Events.showFreshEventsListPanel();
+                        else if(index == panelIndex.deinstall)
+                            Journals.showFreshJournalsListPanel();
+                        else if(index == panelIndex.search)
+                            Tasks.showFreshTasksListPanel();
+                        else if(index == panelIndex.help) {
                             // bugfix if the user scrolls the static privacy pages and presses the help button the panel goes blank
                             // this at least navigating back resets this page.
-                            helpPanel.doLayout();
-                            helpPanel.doComponentLayout();
+                            // helpPanel.doLayout();
+                            // helpPanel.doComponentLayout();
                         }
                         */
                     }
@@ -515,10 +507,10 @@ Ext.setup({
                     installStep3Panel.hide();
                     installBackBtn.hide();
 
-                    // homePanel.show();
-                    // deinstallPanel.show();
-                    // searchPanel.show();
-                    // helpPanel.show();
+                    homePanel.show();
+                    deinstallPanel.show();
+                    searchPanel.show();
+                    helpPanel.show();
                     // helpMainPanel.show();
 
 					if(Ext.isEmpty(installStep1FormBase.vehicle1))
@@ -585,13 +577,13 @@ Ext.setup({
 				} else if(newVehicle.cl_state == 'search') {
 					vehicleModel = Ext.ModelMgr.create(newVehicle, 'Vehicle');
         
-                    // installStep1Panel.show();
+                    installStep1Panel.show();
                     // installStep3Panel.show();
                     // installStep2Panel.show();
-                    // homePanel.show();
-                    // deinstallPanel.show();
-                    helpPanel.hide();
-                    helpMainPanel.hide();
+                    homePanel.show();
+                    deinstallPanel.show();
+                    helpPanel.show();
+                    // helpMainPanel.show();
 
 					searchMainPanel.load(vehicleModel);
                     searchMainPanel.show();
@@ -611,10 +603,7 @@ Ext.setup({
 					deinstallMainPanel.load(vehicleModel);
                     deinstallPanel.show();
 					BottomTabsInline.setActiveItem(deinstallPanel);
-				} else {
-                    helpPanel.show();
-                    BottomTabsInline.setActiveItem(helpPanel);
-                }
+				}
 					
 				newVehicle.cl_state = 'insert';
 			}
@@ -1497,7 +1486,7 @@ Ext.setup({
             deinstallPanel.hide();
             searchPanel.hide();
             helpPanel.hide();
-            helpMainPanel.hide();
+            // helpMainPanel.hide();
 
             searchMainPanel.hide();
 			searchResultsListComp.hide();
