@@ -9,8 +9,7 @@
 }
 
 #loginButton.x-button-pressed, #install1SearchButton.x-button-pressed {
-
-background:-webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004A), color-stop(49%,#E80078), color-stop(98%,#90004A));
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004A), color-stop(49%,#E80078), color-stop(98%,#90004A));
 }
 .x-tabbar-light.x-docked-bottom .x-tab-active {
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FF0084), color-stop(0%,#FF4CA5), color-stop(52%,#FF49A4), color-stop(54%,#FF0084), color-stop(100%,#FF0084));
@@ -30,13 +29,9 @@ background:-webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004A
 }
 
 .x-tab img.homeP  {-webkit-mask-image:url('../rsc/home.png');}
-
 .x-tab img.help {-webkit-mask-image:url('../rsc/help.png');}
-
 .x-tab img.install {-webkit-mask-image:url('../rsc/install.png');}
-
 .x-tab img.deinstall {-webkit-mask-image:url('../rsc/deinstall.png');}
-
 .x-tab img.search {-webkit-mask-image:url('../rsc/search.png');}
 
  
@@ -46,35 +41,22 @@ background:-webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004A
     background-image: linear-gradient(top, #fff 0%, #fff 50%, #fff 51%, #fff 100%);
 }
 
-
 .x-form .x-panel-body, .x-fullscreen {
     background: #666 url(../rsc/bg-body.png) repeat;
 }
 
-
-
 .x-toolbar-dark {
     background-color: #000;
-    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #5A5A5A), color-stop(50%, #5A5A5A), color-stop(51%, #000), color-stop(100%, #000000));
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #333132), color-stop(50%, #333132), color-stop(51%, #000), color-stop(100%, #000000));
 }
 
 .x-toolbar-title { font-size: 1em;}
 
 .home_page_text {
     background: url(../rsc/icn-home.png) no-repeat center center;
-    margin-top: 50px;
+    margin-top: 80px;
     padding-bottom: 120px;
 }
-
-#outer {height: 100%; overflow: hidden; position: relative;}
-#outer[id] {display: table; position: static;}
-
-#middle {position: absolute; top: 50%;} /* for explorer only*/
-#middle[id] {display: table-cell; vertical-align: middle; width: 100%;}
-
-#inner {position: relative; top: -50%} /* for explorer only */
-/* optional: #inner[id] {position: static;} */
-
 
 .help_page, .x-button-label {
     color: white;
@@ -84,39 +66,14 @@ background:-webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004A
 .x-tabbar-light.x-docked-bottom .x-tab img {
     background-color: transparent;
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #fff), color-stop(50%, #fff), color-stop(51%, #fff), color-stop(100%, #fff));
-/*     background-image: linear-gradient(top, #fff 0%, #fff 50%, #fff 51%, #fff 100%); */
 }
 
 .x-tab img.home {-webkit-mask-image:url('../rsc/home.png');}
-
 .x-tab img.install {-webkit-mask-image:url('../rsc/icn-install.png');}
-
-.x-tab img.deinstall {
-    -webkit-mask-image:url('../rsc/icn-deinstall.png');
+.x-tab img.deinstall {-webkit-mask-image:url('../rsc/icn-deinstall.png');
     }
 
 .x-tab img.search {-webkit-mask-image:url('../rsc/icn-search.png');}
-
-/*
-#install1_field .x-form-label, #install1_field  .x-form-field-container input{
-    background: none;
-    border:none;
-}
-*/
-
-/*
-#deinstallSubmitButton {
-    display: inline-block;
-    color: #fff;
-
-    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#C1FA3B), color-stop(0.02, #8FCA05), to(#5A7F03));
-    -webkit-border-radius: .2em;
-    -webkit-box-shadow: #7EB105 0 0 .03em 0.03em inset, rgba(0, 0, 0, 0.4) 0px 0.1em .2em;
-    text-shadow: rgba(0,0,0,.2) 0 .05em .02em;
-    border: .08em solid #374D02;
-    padding: .2em .6em;
-}
-*/
 
 .x-form-fieldset-title {
     text-shadow: #000 0 -1px -1px;
@@ -125,46 +82,29 @@ background:-webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004A
 }
 
 #help_panel {
-/*     background: #EEE; */
     padding: 1em;
 }
-
-/*
-#help_panel .x-form .x-panel-body.x-fullscreen {
-    background: none;
-}
-*/
 
 #show_vehicle_panel {
-/*     background: #EEE; */
     padding: 1em;
 }
-
 
 #help_panel p {
     padding: 0.3em 0;
 }
 
-
-
 #install_comp_field {
-    font-size: .6em;
-    
+    font-size: .6em; 
 }
 
 #install_comp_field input {
     padding-top: 2em;
 }
+
 #install1SearchButton, #install1NextButton, #install2NextButton, #install3CompButton, #install3NotCompButton, #install3RefreshButton, #deinstallSubmitButton, .x-toolbar .x-button.x-button-action , #searchSubmitButton {
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ff0084), color-stop(0%,#ff4ca5), color-stop(52%,#ff49a4), color-stop(54%,#ff0084), color-stop(100%,#ff0084)); /* Chrome,Safari4+ */
-border:none;
-
-
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ff0084), color-stop(0%,#ff4ca5), color-stop(52%,#ff49a4), color-stop(54%,#ff0084), color-stop(100%,#ff0084)); 
+    border:none;
 }
-
-
-
-
 
 .x-form-fieldset .x-panel-body {
     border: none;
@@ -173,9 +113,22 @@ border:none;
 .x-form-fieldset .x-panel-body {
     -webkit-box-shadow: none;
 }
-#install1NextButton.x-button-pressed, #install2NextButton.x-button-pressed, #install3CompButton.x-button-pressed, #install3NotCompButton.x-button-pressed, #deinstallSubmitButton.x-button-pressed, .x-toolbar .x-button.x-button-action.x-button-pressed, #searchSubmitButton.x-button-pressed {
-background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004a), color-stop(49%,#e80078), color-stop(98%,#90004a)); /* Chrome,Safari4+ */
 
+#install1NextButton.x-button-pressed, #install2NextButton.x-button-pressed, #install3CompButton.x-button-pressed, #deinstallSubmitButton.x-button-pressed, .x-toolbar .x-button.x-button-action.x-button-pressed, #searchSubmitButton.x-button-pressed {
+background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004a), color-stop(49%,#e80078), color-stop(98%,#90004a));
+}
+
+#install3NotCompButton.x-button-pressed {
+     background:-webkit-gradient(linear, left top, left bottom, color-stop(2%,#bbb), color-stop(49%,#bbb), color-stop(98%,#aaa));
+}
+
+#install3NotCompButton {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(2%,#ccc), color-stop(49%,#ccc), color-stop(98%,#bbb));
+    margin-bottom: 1em;
+}
+
+#install3NotCompButton .x-button-label {
+    color: #666;
 }
 
 .x-field .x-input-radio:checked::after, .x-field .x-input-checkbox:checked::after {
@@ -187,10 +140,6 @@ background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004
     margin-bottom: 1em;
 }
 
-#install3CompButton, #install3NotCompButton {
-    margin-bottom: 1em;
-}
-
 .x-button.install_back.x-button-normal{
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#aebcbf), color-stop(50%,#6e7774), color-stop(51%,#0a0e0a), color-stop(100%,#0a0809)); /* Chrome,Safari4+ */
 }
@@ -198,38 +147,26 @@ background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004
 .vehicle_page_text, .help_page_text {
     padding: .2em .5em;
     background-color: #f2f2f2;
-    opacity: 0.7;
     border-radius:10px; 
     border: 1px solid #fff;
     margin-bottom: 1em;
     color: #494949;
 }
 
-
 .vehicle_page_text, .help_page_text p{
-
-    opacity: 1;
-    color:#000;
      font-size: .6em;
-
 }
 
 .vehicle_page_text, .help_page_text p:first-child{
-color: #FF0084;
- font-size: .7em;
- font-weight: bold;
+    color: #FF0084;
+    font-size: .7em;
+    font-weight: bold;
 }
 
 
 #install1_form_panel .x-panel-body, #install2_form_panel .x-panel-body, #deinstall_form_panel .x-panel-body, #search_form_panel .x-panel-body, #install3_form_panel .x-panel-body {
-    background: url('../rsc/bg-forms.png') repeat;
     border-radius: 15px;
-    margin: 15px 0px 15px 15px;
-    padding-left: 0px;
-    padding-bottom: 1px;
-
 }
-
 
 .x-msgbox-body {
     padding-top: 0;
@@ -241,26 +178,19 @@ color: #FF0084;
 }
 
 .search_panel .x-list-item-body {
-   background: url('../rsc/cars.png') no-repeat center right;
-
+    background: url('../rsc/cars.png') no-repeat center right;
     color:white;
 }
 
-
 .search_panel .x-list .x-list-item{
-
     background:  -webkit-gradient(linear, left top, left bottom, color-stop(0%,#45484d), color-stop(100%,#000000)); 
-    
-
-border:none;
-
+    border:none;
 }
 
 .search_panel .x-list .x-list-item.x-item-selected {
     border: none;
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#7d7e7d), color-stop(100%,#0e0e0e));
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#7d7e7d), color-stop(100%,#0e0e0e));
 }
-
 
 .results_list_item.make {
     font-weight: bold;
@@ -274,26 +204,31 @@ background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#7d7e7
 .installed_time {
     padding-bottom: 3px;
 }
+
 #install2_form_panel {
     width: 290px;
 }
 
-.deinstall_panel .x-toolbar-title, .install_panel .x-toolbar-title, .search_panel .x-toolbar-title, .help_panel .x-toolbar-title, .home_panel .x-toolbar-title{
-    background: url(../rsc/logo-title.png) center no-repeat, -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #5A5A5A), color-stop(50%, #5A5A5A), color-stop(51%, black), color-stop(100%, black)) ;
-     
+.masthead{
+    background: url(../rsc/logo-title.png) no-repeat center;
     text-indent: -9999em;
+    height: 45px;
 }
-
 
 #loginUserField {
        background: transparent url(../rsc/logo-title.png) top center no-repeat;
        padding-top: 50px;
-
+       border: none;
 }
 
+#loginPasswordField {
+    border-top: 1px solid #ccc;
+}
 
 #login_form_panel {
    background: #666 url(../rsc/bg-body.png) repeat;
-  
+}
 
+.x-mask .x-mask-loading {
+    padding-top: 4em;
 }
