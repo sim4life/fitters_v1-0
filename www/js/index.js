@@ -104,7 +104,7 @@ Ext.setup({
         };
         */
         // KL - http://www.sencha.com/forum/showthread.php?112719-Best-practice-for-form-validation&highlight=textfield
-        Ext.regModel('User', { 
+        Ext.regModel('User', {
             fields: [
                 {name: 'username', type: 'string'},
                 {name: 'password', type: 'string'}
@@ -521,6 +521,13 @@ Ext.setup({
                     // helpPanel.show();
                     // helpMainPanel.show();
 
+                    // installStep1Panel.hide();
+                    homePanel.hide();
+                    deinstallPanel.hide();
+                    searchPanel.hide();
+                    helpPanel.hide();
+                    helpMainPanel.hide();
+
 					if(Ext.isEmpty(installStep1FormBase.vehicle1))
 						resetVehicleFormPanel();
 						
@@ -534,12 +541,19 @@ Ext.setup({
 					installStep1Panel.hide();
                     installStep3Panel.hide();
                     installBackBtn.show();
-                
+/*                
                     homePanel.show();
                     deinstallPanel.show();
                     searchPanel.show();
                     helpPanel.show();
-                    // helpMainPanel.show();
+*/                    // helpMainPanel.show();
+                    // installStep2Panel.hide();
+                    homePanel.hide();
+                    deinstallPanel.hide();
+                    searchPanel.hide();
+                    helpPanel.hide();
+                    helpMainPanel.hide();
+
 
 					if(Ext.isEmpty(installStep1FormBase.vehicle1) || Ext.isEmpty(installStep2FormBase.vehicle2))
 						resetVehicleFormPanel();
@@ -557,12 +571,21 @@ Ext.setup({
 					installStep1Panel.hide();
                     installStep2Panel.hide();
                     installBackBtn.show();
-
+/*
                     homePanel.show();
                     deinstallPanel.show();
                     searchPanel.show();
                     helpPanel.show();
-                    // helpMainPanel.show();                
+*/                    // helpMainPanel.show();
+                    installStep1Panel.hide();
+                    installStep2Panel.hide();
+                    // installStep3Panel.hide();
+                    homePanel.hide();
+                    deinstallPanel.hide();
+                    searchPanel.hide();
+                    helpPanel.hide();
+                    // helpMainPanel.hide();
+
 /*
 					if(Ext.isEmpty(installStep1FormBase.vehicle1) || Ext.isEmpty(installStep2FormBase.vehicle2) || Ext.isEmpty(installStep3FormBase.vehicle3))
 						resetVehicleFormPanel();
@@ -590,8 +613,13 @@ Ext.setup({
                     // installStep2Panel.show();
                     // homePanel.show();
                     // deinstallPanel.show();
+                    installStep1Panel.hide();
+                    installStep3Panel.hide();
+                    installStep2Panel.hide();
+                    homePanel.hide();
+                    deinstallPanel.hide();
                     helpPanel.hide();
-                    helpMainPanel.hide();
+                    // helpMainPanel.hide();
 
 					searchMainPanel.load(vehicleModel);
                     searchMainPanel.show();
@@ -603,10 +631,18 @@ Ext.setup({
                     installStep1Panel.show();
                     // installStep3Panel.show();
                     // installStep2Panel.show();
-                    homePanel.show();
+/*                    homePanel.show();
                     searchPanel.show();
                     helpPanel.show();
-                    // helpMainPanel.show();
+*/                    // helpMainPanel.show();
+                    installStep1Panel.hide();
+                    installStep3Panel.hide();
+                    installStep2Panel.hide();
+                    homePanel.hide();
+                    searchPanel.hide();
+                    helpPanel.hide();
+                    // helpMainPanel.hide();
+
 
 					deinstallMainPanel.load(vehicleModel);
                     deinstallPanel.show();
@@ -829,7 +865,7 @@ Ext.setup({
             if(Ext.is.Android)
                 window.KeyBoard.hideKeyBoard();
 
-                newVehicle = copyToVehicleObject(newVehicle, installStep1FormBase.vehicle1, installStep2FormBase.vehicle2, installStep3FormBase.vehicle3);
+            newVehicle = copyToVehicleObject(newVehicle, installStep1FormBase.vehicle1, installStep2FormBase.vehicle2, installStep3FormBase.vehicle3);
 
 			Util.logger('newVehicle is::', newVehicle);
 			if(!Ext.isEmpty(newVehicle)) {
@@ -886,7 +922,7 @@ Ext.setup({
             Util.logger('In onSubmitDeinstallBtnTapCB()');
             
             if(Ext.is.iOS) {
-                var vehicleRegField = Ext.get('vehicle_imei_field');
+                var vehicleRegField = Ext.get('deinstall_imei_field');
                 vehicleRegField.down('input').dom.focus();
                 vehicleRegField.down('input').dom.blur();
             }
@@ -896,16 +932,24 @@ Ext.setup({
             
             var searchVal;
             // var vehicleRegFieldVal = Ext.getCmp('vehicle_reg_field').getValue();
-            var imeiFieldVal = Ext.getCmp('vehicle_imei_field').getValue();
+            var imeiFieldVal = Ext.getCmp('deinstall_imei_field').getValue();
+            var imei2FieldVal = Ext.getCmp('deinstall_imei2_field').getValue();
             var replaceUnitFieldVal = Ext.getCmp('replace_unit_field').isChecked();
+            var notesFieldVal = Ext.getCmp('deinstall_notes_field').getValue();
+
             if(/*Ext.isEmpty(vehicleRegFieldVal) &&*/ Ext.isEmpty(imeiFieldVal)) {
                 Ext.Msg.alert("Error", "Please enter Vehicle IMEI", Ext.emptyFn);
+            } else if(Ext.isEmpty(imei2FieldVal)) {
+                Ext.Msg.alert("Error", "Please re-enter Vehicle IMEI", Ext.emptyFn);
+            } else if(imeiFieldVal != imei2FieldVal) {
+                Ext.Msg.alert("Error", "The two Vehicle IMEI values don't match", Ext.emptyFn);
             } else {
                 // Util.logger('val reg is::', vehicleRegFieldVal);
                 Util.logger('val imei is::', imeiFieldVal);
                 Util.logger('val replace fitted is::', replaceUnitFieldVal);
+                Util.logger('val notes is::', notesFieldVal);
             
-				Util.deinstallVehicleRemotely(/*vehicleRegFieldVal, */imeiFieldVal, replaceUnitFieldVal, confirmDeinstall, failDeinstall);
+				Util.deinstallVehicleRemotely(imeiFieldVal, replaceUnitFieldVal, notesFieldVal, confirmDeinstall, failDeinstall);
 				/*
                 searchVal = Util.searchVehicleRemotely(vehicleRegFieldVal, imeiFieldVal);
 
@@ -1013,7 +1057,7 @@ Ext.setup({
                 vehicleObj.install_completion = vehicleModel3.get('install_completion');
                 vehicleObj.installer_name = vehicleModel3.get('installer_name');
                 // vehicleObj.rep_name = vehicleModel3.get('rep_name');
-                vehicleObj.install_notes = vehicleModel3.get('install_notes');	
+                vehicleObj.install_notes = vehicleModel3.get('install_notes');
                 vehicleObj.install_refresh = vehicleModel3.get('install_refresh');
 			}
             
@@ -1227,11 +1271,13 @@ Ext.setup({
 		
 		moveStep2NextStep3 = function(vehicle) {
 			Util.logger('In moveStep2NextStep3');
-
-			// if(!Ext.isEmpty(vehicle.remote_error)) {
+            //IMEI not found in the system, please try again
+            //Object reference not set to an instance of an object
+			if(!Ext.isEmpty(vehicle.remote_error)) {
 				Ext.Msg.alert("Assign IMEI", vehicle.remote_error, Ext.emptyFn);
-				vehicle.remote_error = '';
-			// } else {
+			}
+            //if valid IMEI is found then proceed
+            if(!Ext.isEmpty(vehicle.remote_error) && vehicle.remote_error.toLowerCase().indexOf('imei not found in the system') == -1) {
 				newVehicle = vehicle;
 				
 				installStep1Panel.hide();
@@ -1242,10 +1288,14 @@ Ext.setup({
                 helpPanel.hide();
                 installStep3Panel.show();
                 installBackBtn.show();
+
+                vehicle.remote_error = '';
+
+                Util.refreshVehicleRemotely(newVehicle, 'add', refreshInstallStep3, failRefreshStep3Install);
 	
 				Util.logger('newVehicle is:', newVehicle);
 	
-			// }
+			}
 		};
 		
 		refreshInstallStep3 = function(vehicle) {
@@ -1310,8 +1360,13 @@ Ext.setup({
 				Ext.Msg.alert("Deinstall", vehicle.remote_error, Ext.emptyFn);
 				vehicle.remote_error = '';
 			} else {
-    			Ext.Msg.alert("Deinstall", 'Vehicle Deinstalled successfully!',
+                Ext.Msg.alert("Deinstall", 'Vehicle Deinstalled successfully!',
 				function() {
+                    deinstallMainPanel.setValues({ imei: '', imei2: '', deinstall_notes: '', replace_unit: false });
+                    // Ext.getCmp('deinstall_imei_field').setValue('');
+                    // Ext.getCmp('replace_unit_field').uncheck();
+
+/*                  
                     installStep1Panel.hide();
                     installStep2Panel.hide();
                     installStep3Panel.hide();
@@ -1321,7 +1376,8 @@ Ext.setup({
 
 					deinstallPanel.hide();
 					BottomTabsInline.setActiveItem(homePanel);
-				});
+*/				
+                });
 			}
             
 		};
@@ -1391,7 +1447,7 @@ Ext.setup({
             deinstallPanel.hide();
             searchPanel.hide();
             helpPanel.hide();
-            // helpMainPanel.hide();
+            helpMainPanel.hide();
                 
 			vehicle.cl_state = 'step1';
 			

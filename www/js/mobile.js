@@ -226,14 +226,14 @@ var User = {
     
     login: function(email, password, failForm, succCallback, failCallBack) {
         var errMsg = "Device Offline or Server not responding!";
-		
+/*		
 		var uname = email,
 			pswd = password;
-		
-/*
+*/		
+
         var uname = "onboardwebservice",
             pswd = "password";
-*/        
+        
         Api.setLocalStorageProp('login', email);
         Api.setLocalStorageProp('user_id', '1');
         
@@ -711,16 +711,7 @@ var Deinstall = {
             }, {
                 xtype: 'fieldset',*/
                 items: [
-				/*{
-                    xtype: 'textfield',
-                    name: 'vehicle_reg',
-                    placeHolder: 'Vehicle registration',
-                    required: true,
-                    useClearIcon: true,
-                    hideOnMaskTap: true,
-                    autoCapitalize : true,
-                    id: 'vehicle_reg_field'
-                },*/ {
+				{
                     xtype: 'textfield',
                     name: 'imei',
                     placeHolder: 'IMEI (*)',
@@ -728,12 +719,29 @@ var Deinstall = {
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'vehicle_imei_field'
+                    id: 'deinstall_imei_field'
+                }, {
+                    xtype: 'textfield',
+                    name: 'imei2',
+                    placeHolder: 'Re-type IMEI  (*)',
+                    required: true,
+                    useClearIcon: true,
+                    hideOnMaskTap: true,
+                    autoCapitalize : true,
+                    id: 'deinstall_imei2_field'
                 }, {
                     xtype: 'checkboxfield',
                     name: 'replace_unit',
                     label: 'Replacement Unit Fitted:',
                     id: 'replace_unit_field'
+                }, {
+                    xtype: 'textareafield',
+                    name: 'deinstall_notes',
+                    placeHolder: 'DeInstall Notes',
+                    useClearIcon: true,
+                    hideOnMaskTap: true,
+                    autoCapitalize : true,
+                    id: 'deinstall_notes_field'
                 }]
             }, {
 	            xtype: 'fieldset',
@@ -1397,7 +1405,7 @@ var Util = function() {
 	};
 	
 
-	function deinstallVehicleRemotely(/*registration, */imei, isReplacementUnit, callBack, failCallBack) {
+	function deinstallVehicleRemotely(/*registration, */imei, isReplacementUnit, notes, callBack, failCallBack) {
 	    Util.logger('In deinstallVehicleRemotely()');
 
 		var errorStr = '', retVehicleObj = new Object();
@@ -1449,11 +1457,12 @@ var Util = function() {
 					retVehicleObj.remote_error = errorStr;
 					callBack(retVehicleObj);
 					
-				} /*else if(!res1) {
-					errorStr = "Vehicle could NOT be Deinstalled";
-					callBack(errorStr);
+				} else if(!res1) {
+					errorStr = "Vehicle could NOT be Deinstalled!";
+                    retVehicleObj.remote_error = errorStr;
+					callBack(retVehicleObj);
 				
-				} */else {
+				} else {
 /*
 				retVehicleObj.registration = res1.VehicleRegistration;
 				retVehicleObj.make = res1.DvlaMake;
