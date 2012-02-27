@@ -257,15 +257,15 @@ Ext.setup({
                 ]
             });
             
-            installBackBtn = new Ext.Button(Api.getButtonBase('Back', true, 'install_back', onBackInstallBtnTap));
+            installBackBtn = new Ext.Button(Api.getButtonBase('Back', false, 'install_back', onBackInstallBtnTap));
             
             installNavBar = new Ext.Toolbar({
                 ui: 'dark',
                 dock: 'top',
                 title: 'OnBoard Fitters',
                 id: 'titleContainer',
-                //titleCls: 'masthead',
-                items: [installBackBtn]
+                titleCls: 'masthead',
+                items: [ installBackBtn ]
             });
 
             installStep1FormBase = Install.createInstallStep1Panel(onSearchStep1InstallBtnTapCB, onNextStep1InstallBtnTapCB);
@@ -512,8 +512,8 @@ Ext.setup({
                     installBackBtn.hide();
 
                     homePanel.show();
-                    deinstallPanel.show();
-                    searchPanel.show();
+                    // deinstallPanel.show();
+                    // searchPanel.show();
                     helpPanel.show();
                     // helpMainPanel.show();
 
@@ -530,10 +530,10 @@ Ext.setup({
 					installStep1Panel.hide();
                     installStep3Panel.hide();
                     installBackBtn.show();
-                
+
                     homePanel.show();
-                    deinstallPanel.show();
-                    searchPanel.show();
+                    // deinstallPanel.show();
+                    // searchPanel.show();
                     helpPanel.show();
                     // helpMainPanel.show();
 
@@ -555,8 +555,8 @@ Ext.setup({
                     installBackBtn.show();
 
                     homePanel.show();
-                    deinstallPanel.show();
-                    searchPanel.show();
+                    // deinstallPanel.show();
+                    // searchPanel.show();
                     helpPanel.show();
                     // helpMainPanel.show();                
 /*
@@ -581,11 +581,11 @@ Ext.setup({
 				} else if(newVehicle.cl_state == 'search') {
 					vehicleModel = Ext.ModelMgr.create(newVehicle, 'Vehicle');
         
-                    installStep1Panel.show();
+                    // installStep1Panel.show();
                     // installStep3Panel.show();
                     // installStep2Panel.show();
                     homePanel.show();
-                    deinstallPanel.show();
+                    // deinstallPanel.show();
                     helpPanel.show();
                     // helpMainPanel.show();
 
@@ -596,11 +596,11 @@ Ext.setup({
 				} else if(newVehicle.cl_state == 'deinstall'){
 					vehicleModel = Ext.ModelMgr.create(newVehicle, 'Vehicle');
 
-                    installStep1Panel.show();
+                    // installStep1Panel.show();
                     // installStep3Panel.show();
                     // installStep2Panel.show();
                     homePanel.show();
-                    searchPanel.show();
+                    // searchPanel.show();
                     helpPanel.show();
                     // helpMainPanel.show();
 
