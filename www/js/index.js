@@ -264,7 +264,7 @@ Ext.setup({
                 dock: 'top',
                 title: 'OnBoard Fitters',
                 id: 'titleContainer',
-                titleCls: 'masthead',
+                //titleCls: 'masthead',
                 items: [installBackBtn]
             });
 

@@ -209,10 +209,24 @@ background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004
     width: 290px;
 }
 
+/*
 .masthead{
     background: url(../rsc/logo-title.png) no-repeat center;
     text-indent: -9999em;
     height: 45px;
+}
+*/
+
+#titleContainer{
+    background: url(../rsc/logo-title.png) no-repeat center;
+    text-indent: -9999em;
+    height: 45px;
+      background-color: #000;
+    background: url(../rsc/logo-title.png) no-repeat center, -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #333132), color-stop(50%, #333132), color-stop(51%, #000), color-stop(100%, #000000));
+}
+
+.install_back {
+    text-indent: 0;
 }
 
 #loginUserField {
