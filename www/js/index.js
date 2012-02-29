@@ -257,7 +257,7 @@ Ext.setup({
                 ]
             });
             
-            logoutBtn = new Ext.Button(Api.getButtonBase('Logout', false, 'logout', onLogoutBtnTap));
+            logoutBtn = new Ext.Button(Api.getButtonBase('Logout', false, 'install_back', onLogoutBtnTap));
             
             installBackBtn = new Ext.Button(Api.getButtonBase('Back', true, 'install_back', onBackInstallBtnTap));
             
@@ -1404,7 +1404,7 @@ Ext.setup({
 			if(Ext.isEmpty(searchResults)) {
                 Ext.Msg.alert("Error", "No record found", Ext.emptyFn);
             } else {
-                Util.logger('searchResults is::', searchResults);
+                // Util.logger('searchResults is::', searchResults);
                 /*
 
 
@@ -1437,7 +1437,7 @@ Ext.setup({
 				*/
                 
 				//in case data is synced with server and requires update
-                Util.logger('new searchResults is::', searchResults);
+                // Util.logger('new searchResults is::', searchResults);
 
 			}
 				
