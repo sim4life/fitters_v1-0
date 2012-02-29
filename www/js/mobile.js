@@ -392,8 +392,7 @@ var Home = {
             id: 'home_screen_panel',
             html: [
                     '<div class="home_page_text"></div>'
-                   
-        ]
+            ]
         });
     }
 };
@@ -867,6 +866,8 @@ var Search = {
         return {
             itemTpl: resultsTpl,
             layout: 'fit',
+            fullscreen: true,
+            scroll: 'vertical',
             hidden: true,
             selModel: {
                 mode: 'SINGLE',
@@ -882,8 +883,6 @@ var Search = {
             emptyText: '<p class="emptyResultMessage"><strong>You have no search results</strong></p>',
             grouped: false,
             store: Search.getResultsListStore(resultsData),
-            fullscreen: true,
-            scroll: 'vertical',
             listeners: {
                 itemtap: itemtapCB
             }

@@ -257,6 +257,8 @@ Ext.setup({
                 ]
             });
             
+            logoutBtn = new Ext.Button(Api.getButtonBase('Logout', false, 'logout', onLogoutBtnTap));
+            
             installBackBtn = new Ext.Button(Api.getButtonBase('Back', true, 'install_back', onBackInstallBtnTap));
             
             installNavBar = new Ext.Toolbar({
@@ -265,7 +267,7 @@ Ext.setup({
                 title: 'OnBoard Fitters',
                 id: 'titleContainer',
                 titleCls: 'masthead',
-                items: [ installBackBtn ]
+                items: [ installBackBtn, {xtype: 'spacer'}, logoutBtn ]
             });
 
             installStep1FormBase = Install.createInstallStep1Panel(onSearchStep1InstallBtnTapCB, onNextStep1InstallBtnTapCB);
@@ -336,7 +338,8 @@ Ext.setup({
                 dock: 'top',
                 title: 'OnBoard Fitters',
                 id: 'titleContainer',
-                titleCls: 'masthead'
+                titleCls: 'masthead',
+                items: [ {xtype: 'spacer'}, logoutBtn ]
             });
 
             deinstallMainPanel = Deinstall.createDeinstallMainPanel(onSubmitDeinstallBtnTapCB);
@@ -359,7 +362,7 @@ Ext.setup({
                 title: 'OnBoard Fitters',
                 id: 'titleContainer',
                 titleCls: 'masthead',
-				items: [searchBackBtn]
+				items: [ searchBackBtn, {xtype: 'spacer'}, logoutBtn ]
             });
 
             searchMainPanel = Search.createSearchMainPanel(onSubmitSearchBtnTapCB);
@@ -376,20 +379,14 @@ Ext.setup({
                 id: 'tab'+panelIndex.search+1,
                 cls: 'card' + (panelIndex.search+1) + ' search_panel',
                 iconCls: 'search',
-                scroll: 'vertical',
-                // layout: 'card',
+                fullscreen: (Ext.is.iOS) ? false : true,
+                // scroll: 'vertical',
+                layout: 'card',
                 items: [ searchMainPanel, searchResultsListComp /*,showVehiclePanel*/ ],
                 dockedItems: [ searchNavBar ]
             });
             
-            /*
-            installPanel = Tasks.renderTasksPanel();
             
-            deinstallPanel = Journals.renderJournalsPanel();
-
-            searchPanel = Events.renderEventsPanel();
-
-            */
             //__HELP panels layout start==================================================================================
             
             helpNavBar = new Ext.Toolbar({
@@ -397,7 +394,8 @@ Ext.setup({
                 dock: 'top',
                 title: 'OnBoard Fitters',
                 id: 'titleContainer',
-                titleCls: 'masthead'
+                titleCls: 'masthead',
+                items: [ /*installBackBtn,*/ {xtype: 'spacer'}, logoutBtn ]
             });
 
             helpMainPanel = Help.createHelpMainPanel();
@@ -448,7 +446,7 @@ Ext.setup({
                         
                         // var newCardTitle = (newCard.title == 'Journal') ? 'journals' : newCard.title.toLowerCase();
                         Util.logger('cardswitch! index is: ', index);
-/*                        
+/*
                         if(index == panelIndex.home)
                             // refreshDashAndListPanelsCB('', '');
                         else if(index == panelIndex.install)
@@ -465,7 +463,7 @@ Ext.setup({
                             // helpMainPanel.show();
                             helpMainPanel.doLayout();
                         }
-*/                        
+*/
                         Util.logger('index is::', index);
                         if(index == panelIndex.help) {
                             helpMainPanel.show();
@@ -564,7 +562,7 @@ Ext.setup({
                     // deinstallPanel.show();
                     // searchPanel.show();
                     // helpPanel.show();
-                    // helpMainPanel.show();                
+                    // helpMainPanel.show();
 /*
 					if(Ext.isEmpty(installStep1FormBase.vehicle1) || Ext.isEmpty(installStep2FormBase.vehicle2) || Ext.isEmpty(installStep3FormBase.vehicle3))
 						resetVehicleFormPanel();
@@ -624,7 +622,7 @@ Ext.setup({
                     // helpMainPanel.show();
 
                     homePanel.show();
-                    BottomTabsInline.setActiveItem(homePanel);                    
+                    BottomTabsInline.setActiveItem(homePanel);
                 }
 					
 				newVehicle.cl_state = 'insert';
@@ -651,6 +649,50 @@ Ext.setup({
            }
         }
 
+
+        onLogoutBtnTap = function(btn, eveObj) {
+            Util.logger('onLogoutBtnTap called');
+
+            resetVehicleFormPanel();
+
+            deinstallMainPanel.reset();
+/*
+            Ext.getCmp('deinstall_imei_field').reset();
+            Ext.getCmp('deinstall_imei2_field').reset();
+            Ext.getCmp('replace_unit_field').reset();
+            Ext.getCmp('deinstall_notes_field').reset();
+*/
+            searchMainPanel.reset();
+/*
+            Ext.getCmp('search_reg_field').reset();
+            Ext.getCmp('search_imei_field').reset();
+            Ext.getCmp('search_2ndref_field').reset();
+*/
+            searchResultsListComp.hide();
+
+            // installStep1Panel.hide();
+            installStep3Panel.hide();
+            installStep2Panel.hide();
+            installPanel.hide();
+            installBackBtn.hide();
+            homePanel.hide();
+            deinstallPanel.hide();
+            searchPanel.hide();
+            helpPanel.hide();
+            helpMainPanel.hide();
+                
+            vehicle.cl_state = 'insert';
+
+            // localStorage['tmp_vehicle'] = Ext.encode(vehicle);
+            
+            BottomTabsInline.hide();
+            if(form === undefined)
+                form = new Ext.form.FormPanel(loginFormBase);
+
+            form.reset();
+            form.show();
+
+        };
 
         onBackInstallBtnTap = function(btn, eveObj) {
             if(installStep2Panel.isHidden()) {
@@ -1327,11 +1369,11 @@ Ext.setup({
 		confirmDeinstall = function(vehicle) {
 			Util.logger('In confirmDeinstall');
 
-			if(!Ext.isEmpty(vehicle.remote_error)) {
+			// if(!Ext.isEmpty(vehicle.remote_error)) {
 				Ext.Msg.alert("Deinstall", vehicle.remote_error, Ext.emptyFn);
 				vehicle.remote_error = '';
-			} else {
-    			Ext.Msg.alert("Deinstall", 'Vehicle Deinstalled successfully!',
+			// } else {
+                Ext.Msg.alert("Deinstall", 'Vehicle Deinstalled successfully!',
 				function() {
                     installStep1Panel.hide();
                     installStep2Panel.hide();
@@ -1340,15 +1382,17 @@ Ext.setup({
                     searchPanel.hide();
                     helpPanel.hide();
 
+                    deinstallMainPanel.reset();
+/*
                     Ext.getCmp('deinstall_imei_field').reset();
                     Ext.getCmp('deinstall_imei2_field').reset();
                     Ext.getCmp('replace_unit_field').reset();
                     Ext.getCmp('deinstall_notes_field').reset();
-
+*/
 					// deinstallPanel.hide();
 					// BottomTabsInline.setActiveItem(homePanel);
 				});
-			}
+			// }
             
 		};
 		
@@ -1358,7 +1402,7 @@ Ext.setup({
 
 			searchResults = vehicles;
 			if(Ext.isEmpty(searchResults)) {
-                Ext.Msg.alert("Error", "No record found", Ext.emptyFn);                    
+                Ext.Msg.alert("Error", "No record found", Ext.emptyFn);
             } else {
                 Util.logger('searchResults is::', searchResults);
                 /*
