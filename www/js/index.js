@@ -257,7 +257,7 @@ Ext.setup({
                 ]
             });
             
-            installBackBtn = new Ext.Button(Api.getButtonBase('Back', false, 'install_back', onBackInstallBtnTap));
+            installBackBtn = new Ext.Button(Api.getButtonBase('Back', true, 'install_back', onBackInstallBtnTap));
             
             installNavBar = new Ext.Toolbar({
                 ui: 'dark',
@@ -336,7 +336,7 @@ Ext.setup({
                 dock: 'top',
                 title: 'OnBoard Fitters',
                 id: 'titleContainer',
-                titleCls: 'masthead',
+                titleCls: 'masthead'
             });
 
             deinstallMainPanel = Deinstall.createDeinstallMainPanel(onSubmitDeinstallBtnTapCB);
@@ -347,7 +347,7 @@ Ext.setup({
                 cls: 'card' + (panelIndex.deinstall+1) + ' deinstall_panel',
                 iconCls: 'deinstall',
                 // layout: 'card',
-                items: [ deinstallMainPanel/*, showVehiclePanel */],
+                items: [ deinstallMainPanel ],
                 dockedItems: [ deinstallNavBar ]
             });
             
@@ -448,22 +448,28 @@ Ext.setup({
                         
                         // var newCardTitle = (newCard.title == 'Journal') ? 'journals' : newCard.title.toLowerCase();
                         Util.logger('cardswitch! index is: ', index);
-                        /*
+/*                        
                         if(index == panelIndex.home)
-                            refreshDashAndListPanelsCB('', '');
+                            // refreshDashAndListPanelsCB('', '');
                         else if(index == panelIndex.install)
-                            Events.showFreshEventsListPanel();
+                            // Events.showFreshEventsListPanel();
                         else if(index == panelIndex.deinstall)
-                            Journals.showFreshJournalsListPanel();
+                            // Journals.showFreshJournalsListPanel();
                         else if(index == panelIndex.search)
-                            Tasks.showFreshTasksListPanel();
+                            // Tasks.showFreshTasksListPanel();
                         else if(index == panelIndex.help) {
                             // bugfix if the user scrolls the static privacy pages and presses the help button the panel goes blank
                             // this at least navigating back resets this page.
                             // helpPanel.doLayout();
                             // helpPanel.doComponentLayout();
+                            // helpMainPanel.show();
+                            helpMainPanel.doLayout();
                         }
-                        */
+*/                        
+                        Util.logger('index is::', index);
+                        if(index == panelIndex.help) {
+                            helpMainPanel.show();
+                        }
                     }
                 }
             });
@@ -514,7 +520,7 @@ Ext.setup({
                     homePanel.show();
                     // deinstallPanel.show();
                     // searchPanel.show();
-                    helpPanel.show();
+                    // helpPanel.show();
                     // helpMainPanel.show();
 
 					if(Ext.isEmpty(installStep1FormBase.vehicle1))
@@ -534,7 +540,7 @@ Ext.setup({
                     homePanel.show();
                     // deinstallPanel.show();
                     // searchPanel.show();
-                    helpPanel.show();
+                    // helpPanel.show();
                     // helpMainPanel.show();
 
 					if(Ext.isEmpty(installStep1FormBase.vehicle1) || Ext.isEmpty(installStep2FormBase.vehicle2))
@@ -557,7 +563,7 @@ Ext.setup({
                     homePanel.show();
                     // deinstallPanel.show();
                     // searchPanel.show();
-                    helpPanel.show();
+                    // helpPanel.show();
                     // helpMainPanel.show();                
 /*
 					if(Ext.isEmpty(installStep1FormBase.vehicle1) || Ext.isEmpty(installStep2FormBase.vehicle2) || Ext.isEmpty(installStep3FormBase.vehicle3))
@@ -586,7 +592,7 @@ Ext.setup({
                     // installStep2Panel.show();
                     homePanel.show();
                     // deinstallPanel.show();
-                    helpPanel.show();
+                    // helpPanel.show();
                     // helpMainPanel.show();
 
 					searchMainPanel.load(vehicleModel);
@@ -601,13 +607,25 @@ Ext.setup({
                     // installStep2Panel.show();
                     homePanel.show();
                     // searchPanel.show();
-                    helpPanel.show();
+                    // helpPanel.show();
                     // helpMainPanel.show();
 
 					deinstallMainPanel.load(vehicleModel);
                     deinstallPanel.show();
 					BottomTabsInline.setActiveItem(deinstallPanel);
-				}
+				} else {
+                    vehicleModel = Ext.ModelMgr.create(newVehicle, 'Vehicle');
+
+                    // installStep1Panel.show();
+                    // installStep3Panel.show();
+                    // installStep2Panel.show();
+                    // deinstallPanel.show();
+                    // searchPanel.show();
+                    // helpMainPanel.show();
+
+                    homePanel.show();
+                    BottomTabsInline.setActiveItem(homePanel);                    
+                }
 					
 				newVehicle.cl_state = 'insert';
 			}
@@ -879,7 +897,7 @@ Ext.setup({
             Util.logger('In onSubmitDeinstallBtnTapCB()');
             
             if(Ext.is.iOS) {
-                var vehicleRegField = Ext.get('vehicle_imei_field');
+                var vehicleRegField = Ext.get('deinstall_imei_field');
                 vehicleRegField.down('input').dom.focus();
                 vehicleRegField.down('input').dom.blur();
             }
@@ -889,16 +907,19 @@ Ext.setup({
             
             var searchVal;
             // var vehicleRegFieldVal = Ext.getCmp('vehicle_reg_field').getValue();
-            var imeiFieldVal = Ext.getCmp('vehicle_imei_field').getValue();
+            var imeiFieldVal = Ext.getCmp('deinstall_imei_field').getValue();
             var replaceUnitFieldVal = Ext.getCmp('replace_unit_field').isChecked();
+            var notesFieldVal = Ext.getCmp('deinstall_notes_field').getValue();
             if(/*Ext.isEmpty(vehicleRegFieldVal) &&*/ Ext.isEmpty(imeiFieldVal)) {
                 Ext.Msg.alert("Error", "Please enter Vehicle IMEI", Ext.emptyFn);
+            } else if(imeiFieldVal != Ext.getCmp('deinstall_imei2_field').getValue()) {
+                Ext.Msg.alert("Error", "Please re-enter Vehicle IMEI correctly", Ext.emptyFn);
             } else {
                 // Util.logger('val reg is::', vehicleRegFieldVal);
                 Util.logger('val imei is::', imeiFieldVal);
                 Util.logger('val replace fitted is::', replaceUnitFieldVal);
             
-				Util.deinstallVehicleRemotely(/*vehicleRegFieldVal, */imeiFieldVal, replaceUnitFieldVal, confirmDeinstall, failDeinstall);
+				Util.deinstallVehicleRemotely(imeiFieldVal, replaceUnitFieldVal, notesFieldVal, confirmDeinstall, failDeinstall);
 				/*
                 searchVal = Util.searchVehicleRemotely(vehicleRegFieldVal, imeiFieldVal);
 
@@ -1221,12 +1242,13 @@ Ext.setup({
 		moveStep2NextStep3 = function(vehicle) {
 			Util.logger('In moveStep2NextStep3');
 
-			// if(!Ext.isEmpty(vehicle.remote_error)) {
+			if(!Ext.isEmpty(vehicle.remote_error)) {
 				Ext.Msg.alert("Assign IMEI", vehicle.remote_error, Ext.emptyFn);
 				vehicle.remote_error = '';
-			// } else {
+			} else {
 				newVehicle = vehicle;
 				
+
 				installStep1Panel.hide();
                 installStep2Panel.hide();
                 homePanel.hide();
@@ -1237,8 +1259,13 @@ Ext.setup({
                 installBackBtn.show();
 	
 				Util.logger('newVehicle is:', newVehicle);
+
+                if(!Ext.isEmpty(newVehicle)) {
+                    Util.refreshVehicleRemotely(newVehicle, 'add', refreshInstallStep3, failRefreshStep3Install);
+                    
+                }
 	
-			// }
+			}
 		};
 		
 		refreshInstallStep3 = function(vehicle) {
@@ -1280,7 +1307,8 @@ Ext.setup({
                     searchPanel.hide();
                     helpPanel.hide();
 
-					BottomTabsInline.setActiveItem(homePanel);
+                    resetVehicleFormPanel();
+					// BottomTabsInline.setActiveItem(homePanel);
 				});
 			}
 	
@@ -1312,8 +1340,13 @@ Ext.setup({
                     searchPanel.hide();
                     helpPanel.hide();
 
-					deinstallPanel.hide();
-					BottomTabsInline.setActiveItem(homePanel);
+                    Ext.getCmp('deinstall_imei_field').reset();
+                    Ext.getCmp('deinstall_imei2_field').reset();
+                    Ext.getCmp('replace_unit_field').reset();
+                    Ext.getCmp('deinstall_notes_field').reset();
+
+					// deinstallPanel.hide();
+					// BottomTabsInline.setActiveItem(homePanel);
 				});
 			}
             
@@ -1376,15 +1409,16 @@ Ext.setup({
 		failSearchStep1Install = function(vehicle) {
 			Util.logger('In failSearchStep1Install');
 			
-			installStep1Panel.hide();
-            installStep3Panel.hide();
-            installStep2Panel.hide();
+			// installStep1Panel.hide();
+            // installStep3Panel.hide();
+            // installStep2Panel.hide();
+            installPanel.hide();
             installBackBtn.hide();
             homePanel.hide();
             deinstallPanel.hide();
             searchPanel.hide();
             helpPanel.hide();
-            // helpMainPanel.hide();
+            helpMainPanel.hide();
                 
 			vehicle.cl_state = 'step1';
 			
@@ -1394,15 +1428,16 @@ Ext.setup({
 		failNextStep1Install = function(vehicle) {
 			Util.logger('In failNextStep1Install');
 			
-			installStep1Panel.hide();
-            installStep3Panel.hide();
-            installStep2Panel.hide();
+			// installStep1Panel.hide();
+            // installStep3Panel.hide();
+            // installStep2Panel.hide();
+            installPanel.hide();
             installBackBtn.hide();
             homePanel.hide();
             deinstallPanel.hide();
             searchPanel.hide();
             helpPanel.hide();
-            // helpMainPanel.hide();
+            helpMainPanel.hide();
             
 			vehicle.cl_state = 'step1';
 			
@@ -1412,15 +1447,16 @@ Ext.setup({
 		failNextStep2Install = function(vehicle) {
 			Util.logger('In failNextStep2Install');
 			
-			installStep1Panel.hide();
-            installStep3Panel.hide();
-            installStep2Panel.hide();
+			// installStep1Panel.hide();
+            // installStep3Panel.hide();
+            // installStep2Panel.hide();
+            installPanel.hide();
             installBackBtn.hide();
 			homePanel.hide();
             deinstallPanel.hide();
             searchPanel.hide();
             helpPanel.hide();
-            // helpMainPanel.hide();
+            helpMainPanel.hide();
             
 			vehicle.cl_state = 'step2';
 			
@@ -1430,15 +1466,16 @@ Ext.setup({
 		failRefreshStep3Install = function(vehicle) {
 			Util.logger('In failNextStep3Install');
 			
-			installStep1Panel.hide();
-            installStep3Panel.hide();
-            installStep2Panel.hide();
+			// installStep1Panel.hide();
+            // installStep3Panel.hide();
+            // installStep2Panel.hide();
+            installPanel.hide();
             installBackBtn.hide();
             homePanel.hide();
             deinstallPanel.hide();
             searchPanel.hide();
             helpPanel.hide();
-            // helpMainPanel.hide();
+            helpMainPanel.hide();
             
 			vehicle.cl_state = 'step3';
 			
@@ -1448,15 +1485,16 @@ Ext.setup({
 		failSubmitStep3Install = function(vehicle) {
 			Util.logger('In failSubmitStep3Install');
 			
-			installStep1Panel.hide();
-            installStep3Panel.hide();
-            installStep2Panel.hide();
+			// installStep1Panel.hide();
+            // installStep3Panel.hide();
+            // installStep2Panel.hide();
+            installPanel.hide();
             installBackBtn.hide();
             homePanel.hide();
             deinstallPanel.hide();
             searchPanel.hide();
             helpPanel.hide();
-            // helpMainPanel.hide();
+            helpMainPanel.hide();
                 
 			vehicle.cl_state = 'step3';
 			
@@ -1466,14 +1504,15 @@ Ext.setup({
 		failDeinstall = function(vehicle) {
 			Util.logger('In failDeinstall');
 			
-			installStep1Panel.hide();
-            installStep3Panel.hide();
-            installStep2Panel.hide();
+			// installStep1Panel.hide();
+            // installStep3Panel.hide();
+            // installStep2Panel.hide();
+            installPanel.hide();
             homePanel.hide();
             deinstallPanel.hide();
             searchPanel.hide();
             helpPanel.hide();
-            // helpMainPanel.hide();
+            helpMainPanel.hide();
             
 			vehicle.cl_state = 'deinstall';
 			
@@ -1483,14 +1522,15 @@ Ext.setup({
 		failSearch = function(vehicle) {
 			Util.logger('In failSearch');
 			
-			installStep1Panel.hide();
-            installStep3Panel.hide();
-            installStep2Panel.hide();
+			// installStep1Panel.hide();
+            // installStep3Panel.hide();
+            // installStep2Panel.hide();
+            installPanel.hide();
             homePanel.hide();
             deinstallPanel.hide();
             searchPanel.hide();
             helpPanel.hide();
-            // helpMainPanel.hide();
+            helpMainPanel.hide();
 
             searchMainPanel.hide();
 			searchResultsListComp.hide();

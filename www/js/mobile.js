@@ -62,23 +62,24 @@ var Api = {
     },
     
     clearLocalStorage: function(key) {
+        var i=0, lKey;
         if(!Ext.isEmpty(key)) {
             Util.logger('[INFO]:: Clearing all '+key+' keys from localStorage');
             if(!Ext.isEmpty(localStorage[key]))
                 localStorage.removeItem(key);
             else {
-                var lKey, keys = [], count = 0, isFound = true;
+                var keys = [], count = 0, isFound = true;
                 while(isFound) {
                     isFound = false;
                     keys = [];
-                    for(var i = 0, ln = localStorage.length; i < ln; i++) {
+                    for(i = 0, ln = localStorage.length; i < ln; i++) {
                         lKey = localStorage.key(i);
                         if(lKey.indexOf(key) != -1) {
                             keys.push(lKey);
                             isFound = true;
                         }
                     }
-                    for(var i = 0, ln = keys.length; i < ln; i++) {
+                    for(i = 0, ln = keys.length; i < ln; i++) {
                         localStorage.removeItem(keys[i]);
                     }
                     count++;
@@ -91,10 +92,10 @@ var Api = {
             var retainableKeysMap = {tmp_vehicle: '0'};
                 
             var retainableKeyVals = {};
-            for(var key in retainableKeysMap) {
-                retainableKeysMap[key] = localStorage[key];
-                for(var i = localStorage.length-1; i >= 0; i--) {
-                    if(localStorage.key(i).indexOf(key) != -1)
+            for(lKey in retainableKeysMap) {
+                retainableKeysMap[lKey] = localStorage[lKey];
+                for(i = localStorage.length-1; i >= 0; i--) {
+                    if(localStorage.key(i).indexOf(lKey) != -1)
                         retainableKeyVals[localStorage.key(i)] = localStorage[localStorage.key(i)];
                 }
             }
@@ -107,12 +108,12 @@ var Api = {
             */
 
             //restoring the values of retainable keys
-            for(var key in retainableKeysMap) {
-                localStorage[key] = retainableKeysMap[key];
+            for(lKey in retainableKeysMap) {
+                localStorage[lKey] = retainableKeysMap[lKey];
             }
             
-            for(var key in retainableKeyVals) {
-                localStorage[key] = retainableKeyVals[key];
+            for(lKey in retainableKeyVals) {
+                localStorage[lKey] = retainableKeyVals[lKey];
             }
             
         }
@@ -279,7 +280,7 @@ var User = {
             }
 
 
-    		
+		
 		});
 		
 		Util.logger('raw response is::', resp);
@@ -417,7 +418,13 @@ var Install = {
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'enter_vehicle_reg_field'
+                    id: 'enter_vehicle_reg_field',
+                    listeners: {
+                       keyup: function(thisField, e) {
+                            if(e.browserEvent.keyCode == 13)
+                                searchCB();
+                       }
+                    }
                 }]
 /*
                 items:[{
@@ -426,20 +433,20 @@ var Install = {
                     width: 650,
                     label: 'New Install - Step 1 of 3',
                     disabled: true,
-                    id: 'install1_field'                    
+                    id: 'install1_field'
                 }]
 */
             }, {
-	            xtype: 'fieldset',
-	            items: [{
-	                xtype: 'button',
-	                ui: 'Normal',
-	                text: 'Search',
-	                name: 'search',
-	                id: 'install1SearchButton',
-	                flex: 1,
-	                handler: searchCB
-	            }]
+                xtype: 'fieldset',
+                items: [{
+                    xtype: 'button',
+                    ui: 'Normal',
+                    text: 'Search',
+                    name: 'search',
+                    id: 'install1SearchButton',
+                    flex: 1,
+                    handler: searchCB
+                }]
 			}, {
                 xtype: 'fieldset',
                 items: [{
@@ -450,7 +457,13 @@ var Install = {
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'vehicle_make_field'
+                    id: 'vehicle_make_field',
+                    listeners: {
+                       keyup: function(thisField, e) {
+                            if(e.browserEvent.keyCode == 13)
+                                nextCB();
+                       }
+                    }
                 }, {
                     xtype: 'textfield',
                     name: 'model',
@@ -459,7 +472,13 @@ var Install = {
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'vehicle_model_field'
+                    id: 'vehicle_model_field',
+                    listeners: {
+                       keyup: function(thisField, e) {
+                            if(e.browserEvent.keyCode == 13)
+                                nextCB();
+                       }
+                    }
                 }, {
                     xtype: 'textfield',
                     name: 'colour',
@@ -468,7 +487,13 @@ var Install = {
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'vehicle_colour_field'
+                    id: 'vehicle_colour_field',
+                    listeners: {
+                       keyup: function(thisField, e) {
+                            if(e.browserEvent.keyCode == 13)
+                                nextCB();
+                       }
+                    }
                 }, {
                     xtype: 'textfield',
                     name: 'vin',
@@ -477,19 +502,25 @@ var Install = {
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'vehicle_vin_field'
+                    id: 'vehicle_vin_field',
+                    listeners: {
+                       keyup: function(thisField, e) {
+                            if(e.browserEvent.keyCode == 13)
+                                nextCB();
+                       }
+                    }
                 }]
             }, {
-	            xtype: 'fieldset',
-	            items: [{
-	                xtype: 'button',
-	                ui: 'Normal',
-	                text: 'Next',
-	                name: 'next',
-	                id: 'install1NextButton',
-	                flex: 1,
-	                handler: nextCB
-	            }]
+                xtype: 'fieldset',
+                items: [{
+                    xtype: 'button',
+                    ui: 'Normal',
+                    text: 'Next',
+                    name: 'next',
+                    id: 'install1NextButton',
+                    flex: 1,
+                    handler: nextCB
+                }]
 			}]
         };
     },
@@ -521,7 +552,13 @@ var Install = {
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'enter_imei_field'
+                    id: 'enter_imei_field',
+                    listeners: {
+                       keyup: function(thisField, e) {
+                            if(e.browserEvent.keyCode == 13)
+                                nextCB();
+                       }
+                    }
                 }, {
                     xtype: 'textfield',
                     name: 'mileage',
@@ -530,7 +567,13 @@ var Install = {
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'enter_vehicle_mil_field'
+                    id: 'enter_vehicle_mil_field',
+                    listeners: {
+                       keyup: function(thisField, e) {
+                            if(e.browserEvent.keyCode == 13)
+                                nextCB();
+                       }
+                    }
                 }, {
                     xtype: 'textfield',
                     name: 'second_ref',
@@ -539,67 +582,29 @@ var Install = {
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'enter_2nd_ref_field'
+                    id: 'enter_2nd_ref_field',
+                    listeners: {
+                       keyup: function(thisField, e) {
+                            if(e.browserEvent.keyCode == 13)
+                                nextCB();
+                       }
+                    }
                 }]
-            }, 	{
-	            xtype: 'fieldset',
-	            items: [{
-	                xtype: 'button',
-	                ui: 'Normal',
-	                text: 'Next',
-	                name: 'next',
-	                id: 'install2NextButton',
-	                flex: 1,
-	                handler: nextCB
-	            }]
+            }, {
+                xtype: 'fieldset',
+                items: [{
+                    xtype: 'button',
+                    ui: 'Normal',
+                    text: 'Next',
+                    name: 'next',
+                    id: 'install2NextButton',
+                    flex: 1,
+                    handler: nextCB
+                }]
 			}]
         };
     },
     
-        /*items:[{
-            xtype: 'textfield',
-            name: 'install',
-            width: 650,
-            label: 'New Install - Step 3 of 3',
-            disabled: true,
-            id: 'install3_field'
-        }]
-    }, {
-        xtype: 'fieldset',*/
-
-	/*
-					{
-	                    xtype: 'checkboxfield',
-	                    name: 'extension',
-
-	                    label: 'Extension Lead Fitted to Unit & Vehicle OBD Port:',
-	                    id: 'extension_lead_field'
-	                }, {
-	                    xtype: 'checkboxfield',
-	                    name: 'telematics',
-
-	                    label: 'Telematics Unit Located & Secured in Vehicle:',
-	                    id: 'telematics_unit_field'
-	                }, {
-	                    xtype: 'checkboxfield',
-	                    name: 'diagnostic',
-
-	                    label: 'Diagnostic Flashing Light Sequence Confirmed:',
-	                    id: 'diagnostic_flash_field'
-	                }
-	*/
-	/*
-					, {
-	                    xtype: 'textareafield',
-	                    name: 'notes',
-	                    placeHolder: 'Notes',
-	                    useClearIcon: true,
-	                    hideOnMaskTap: true,
-	                    autoCapitalize : true,
-	                    id: 'notes_field'
-	                }
-	*/
-
     createInstallStep3Panel: function(refreshCB, submitCB) {
         return {
             fullscreen: true,
@@ -608,21 +613,21 @@ var Install = {
             items: [{
                 xtype: 'fieldset',
                 title: 'New Install - Step 3 of 3',
-                id: 'install3_field',
+                id: 'install3_field'
 			}, {
-           	    xtype: 'fieldset',
-	            items: [{
-	                xtype: 'button',
-	                ui: 'Normal',
-	                text: 'Refresh',
-	                name: 'Refresh',
-	                id: 'install3RefreshButton',
-	                flex: 1,
-	                handler: refreshCB
+                xtype: 'fieldset',
+                items: [{
+                    xtype: 'button',
+                    ui: 'Normal',
+                    text: 'Refresh',
+                    name: 'Refresh',
+                    id: 'install3RefreshButton',
+                    flex: 1,
+                    handler: refreshCB
 				}]
 			}, {
 				xtype: 'fieldset',
-	            items: [{
+                items: [{
 					xtype: 'textareafield',
                     name: 'install_refresh',
                     // placeHolder: 'Installation Completion Date/Time',
@@ -663,27 +668,27 @@ var Install = {
                     id: 'installer_name_field'
                 }]
 			}, {
-	            xtype: 'fieldset',
-	            items: [{
-	                xtype: 'button',
-	                ui: 'Normal',
-	                text: 'Installation Complete',
-	                name: 'complete',
-	                id: 'install3CompButton',
-	                flex: 1,
-	                handler: function() {submitCB(true);}
-	            }]
+                xtype: 'fieldset',
+                items: [{
+                    xtype: 'button',
+                    ui: 'Normal',
+                    text: 'Installation Complete',
+                    name: 'complete',
+                    id: 'install3CompButton',
+                    flex: 1,
+                    handler: function() {submitCB(true);}
+                }]
 			}, {
-	            xtype: 'fieldset',
-	            items: [{
-	                xtype: 'button',
-	                ui: 'Normal',
-	                text: 'Installation Not Complete',
-	                name: 'notComplete',
-	                id: 'install3NotCompButton',
-	                flex: 1,
-	                handler: function() {submitCB(false);}
-	            }]
+                xtype: 'fieldset',
+                items: [{
+                    xtype: 'button',
+                    ui: 'Normal',
+                    text: 'Installation Not Complete',
+                    name: 'notComplete',
+                    id: 'install3NotCompButton',
+                    flex: 1,
+                    handler: function() {submitCB(false);}
+                }]
 			}]
         };
     }
@@ -719,16 +724,28 @@ var Deinstall = {
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'deinstall_imei_field'
+                    id: 'deinstall_imei_field',
+                    listeners: {
+                       keyup: function(thisField, e) {
+                            if(e.browserEvent.keyCode == 13)
+                                submitCB();
+                       }
+                    }
                 }, {
                     xtype: 'textfield',
                     name: 'imei2',
-                    placeHolder: 'Re-type IMEI  (*)',
+                    placeHolder: 'Re-type IMEI (*)',
                     required: true,
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'deinstall_imei2_field'
+                    id: 'deinstall_imei2_field',
+                    listeners: {
+                       keyup: function(thisField, e) {
+                            if(e.browserEvent.keyCode == 13)
+                                submitCB();
+                       }
+                    }
                 }, {
                     xtype: 'checkboxfield',
                     name: 'replace_unit',
@@ -741,20 +758,26 @@ var Deinstall = {
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'deinstall_notes_field'
+                    id: 'deinstall_notes_field',
+                    listeners: {
+                       keyup: function(thisField, e) {
+                            if(e.browserEvent.keyCode == 13)
+                                submitCB();
+                       }
+                    }
                 }]
             }, {
-	            xtype: 'fieldset',
-	            items: [{
-	                xtype: 'button',
-	                ui: 'Normal',
-	                text: 'Submit',
-	                name: 'submit',
-	                id: 'deinstallSubmitButton',
-	                flex: 1,
-	                handler: submitCB
-	            }]
-	        }]
+                xtype: 'fieldset',
+                items: [{
+                    xtype: 'button',
+                    ui: 'Normal',
+                    text: 'Submit',
+                    name: 'submit',
+                    id: 'deinstallSubmitButton',
+                    flex: 1,
+                    handler: submitCB
+                }]
+            }]
         });
     }
 };
@@ -787,7 +810,13 @@ var Search = {
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'search_reg_field'
+                    id: 'search_reg_field',
+                    listeners: {
+                       keyup: function(thisField, e) {
+                            if(e.browserEvent.keyCode == 13)
+                                searchCB();
+                       }
+                    }
                 }, {
                     xtype: 'textfield',
                     name: 'imei',
@@ -796,7 +825,13 @@ var Search = {
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'search_imei_field'
+                    id: 'search_imei_field',
+                    listeners: {
+                       keyup: function(thisField, e) {
+                            if(e.browserEvent.keyCode == 13)
+                                searchCB();
+                       }
+                    }
 				}, {
                     xtype: 'textfield',
                     name: 'second_ref',
@@ -805,20 +840,26 @@ var Search = {
                     useClearIcon: true,
                     hideOnMaskTap: true,
                     autoCapitalize : true,
-                    id: 'search_2ndref_field'
+                    id: 'search_2ndref_field',
+                    listeners: {
+                       keyup: function(thisField, e) {
+                            if(e.browserEvent.keyCode == 13)
+                                searchCB();
+                       }
+                    }
                 }]
             }, {
-	            xtype: 'fieldset',
-	            items: [{
-	                xtype: 'button',
-	                ui: 'Normal',
-	                text: 'Search',
-	                name: 'search',
-	                id: 'searchSubmitButton',
-	                flex: 1,
-	                handler: searchCB
-	            }]
-	        }]
+                xtype: 'fieldset',
+                items: [{
+                    xtype: 'button',
+                    ui: 'Normal',
+                    text: 'Search',
+                    name: 'search',
+                    id: 'searchSubmitButton',
+                    flex: 1,
+                    handler: searchCB
+                }]
+            }]
         });
     },
 
@@ -837,7 +878,7 @@ var Search = {
                 handler: itemDisclosureCB
             },
             indexBar: true,
-*/          
+*/
             emptyText: '<p class="emptyResultMessage"><strong>You have no search results</strong></p>',
             grouped: false,
             store: Search.getResultsListStore(resultsData),
@@ -852,7 +893,7 @@ var Search = {
     getResultsListStore: function(results) {
         return new Ext.data.Store({
             model: 'Vehicles',
-            sorters: [{   
+            sorters: [{
                 //match it with the model method: Person.load_more argument: order
                 property : 'registration',
                 direction: 'DESC'
@@ -874,6 +915,16 @@ var Help = {
             // scroll: 'vertical',
             fullscreen: true,
             id: 'help_panel',
+            html: [
+                    '<div>',
+                        '<p class="externalLink">',
+                            '<a href="https://installations.onboard.co.uk/Documents/Fitters_guidance_generic_V2.pdf">',
+                                'Fitters Guidance Generic V2',
+                            '</a>',
+                        '</p>',
+                    '</div>'
+                ]
+/*
             html: [
                 '<div class="help_page_text">',
                     '<p><b>1. ASSEMBLE ONBOARD DEVICE</b></p>',
@@ -920,13 +971,13 @@ var Help = {
                     '</p>',
                 '</div>'
             ]
-        });
+*/        });
     }
 };
 
 var Util = function() {
-    /* 
-    Public/private access sorted using Revealing Module Pattern 
+    /*
+    Public/private access sorted using Revealing Module Pattern
     http://www.wait-till-i.com/2007/08/22/again-with-the-module-pattern-reveal-something-to-the-world/
     */
     /* Public pointers to private functions */
@@ -959,7 +1010,7 @@ var Util = function() {
                     console.log(txt, obj);
             }
         // }
-    };
+    }
     
     /*
     This method reads the current persistence state and the action performed on the item
@@ -981,14 +1032,12 @@ var Util = function() {
         }
         
         return resultant_state;
-    };
+    }
     
     function getItemsSize() {
         Util.logger('Util.getItemsSize called');
-        var size = 0;
         // var user_id = Api.getLocalStorageProp('user_id');
-        var key = 'vehicle',
-            size = 0;
+        var key = 'vehicle', size = 0;
         for(var i = 0, len = localStorage.length; i < len; i++) {
             if(localStorage.key(i).indexOf(key) != -1)
                 size++;
@@ -996,7 +1045,7 @@ var Util = function() {
 
         Util.logger('size is: ', size);
         return size;
-    };
+    }
     
     function cacheItemLocally(entity, item, index) {
         /*
@@ -1017,10 +1066,10 @@ var Util = function() {
         localStorage[entity+'['+index+']'] = Ext.encode(item);
         Util.logger('Item saved locally!');
         
-    };
+    }
 
 	function findVehicleRemotely(vehicle, action, callBack, failCallBack) {
-	    Util.logger('In findVehicleRemotely()');
+        Util.logger('In findVehicleRemotely()');
         
 		// SOAPClient.username = uname;
 		// SOAPClient.password = pswd;
@@ -1031,8 +1080,8 @@ var Util = function() {
 		if(!Ext.isEmpty(account_key)) {
 			
 			SOAPClient.session_cookie = account_key;
-           	Util.logger('registration is:', vehicle.registration);
-           	// Util.logger('imei is:', vehicle.imei);
+            Util.logger('registration is:', vehicle.registration);
+            // Util.logger('imei is:', vehicle.imei);
 			
 			var params = new SOAPClientParameters();
 			params.add("VehicleRegistration", vehicle.registration);
@@ -1040,13 +1089,13 @@ var Util = function() {
 			Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
 			// GetInstallationLogByVehicleRegistration
 			var resp = SOAPClient.invoke(apiDomain, "GetVehicleInformation", params, true, function(res1, res2) {
-	           	Util.logger('SOAP response is:', res1);
-	           	Util.logger('SOAP response2 is:', res2);
+                Util.logger('SOAP response is:', res1);
+                Util.logger('SOAP response2 is:', res2);
 
 				Util.logger('SOAP response message is:', res1.message);
 				Util.logger('SOAP response2 message is:', res2.message);
 
-				Util.logger('SOAP response2 faultstring is:', res2.getElementsByTagName("faultstring"));				
+                Util.logger('SOAP response2 faultstring is:', res2.getElementsByTagName("faultstring"));
 /*
 				Util.logger('SOAP response2 faultstring[0] is:', res2.getElementsByTagName("faultstring")[0]);
 				Util.logger('SOAP response2 faultstring[0].childNodes[0] is:', res2.getElementsByTagName("faultstring")[0].childNodes[0]);
@@ -1054,7 +1103,7 @@ var Util = function() {
 				Util.logger('SOAP response2 faultcode complete is:', res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue);
 */
 				
-				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) && 
+                if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) &&
 					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
 					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
 					Util.logger('Not logged in');
@@ -1072,17 +1121,17 @@ var Util = function() {
 						// Api.setLocalStorageProp('account_key', SOAPClient.session_cookie);
 
 					callBack(retVehicleObj);
-				}				
+                }
 				Ext.getBody().unmask();
 
 				// succCallback();
 
 			});
 		}
-	};
+	}
 	
 	function saveVehicleInfoRemotely(vehicle, action, callBack, failCallBack) {
-	    Util.logger('In saveVehicleInfoRemotely()');
+        Util.logger('In saveVehicleInfoRemotely()');
         
 		// SOAPClient.username = uname;
 		// SOAPClient.password = pswd;
@@ -1093,11 +1142,11 @@ var Util = function() {
 		if(!Ext.isEmpty(account_key)) {
 			
 			SOAPClient.session_cookie = account_key;
-           	Util.logger('make is:', vehicle.make);
-           	Util.logger('model is:', vehicle.model);
-           	Util.logger('colour is:', vehicle.colour);
-           	Util.logger('vin is:', vehicle.vin);
-           	// Util.logger('imei is:', vehicle.imei);
+            Util.logger('make is:', vehicle.make);
+            Util.logger('model is:', vehicle.model);
+            Util.logger('colour is:', vehicle.colour);
+            Util.logger('vin is:', vehicle.vin);
+            // Util.logger('imei is:', vehicle.imei);
 			
 			params = new SOAPClientParameters();
 			params.add("registration", vehicle.registration);
@@ -1109,16 +1158,16 @@ var Util = function() {
 			Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
 			// GetInstallationLogByVehicleRegistration
 			resp = SOAPClient.invoke(apiDomain, "saveVehicleInformation", params, true, function(res1, res2) {
-	           	Util.logger('SOAP response is:', res1);
-	           	Util.logger('SOAP response2 is:', res2);
+                Util.logger('SOAP response is:', res1);
+                Util.logger('SOAP response2 is:', res2);
 
-				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]))&& 
+				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) &&
 					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
 					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
 					Util.logger('Not logged in');
 					failCallBack(vehicle);
 				}
-				else if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+				else if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) &&
 					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') {
 					errorStr = res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue;
 					errorStr = errorStr.slice('Server was unable to process request. ---> '.length-1);
@@ -1146,10 +1195,10 @@ var Util = function() {
 					
 					// Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
 					resp = SOAPClient.invoke(apiDomain, "GetInstallationLogByVehicleRegistration", params, true, function(resp1, resp2) {
-			           Util.logger('SOAP again response is:', resp1);
-			           Util.logger('SOAP again response2 is:', resp2);
+                        Util.logger('SOAP again response is:', resp1);
+                        Util.logger('SOAP again response2 is:', resp2);
 
-						if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+						if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) &&
 							res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server' &&
 							res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!') {
 							Util.logger('Not logged in');
@@ -1173,7 +1222,7 @@ var Util = function() {
 					*/
 					Ext.getBody().unmask();
 
-					callBack(retVehicleObj);					
+					callBack(retVehicleObj);
 				}
 				// Ext.getBody().unmask();
 
@@ -1182,10 +1231,10 @@ var Util = function() {
 
 			});
 		}
-	};
+	}
 	
 	function assignVehicleRemotely(vehicle, action, callBack, failCallBack) {
-	    Util.logger('In assignVehicleRemotely()');
+        Util.logger('In assignVehicleRemotely()');
         
 		var retVehicleObj = new Object();
 		
@@ -1197,8 +1246,8 @@ var Util = function() {
 		if(!Ext.isEmpty(account_key)) {
 			
 			SOAPClient.session_cookie = account_key;
-           	Util.logger('registration is:', vehicle.registration);
-           	Util.logger('imei is:', vehicle.imei);
+            Util.logger('registration is:', vehicle.registration);
+            Util.logger('imei is:', vehicle.imei);
 			
 			var params = new SOAPClientParameters();
 			params.add("VehicleRegistration", vehicle.registration);
@@ -1208,16 +1257,16 @@ var Util = function() {
 
 			Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
 			var resp = SOAPClient.invoke(apiDomain, "AssignIMEIToRegistration", params, true, function(res1, res2) {
-	            Util.logger('SOAP response is:', res1);
-	            Util.logger('SOAP response2 is:', res2);
+                Util.logger('SOAP response is:', res1);
+                Util.logger('SOAP response2 is:', res2);
 				
-				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) && 
+				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) &&
 					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
 					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
 					Util.logger('Not logged in');
 					failCallBack(vehicle);
 				}
-				else if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+				else if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) &&
 					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') {
 					errorStr = res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue;
 					errorStr = errorStr.slice('Server was unable to process request. ---> '.length-1);
@@ -1238,7 +1287,7 @@ var Util = function() {
 				retVehicleObj.model = res1.DvlaModel;
 				retVehicleObj.colour = res1.DvlaColour;
 				retVehicleObj.vin = res1.DvlaVin;
-*/				
+*/
 				// SOAPClient.username = uname;
 				// SOAPClient.password = pswd;
 				// if(SOAPClient.session_cookie)
@@ -1248,9 +1297,9 @@ var Util = function() {
 				params.add("VehicleRegistration", "sdfds3243");
 				SOAPClient.invoke(apiDomain, "GetVehicleInformation", params, true, function(r1, r22) {
 					Util.logger('SOAP response is:', r1);
-		            Util.logger('SOAP response2 is:', r22);
+                    Util.logger('SOAP response2 is:', r22);
 
-		           });
+               });
 
 				*/
 					retVehicleObj = vehicle;
@@ -1265,10 +1314,10 @@ var Util = function() {
 
 			});
 		}
-	};
+	}
     
 	function refreshVehicleRemotely(vehicle, action, callBack, failCallBack) {
-	    Util.logger('In refreshVehicleRemotely()');
+        Util.logger('In refreshVehicleRemotely()');
 		
 		var retVehicleObj = new Object();
 
@@ -1280,18 +1329,18 @@ var Util = function() {
 		if(!Ext.isEmpty(account_key)) {
 
 			SOAPClient.session_cookie = account_key;
-           	Util.logger('registration is:', vehicle.registration);
-           	Util.logger('imei is:', vehicle.imei);
+            Util.logger('registration is:', vehicle.registration);
+            Util.logger('imei is:', vehicle.imei);
 
 			var params = new SOAPClientParameters();
 			params.add("serviceId", vehicle.service_id);
 
 			Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
 			var resp = SOAPClient.invoke(apiDomain, "GetLatestPosition", params, true, function(res1, res2) {
-	            Util.logger('SOAP response is:', res1);
-	            Util.logger('SOAP response2 is:', res2);
+                Util.logger('SOAP response is:', res1);
+                Util.logger('SOAP response2 is:', res2);
 
-				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) && 
+                if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) &&
 					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
 					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
 					Util.logger('Not logged in');
@@ -1325,10 +1374,10 @@ var Util = function() {
 			});
 		}
 		
-	};
+	}
 	
 	function saveVehicleRemotely(vehicle, action, callBack, failCallBack) {
-	    Util.logger('In saveVehicleRemotely()');
+        Util.logger('In saveVehicleRemotely()');
 		
 		var retVehicleObj = new Object();
 
@@ -1340,8 +1389,8 @@ var Util = function() {
 		if(!Ext.isEmpty(account_key)) {
 
 			SOAPClient.session_cookie = account_key;
-           	Util.logger('registration is:', vehicle.registration);
-           	Util.logger('imei is:', vehicle.imei);
+            Util.logger('registration is:', vehicle.registration);
+            Util.logger('imei is:', vehicle.imei);
             Util.logger('InstallationTimestamp', vehicle.install_completion);
             Util.logger('InstallerName', vehicle.installer_name);
             Util.logger('InstallationTimestamp', vehicle.install_completion);
@@ -1370,15 +1419,15 @@ var Util = function() {
 			
 			Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
 			var resp = SOAPClient.invoke(apiDomain, "SaveInstallationLog", params, true, function(res1, res2) {
-	            Util.logger('SOAP response is:', res1);
-	            Util.logger('SOAP response2 is:', res2);
+                Util.logger('SOAP response is:', res1);
+                Util.logger('SOAP response2 is:', res2);
 
-				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) && 
+                if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) &&
 					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
 					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
 					Util.logger('Not logged in');
 					failCallBack(vehicle);
-				} else if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+                } else if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) &&
 					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') {
 					errorStr = res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue;
 					errorStr = errorStr.slice('Server was unable to process request. ---> '.length-1);
@@ -1402,11 +1451,11 @@ var Util = function() {
 			});
 		}
 		
-	};
+	}
 	
 
-	function deinstallVehicleRemotely(/*registration, */imei, isReplacementUnit, notes, callBack, failCallBack) {
-	    Util.logger('In deinstallVehicleRemotely()');
+	function deinstallVehicleRemotely(imei, isReplacementUnit, notes, callBack, failCallBack) {
+        Util.logger('In deinstallVehicleRemotely()');
 
 		var errorStr = '', retVehicleObj = new Object();
 
@@ -1418,9 +1467,10 @@ var Util = function() {
 		if(!Ext.isEmpty(account_key)) {
 
 			SOAPClient.session_cookie = account_key;
-           	// Util.logger('registration is:', registration);
-           	Util.logger('imei is:', imei);
-           	Util.logger('replacementUnit is:', isReplacementUnit);
+            // Util.logger('registration is:', registration);
+            Util.logger('imei is:', imei);
+            Util.logger('replacementUnit is:', isReplacementUnit);
+            Util.logger('notes are:', notes);
 
 			var params = new SOAPClientParameters();
 			// params.add("vehicleRegistration", registration);
@@ -1433,8 +1483,8 @@ var Util = function() {
 
 			Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
 			var resp = SOAPClient.invoke(apiDomain, "DeInstall", params, true, function(res1, res2) {
-	            Util.logger('SOAP response is:', res1);
-	            Util.logger('SOAP response2 is:', res2);
+                Util.logger('SOAP response is:', res1);
+                Util.logger('SOAP response2 is:', res2);
 	
 /*
 				Util.logger('SOAP response2 faultstring[0] is:', res2.getElementsByTagName("faultstring")[0]);
@@ -1443,14 +1493,15 @@ var Util = function() {
 				Util.logger('SOAP response2 faultcode complete is:', res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue);
 */
 	
-				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) && 
+                if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) &&
 					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
 					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
 					Util.logger('Not logged in');
 					failCallBack(retVehicleObj);
-				} 
-				else if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) && 
+				}
+				else if(!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0]) &&
 					res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') {
+                    Util.logger('General error');
 					errorStr = res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue;
 					errorStr = errorStr.slice('Server was unable to process request. ---> '.length-1);
 					
@@ -1458,18 +1509,21 @@ var Util = function() {
 					callBack(retVehicleObj);
 					
 				} else if(!res1) {
+                    Util.logger('Vehicle could NOT be deinstalled');
 					errorStr = "Vehicle could NOT be Deinstalled!";
                     retVehicleObj.remote_error = errorStr;
 					callBack(retVehicleObj);
 				
 				} else {
+                    Util.logger('Vehicle deinstalled successfully!');
+
 /*
 				retVehicleObj.registration = res1.VehicleRegistration;
 				retVehicleObj.make = res1.DvlaMake;
 				retVehicleObj.model = res1.DvlaModel;
 				retVehicleObj.colour = res1.DvlaColour;
 				retVehicleObj.vin = res1.DvlaVin;
-*/				
+*/
 				// SOAPClient.username = uname;
 				// SOAPClient.password = pswd;
 				// if(SOAPClient.session_cookie)
@@ -1479,9 +1533,9 @@ var Util = function() {
 				params.add("VehicleRegistration", "sdfds3243");
 				SOAPClient.invoke(apiDomain, "GetVehicleInformation", params, true, function(r1, r22) {
 					Util.logger('SOAP response is:', r1);
-		            Util.logger('SOAP response2 is:', r22);
+                    Util.logger('SOAP response2 is:', r22);
 
-		           });
+                   });
 
 				*/
 					callBack(retVehicleObj);
@@ -1494,7 +1548,7 @@ var Util = function() {
 
 			});
 		}
-	};
+	}
 
     function searchVehicleRemotely(vehicleRegVal, imeiVal, _2ndRefVal, callBack, failCallBack) {
 		var remoteMethod, retVehicleObj = new Object(), retVehicleObjs = [];
@@ -1507,12 +1561,12 @@ var Util = function() {
 		if(!Ext.isEmpty(account_key)) {
 
 			SOAPClient.session_cookie = account_key;
-           	Util.logger('registration is:', vehicleRegVal);
-           	Util.logger('imei is:', imeiVal);
-           	Util.logger('2ndRef is:', _2ndRefVal);
+            Util.logger('registration is:', vehicleRegVal);
+            Util.logger('imei is:', imeiVal);
+            Util.logger('2ndRef is:', _2ndRefVal);
 
 			var params = new SOAPClientParameters();
-	        if(!Ext.isEmpty(vehicleRegVal)) {
+            if(!Ext.isEmpty(vehicleRegVal)) {
 				params.add("vehicleRegistration", vehicleRegVal);
 				remoteMethod = "GetInstallationLogByVehicleRegistration";
 				retVehicleObj.registration = vehicleRegVal;
@@ -1522,27 +1576,27 @@ var Util = function() {
 				retVehicleObj.imei = imeiVal;
 			} else {
 				params.add("secondReference", _2ndRefVal);
-				remoteMethod = "GetInstallationLogBySecondReference";					
+				remoteMethod = "GetInstallationLogBySecondReference";
 				retVehicleObj.second_ref = _2ndRefVal;
 			}
 
 
 			Ext.getBody().mask('Please Wait...', 'x-mask-loading', false);
 			var resp = SOAPClient.invoke(apiDomain, remoteMethod, params, true, function(res1, res2) {
-	           Util.logger('SOAP response is:', res1);
-	           Util.logger('SOAP response2 is:', res2);
+               Util.logger('SOAP response is:', res1);
+               Util.logger('SOAP response2 is:', res2);
 
-				if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) && 
+                if((!Ext.isEmpty(res2.getElementsByTagName("faultstring")[0])) &&
 					(res2.getElementsByTagName("faultcode")[0].childNodes[0].nodeValue == 'soap:Server') &&
 					(res2.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue == 'Server was unable to process request. ---> You are not logged in!')) {
 					Util.logger('Not logged in');
 					failCallBack(retVehicleObj);
 				} else {
 					if(!Ext.isEmpty(res1[0])) {
-			            Util.logger('SOAP response installation log is:', res1[0].InstallationLog);
-			            Util.logger('SOAP response service is:', res1[0].Service);
-			            Util.logger('SOAP response service.vehreg is:', res1[0].Service.VehReg);
-			            Util.logger('SOAP response user is:', res1[0].User);
+                        Util.logger('SOAP response installation log is:', res1[0].InstallationLog);
+                        Util.logger('SOAP response service is:', res1[0].Service);
+                        Util.logger('SOAP response service.vehreg is:', res1[0].Service.VehReg);
+                        Util.logger('SOAP response user is:', res1[0].User);
 					}
 
 					retVehicleObjs = [];
@@ -1590,8 +1644,7 @@ var Util = function() {
 			});
 		}
         // return null;
-    };
-
+    }
 
 	
 }();
