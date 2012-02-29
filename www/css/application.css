@@ -50,8 +50,6 @@
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #333132), color-stop(50%, #333132), color-stop(51%, #000), color-stop(100%, #000000));
 }
 
-.x-toolbar-title { font-size: 1em;}
-
 .home_page_text {
     background: url(../rsc/icn-home.png) no-repeat center center;
     margin-top: 80px;
@@ -61,7 +59,6 @@
 .help_page, .x-button-label {
     color: white;
 }
-
 
 .x-tabbar-light.x-docked-bottom .x-tab img {
     background-color: transparent;
@@ -153,6 +150,21 @@ background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004
     color: #494949;
 }
 
+.externalLink {
+    padding: .2em .5em;
+    background-color: #f2f2f2;
+    border-radius:10px; 
+    border: 1px solid #fff;
+    margin-bottom: 1em;
+    color: #494949;
+    text-align: center;
+}
+
+.externalLink a{
+    text-decoration: none;
+    color:#FF0084;
+}
+
 .vehicle_page_text, .help_page_text p{
      font-size: .6em;
 }
@@ -219,10 +231,15 @@ background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004
 
 #titleContainer{
     background: url(../rsc/logo-title.png) no-repeat center;
-    text-indent: -9999em;
     height: 45px;
-      background-color: #000;
-    background: url(../rsc/logo-title.png) no-repeat center, -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #333132), color-stop(50%, #333132), color-stop(51%, #000), color-stop(100%, #000000));
+    background-color: #000;
+    background: url(../rsc/logo-title.png) no-repeat center, -webkit-linear-gradient(top, #45484d 0%,#000000 100%);
+}
+
+.x-button.logout {
+
+    background-color: #000;
+    background: -webkit-linear-gradient(top, #4c4c4c 0%,#595959 12%,#666666 25%,#474747 39%,#2c2c2c 50%,#000000 51%,#111111 60%,#2b2b2b 76%,#1c1c1c 91%,#131313 100%); 
 }
 
 .install_back {

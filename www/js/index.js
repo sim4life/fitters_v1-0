@@ -264,10 +264,10 @@ Ext.setup({
             installNavBar = new Ext.Toolbar({
                 ui: 'dark',
                 dock: 'top',
-                title: 'OnBoard Fitters',
-                id: 'titleContainer',
-                titleCls: 'masthead',
-                items: [ installBackBtn, {xtype: 'spacer'}, logoutBtn ]
+                title: '',
+            
+            id: 'titleContainer',
+            items: [ installBackBtn, {xtype: 'spacer'}, logoutBtn ]
             });
 
             installStep1FormBase = Install.createInstallStep1Panel(onSearchStep1InstallBtnTapCB, onNextStep1InstallBtnTapCB);
@@ -336,9 +336,12 @@ Ext.setup({
             deinstallNavBar = new Ext.Toolbar({
                 ui: 'dark',
                 dock: 'top',
-                title: 'OnBoard Fitters',
+                title: '',
                 id: 'titleContainer',
+        /*
+       
                 titleCls: 'masthead',
+*/
                 items: [ {xtype: 'spacer'}, logoutBtn ]
             });
 
@@ -359,9 +362,8 @@ Ext.setup({
             searchNavBar = new Ext.Toolbar({
                 ui: 'dark',
                 dock: 'top',
-                title: 'OnBoard Fitters',
-                id: 'titleContainer',
-                titleCls: 'masthead',
+                title: '',
+            id: 'titleContainer',
 				items: [ searchBackBtn, {xtype: 'spacer'}, logoutBtn ]
             });
 
@@ -392,9 +394,9 @@ Ext.setup({
             helpNavBar = new Ext.Toolbar({
                 ui: 'dark',
                 dock: 'top',
-                title: 'OnBoard Fitters',
+                title: '',
                 id: 'titleContainer',
-                titleCls: 'masthead',
+             /*    titleCls: 'masthead', */
                 items: [ /*installBackBtn,*/ {xtype: 'spacer'}, logoutBtn ]
             });
 
