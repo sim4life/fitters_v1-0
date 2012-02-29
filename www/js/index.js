@@ -264,7 +264,7 @@ Ext.setup({
             installNavBar = new Ext.Toolbar({
                 ui: 'dark',
                 dock: 'top',
-                title: '',
+                title: 'Onboard Fitters',
             
             id: 'titleContainer',
             items: [ installBackBtn, {xtype: 'spacer'}, logoutBtn ]
@@ -336,7 +336,7 @@ Ext.setup({
             deinstallNavBar = new Ext.Toolbar({
                 ui: 'dark',
                 dock: 'top',
-                title: '',
+                title: 'Onboard Fitters',
                 id: 'titleContainer',
         /*
        
@@ -362,7 +362,7 @@ Ext.setup({
             searchNavBar = new Ext.Toolbar({
                 ui: 'dark',
                 dock: 'top',
-                title: '',
+                title: 'Onboard Fitters',
             id: 'titleContainer',
 				items: [ searchBackBtn, {xtype: 'spacer'}, logoutBtn ]
             });
@@ -394,7 +394,7 @@ Ext.setup({
             helpNavBar = new Ext.Toolbar({
                 ui: 'dark',
                 dock: 'top',
-                title: '',
+                title: 'Onboard Fitters',
                 id: 'titleContainer',
              /*    titleCls: 'masthead', */
                 items: [ /*installBackBtn,*/ {xtype: 'spacer'}, logoutBtn ]

@@ -229,12 +229,14 @@ background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#90004
 }
 */
 
+/*
 #titleContainer{
     background: url(../rsc/logo-title.png) no-repeat center;
     height: 45px;
     background-color: #000;
     background: url(../rsc/logo-title.png) no-repeat center, -webkit-linear-gradient(top, #45484d 0%,#000000 100%);
 }
+*/
 
 .x-button.logout {
 
