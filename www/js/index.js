@@ -257,14 +257,14 @@ Ext.setup({
                 ]
             });
             
-            logoutBtn = new Ext.Button(Api.getButtonBase('Logout', false, 'install_back', onLogoutBtnTap));
+            logoutBtn = new Ext.Button(Api.getButtonBase('Logout', false, 'logout', onLogoutBtnTap));
             
             installBackBtn = new Ext.Button(Api.getButtonBase('Back', true, 'install_back', onBackInstallBtnTap));
             
             installNavBar = new Ext.Toolbar({
                 ui: 'dark',
                 dock: 'top',
-                title: 'Onboard Fitters',
+                title: '',
             
             id: 'titleContainer',
             items: [ installBackBtn, {xtype: 'spacer'}, logoutBtn ]
@@ -336,7 +336,7 @@ Ext.setup({
             deinstallNavBar = new Ext.Toolbar({
                 ui: 'dark',
                 dock: 'top',
-                title: 'Onboard Fitters',
+                title: '',
                 id: 'titleContainer',
         /*
        
@@ -362,7 +362,7 @@ Ext.setup({
             searchNavBar = new Ext.Toolbar({
                 ui: 'dark',
                 dock: 'top',
-                title: 'Onboard Fitters',
+                title: '',
             id: 'titleContainer',
 				items: [ searchBackBtn, {xtype: 'spacer'}, logoutBtn ]
             });
@@ -394,7 +394,7 @@ Ext.setup({
             helpNavBar = new Ext.Toolbar({
                 ui: 'dark',
                 dock: 'top',
-                title: 'Onboard Fitters',
+                title: '',
                 id: 'titleContainer',
              /*    titleCls: 'masthead', */
                 items: [ /*installBackBtn,*/ {xtype: 'spacer'}, logoutBtn ]
@@ -1406,7 +1406,7 @@ Ext.setup({
 			if(Ext.isEmpty(searchResults)) {
                 Ext.Msg.alert("Error", "No record found", Ext.emptyFn);
             } else {
-                // Util.logger('searchResults is::', searchResults);
+                Util.logger('searchResults is::', searchResults);
                 /*
 
 
@@ -1439,7 +1439,7 @@ Ext.setup({
 				*/
                 
 				//in case data is synced with server and requires update
-                // Util.logger('new searchResults is::', searchResults);
+                Util.logger('new searchResults is::', searchResults);
 
 			}
 				
