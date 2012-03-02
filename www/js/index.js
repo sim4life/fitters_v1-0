@@ -6,9 +6,10 @@ Ext.setup({
     glossOnIcon: false,
     
     onReady: function() {
-        // delete /Users/shahzad/workarea/fitters_v1-0/fitters/phonegap/_phonegap/android then
-        // $>/usr/local/callback-android/bin/create ~/workarea/fitters_v1-0/fitters com.onboardservice.fitters Fitters
-        // $>ant debug install
+        // $> ./install_droid_app.sh
+        // $> cd fitters
+        // $> ant release
+        // $> adb install bin/Fitters-release.apk
         var form, loginFormBase;
         BottomTabsInline = '';
         newVehicle = {};//new Object();
@@ -265,9 +266,8 @@ Ext.setup({
                 ui: 'dark',
                 dock: 'top',
                 title: '',
-            
-            id: 'titleContainer',
-            items: [ installBackBtn, {xtype: 'spacer'}, logoutBtn ]
+                id: 'titleContainer',
+                items: [ installBackBtn, {xtype: 'spacer'}, logoutBtn ]
             });
 
             installStep1FormBase = Install.createInstallStep1Panel(onSearchStep1InstallBtnTapCB, onNextStep1InstallBtnTapCB);
@@ -363,7 +363,7 @@ Ext.setup({
                 ui: 'dark',
                 dock: 'top',
                 title: '',
-            id: 'titleContainer',
+                id: 'titleContainer',
 				items: [ searchBackBtn, {xtype: 'spacer'}, logoutBtn ]
             });
 

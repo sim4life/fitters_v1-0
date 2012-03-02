@@ -227,14 +227,14 @@ var User = {
     
     login: function(email, password, failForm, succCallback, failCallBack) {
         var errMsg = "Device Offline or Server not responding!";
-/*		
+	
 		var uname = email,
 			pswd = password;
-*/		
 
+/*
         var uname = "onboardwebservice",
             pswd = "password";
-        
+*/        
         Api.setLocalStorageProp('login', email);
         Api.setLocalStorageProp('user_id', '1');
         
